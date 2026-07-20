@@ -10,16 +10,10 @@
     <script src="./JS/script.js" defer></script>
 </head>
 <body>
-
-<!-- 头部占位 -->
 <div id="header-placeholder"></div>
 
-<!-- ==================== 主内容 ==================== -->
 <main class="main-content">
-
-    <!-- 所有页面区块 -->
     <div class="page-container">
-
         <!-- ===== 首页 ===== -->
         <section id="page-home" class="page-section active" data-page="home">
             <div class="container">
@@ -28,28 +22,14 @@
                     <h1 class="studio-name">藤栖龟舍</h1>
                     <p class="tagline">根植森林，四季共栖。</p>
                 </div>
-
                 <div class="content-card">
                     <p>欢迎来到藤栖龟舍。</p>
                     <p>这里是藤蔓与龟影交织的创意工坊，记录着森林小镇的四季故事。</p>
                 </div>
-
                 <div class="feature-grid">
-                    <div class="feature-item">
-                        <span class="icon">🌿</span>
-                        <h3>藤栖之域</h3>
-                        <p>自然美学与数字灵感的栖息地</p>
-                    </div>
-                    <div class="feature-item">
-                        <span class="icon">🐢</span>
-                        <h3>龟舍时光</h3>
-                        <p>缓慢而坚定的创作旅程</p>
-                    </div>
-                    <div class="feature-item">
-                        <span class="icon">🌲</span>
-                        <h3>森林四季</h3>
-                        <p>随月份自动变换的森林色彩</p>
-                    </div>
+                    <div class="feature-item"><span class="icon">🌿</span><h3>藤栖之域</h3><p>自然美学与数字灵感的栖息地</p></div>
+                    <div class="feature-item"><span class="icon">🐢</span><h3>龟舍时光</h3><p>缓慢而坚定的创作旅程</p></div>
+                    <div class="feature-item"><span class="icon">🌲</span><h3>森林四季</h3><p>随月份自动变换的森林色彩</p></div>
                 </div>
             </div>
         </section>
@@ -62,14 +42,8 @@
                     <p>藤栖龟舍成立于2026年，是一个以森林自然美学为核心的创意工作室。</p>
                     <p>我们相信，设计应该像森林一样生长——缓慢、自然、充满生命力。</p>
                     <div class="about-details">
-                        <div class="detail-item">
-                            <span class="detail-label">🌱 理念</span>
-                            <span>与自然共生</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">🐢 态度</span>
-                            <span>踏实前行</span>
-                        </div>
+                        <div class="detail-item"><span class="detail-label">🌱 理念</span><span>与自然共生</span></div>
+                        <div class="detail-item"><span class="detail-label">🐢 态度</span><span>踏实前行</span></div>
                     </div>
                 </div>
             </div>
@@ -91,52 +65,33 @@
             </div>
         </section>
 
-        <!-- ===== 更多（画廊入口页面） ===== -->
+        <!-- ===== 更多 ===== -->
         <section id="page-more" class="page-section" data-page="more">
             <div class="container">
                 <div class="content-card">
                     <h2>🌿 更多探索</h2>
                     <p>欢迎进入藤栖龟舍的更多内容世界。选择你想探索的领域：</p>
                 </div>
-
-                <!-- 卡片入口网格 -->
                 <div class="more-grid">
-                    <!-- 画廊入口：改为外部链接 -->
-                    <a href="SpecialPages/gallery.html" class="more-card">
-                        <div class="more-icon">🖼️</div>
-                        <h3>画廊</h3>
-                        <p>欣赏我们的视觉创作</p>
-                        <span class="more-badge">点击进入</span>
+                    <a href="./SpecialPages/Gallery/index.html" class="more-card">
+                        <div class="more-icon">🖼️</div><h3>画廊</h3><p>欣赏我们的视觉创作</p><span class="more-badge">点击进入</span>
                     </a>
-
-                    <!-- 预留：博客入口（未来扩展） -->
-                    <div class="more-card" onclick="alert('博客功能开发中，敬请期待！')">
-                        <div class="more-icon">📝</div>
-                        <h3>博客</h3>
-                        <p>阅读森林小镇的故事</p>
-                        <span class="more-badge">即将上线</span>
-                    </div>
-
-                    <!-- 预留：项目入口（未来扩展） -->
-                    <div class="more-card" onclick="alert('项目展示开发中，敬请期待！')">
-                        <div class="more-icon">🚀</div>
-                        <h3>项目</h3>
-                        <p>我们的创意项目集锦</p>
-                        <span class="more-badge">即将上线</span>
+                    <a href="./SpecialPages/Blog/index.html" class="more-card">
+                        <div class="more-icon">📝</div><h3>博客</h3><p>阅读文章与灵感随笔</p><span class="more-badge">点击进入</span>
+                    </a>
+                    <a href="./SpecialPages/Project/index.html" class="more-card">
+                        <div class="more-icon">🚀</div><h3>项目</h3><p>我们的创意项目集锦</p><span class="more-badge">点击进入</span>
+                    </a>
+                    <div class="more-card" onclick="alert('更多展示开发中，敬请期待！')">
+                        <div class="more-icon">✨</div><h3>待定</h3><p>未来的新内容</p><span class="more-badge">即将上线</span>
                     </div>
                 </div>
             </div>
         </section>
-
     </div>
-
 </main>
 
-<!-- 底部占位 -->
 <div id="footer-placeholder"></div>
-
-<!-- 月份徽标 -->
 <div class="month-badge" id="monthBadge">🌿 1月</div>
-
 </body>
 </html>
