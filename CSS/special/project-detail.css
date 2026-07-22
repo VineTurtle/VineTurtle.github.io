@@ -1,0 +1,81 @@
+/* CSS/special/project-detail.css */
+.detail-hero {
+    font-size: 5rem;
+    text-align: center;
+    padding: 20px 0 10px;
+    margin-bottom: 10px;
+}
+.detail-hero-img {
+    width: 100%;
+    max-height: 320px;
+    object-fit: cover;
+    border-radius: 16px;
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.3);
+}
+.fallback-hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    font-size: 4rem;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 16px;
+    margin-bottom: 20px;
+}
+.detail-tags-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 8px 0 20px;
+}
+.detail-tags-display .tag {
+    background: rgba(255, 255, 255, 0.5);
+    padding: 4px 16px;
+    border-radius: 40px;
+    font-size: 0.8rem;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+.detail-body h2 {
+    color: var(--primary, #2a5c3a);
+    margin: 28px 0 12px;
+    font-size: 1.3rem;
+}
+.detail-body ul {
+    padding-left: 24px;
+    margin: 12px 0;
+}
+.detail-body li {
+    margin-bottom: 6px;
+}
+.detail-body blockquote {
+    border-left: 4px solid var(--primary, #2a5c3a);
+    padding-left: 20px;
+    margin: 16px 0;
+    opacity: 0.7;
+    font-style: italic;
+}
+.detail-not-found {
+    text-align: center;
+    padding: 60px 20px;
+    opacity: 0.6;
+}
+.detail-not-found .big-icon {
+    font-size: 4rem;
+    display: block;
+    margin-bottom: 16px;
+}
+.project-gallery-mini {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+}
+.project-gallery-mini .mini-item {
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 12px;
+    padding: 20px 10px;
+    text-align: center;
+    font-size: 2.4rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}

@@ -1,0 +1,205 @@
+/* CSS/special/post-detail.css */
+.post-hero-img {
+    width: 100%;
+    max-height: 320px;
+    object-fit: cover;
+    border-radius: 16px;
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.3);
+}
+.fallback-hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    font-size: 4rem;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 16px;
+    margin-bottom: 20px;
+}
+.post-tags-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 8px 0 20px;
+}
+.post-tags-display .tag {
+    background: rgba(255, 255, 255, 0.5);
+    padding: 4px 16px;
+    border-radius: 40px;
+    font-size: 0.8rem;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+.post-body h2 {
+    color: var(--primary, #2a5c3a);
+    margin: 28px 0 12px;
+    font-size: 1.3rem;
+}
+.post-body blockquote {
+    border-left: 4px solid var(--primary, #2a5c3a);
+    padding-left: 20px;
+    margin: 16px 0;
+    opacity: 0.7;
+    font-style: italic;
+}
+.post-not-found {
+    text-align: center;
+    padding: 60px 20px;
+    opacity: 0.6;
+}
+.post-not-found .big-icon {
+    font-size: 4rem;
+    display: block;
+    margin-bottom: 16px;
+}
+
+/* ===== 页面宽度调整 ===== */
+.post-container {
+    max-width: 860px;  /* 原来 700px，加宽 */
+}
+
+/* ===== 代码块容器 ===== */
+.post-body pre {
+    position: relative;
+    background: rgba(0, 0, 0, 0.06);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 16px 0 24px;
+    overflow-x: auto;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    transition: background 0.2s;
+}
+
+.post-body pre:hover {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+.post-body pre code {
+    font-family: 'JetBrains Mono', 'Fira Code', 'Menlo', 'Consolas', monospace;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--text, #23382c);
+    white-space: pre;
+    tab-size: 4;
+}
+
+/* ===== 复制按钮 ===== */
+.copy-btn {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text, #23382c);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.25s, transform 0.2s, background 0.2s;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.post-body pre:hover .copy-btn {
+    opacity: 1;
+}
+
+.copy-btn:hover {
+    background: var(--primary, #2a5c3a);
+    color: #fff;
+    border-color: var(--primary, #2a5c3a);
+    transform: scale(1.04);
+}
+
+.copy-btn.copied {
+    background: #2a7a4a;
+    color: #fff;
+    border-color: #2a7a4a;
+}
+
+.copy-btn.copied::after {
+    content: ' ✓';
+}
+
+.copy-btn .copy-icon {
+    font-size: 0.9rem;
+    line-height: 1;
+}
+
+/* ===== 行内代码 ===== */
+.post-body code:not(pre code) {
+    background: rgba(0, 0, 0, 0.06);
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    color: #b85a32;
+}
+
+/* ===== 标题微调 ===== */
+.post-body h2 {
+    margin-top: 36px;
+    padding-top: 8px;
+    border-top: 2px solid rgba(0, 0, 0, 0.04);
+}
+
+.post-body h3 {
+    margin-top: 28px;
+    font-size: 1.15rem;
+    color: var(--primary, #2a5c3a);
+}
+
+/* ===== 响应式适配 ===== */
+@media (max-width: 600px) {
+    .post-container {
+        max-width: 100%;
+        padding: 0 4px;
+    }
+    .post-body pre {
+        padding: 16px 14px;
+        font-size: 0.8rem;
+        border-radius: 10px;
+    }
+    .copy-btn {
+        opacity: 1;
+        top: 6px;
+        right: 8px;
+        font-size: 0.7rem;
+        padding: 3px 10px;
+    }
+}
+
+/* 文章首段加大字号 */
+.post-body > p:first-of-type {
+    font-size: 1.15rem;
+    font-weight: 450;
+    color: var(--text, #23382c);
+}
+
+/* 引用块更醒目 */
+.post-body blockquote {
+    background: rgba(42, 92, 58, 0.04);
+    padding: 16px 24px;
+    border-radius: 12px;
+    border-left: 4px solid var(--primary, #2a5c3a);
+    font-style: normal;
+}
+
+/* 列表项间距 */
+.post-body ul li,
+.post-body ol li {
+    margin-bottom: 8px;
+}
+
+/* 图片自适应 */
+.post-body img {
+    max-width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}

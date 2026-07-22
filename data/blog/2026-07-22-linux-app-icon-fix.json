@@ -1,0 +1,9 @@
+{
+  "id": 1,
+  "slug": "2026-07-22-linux-app-icon-fix",
+  "title": "Electron Linux 图标踩坑记：从打包到任务栏的完整指南",
+  "date": "2026-07-22",
+  "tags": ["技术笔记", "Electron", "Linux"],
+  "hero": "../../Resources/images/blog/hero/electron_linux_icon.jpg",
+  "fallbackIcon": "🐧"
+}

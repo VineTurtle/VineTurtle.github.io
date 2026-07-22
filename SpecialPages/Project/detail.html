@@ -7,40 +7,17 @@
     <link rel="stylesheet" href="../../CSS/layout.css" />
     <link rel="stylesheet" href="../../CSS/style.css" />
     <link rel="stylesheet" href="../../CSS/special/project.css" />
+    <link rel="stylesheet" href="../../CSS/special/project-detail.css" />
     <script src="../../JS/layout.js" defer></script>
     <script src="../../JS/script.js" defer></script>
+    <script src="detail.js" defer></script>
 </head>
 <body>
 <div id="header-placeholder"></div>
 <main class="project-main">
     <div class="container detail-container">
-        <a href="index.html" class="back-link">← 返回项目列表</a>
-        <article class="project-detail">
-            <div class="detail-header">
-                <h1>藤栖龟舍 · 品牌全案</h1>
-                <div class="detail-meta">
-                    <span class="project-status status-done">✅ 已完成</span>
-                    <span class="detail-year">📅 2026</span>
-                </div>
-            </div>
-            <div class="detail-tags">
-                <span class="tag">品牌设计</span>
-                <span class="tag">视觉系统</span>
-                <span class="tag">IP 形象</span>
-            </div>
-            <div class="detail-body">
-                <div class="detail-media">🌳 品牌主视觉 · 藤栖龟舍</div>
-                <p><strong>项目概述：</strong>为藤栖龟舍打造完整的品牌识别系统，将“森林”、“藤蔓”、“龟”三个核心意象融入现代设计语言。</p>
-                <p><strong>设计成果：</strong></p>
-                <ul>
-                    <li>Logo 设计（包含图形标、文字标及组合规范）</li>
-                    <li>12 个月份专属配色系统（已落地网站）</li>
-                    <li>IP 形象“小龟”及其延展表情包</li>
-                    <li>品牌手册与网站 UI 规范</li>
-                </ul>
-                <p style="opacity:0.6; margin-top:2rem;">该项目于 2026 年春季启动，夏季全面落地。</p>
-            </div>
-        </article>
+        <a href="index.html" class="back-link" id="backLink">← 返回项目列表</a>
+        <div id="detailContent"></div>
     </div>
 </main>
 <div id="footer-placeholder"></div>

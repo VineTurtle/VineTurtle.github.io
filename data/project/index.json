@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "title": "藤栖龟舍 · 品牌全案",
+    "thumbnail": "../../Resources/images/projects/thumbnails/branding.jpg",
+    "hero": "../../Resources/images/projects/hero/branding.jpg",
+    "fallbackIcon": "🌳",
+    "tags": ["品牌设计", "视觉系统"],
+    "status": "✅ 已完成",
+    "statusClass": "status-done",
+    "year": "2026",
+    "desc": "为藤栖龟舍打造完整的品牌识别系统。"
+  },
+  {
+    "id": 2,
+    "title": "森林小镇 · 数字藏品",
+    "thumbnail": "../../Resources/images/projects/thumbnails/nft.jpg",
+    "hero": "../../Resources/images/projects/hero/nft.jpg",
+    "fallbackIcon": "📱",
+    "tags": ["数字艺术", "插画"],
+    "status": "✅ 已完成",
+    "statusClass": "status-done",
+    "year": "2026",
+    "desc": "以森林四季为灵感，创作了 12 幅动态数字插画。"
+  }
+]

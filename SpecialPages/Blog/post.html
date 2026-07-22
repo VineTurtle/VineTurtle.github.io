@@ -7,29 +7,17 @@
     <link rel="stylesheet" href="../../CSS/layout.css" />
     <link rel="stylesheet" href="../../CSS/style.css" />
     <link rel="stylesheet" href="../../CSS/special/blog.css" />
+    <link rel="stylesheet" href="../../CSS/special/post-detail.css" />
     <script src="../../JS/layout.js" defer></script>
     <script src="../../JS/script.js" defer></script>
+    <script src="post.js" defer></script>
 </head>
 <body>
 <div id="header-placeholder"></div>
 <main class="blog-main">
     <div class="container post-container">
-        <a href="index.html" class="back-link">← 返回博客列表</a>
-        <article class="post-article">
-            <header class="post-header">
-                <h1>森林四季配色系统 · 诞生记</h1>
-                <div class="post-meta">
-                    <span>📅 2026-07-15</span>
-                    <span class="post-tag">🏷️ 设计思考</span>
-                </div>
-            </header>
-            <div class="post-body">
-                <p>在藤栖龟舍成立之初，我们就有一个朴素的想法：<strong>网站的颜色应该像窗外的森林一样，随着季节流转。</strong></p>
-                <p>于是，我们从 12 种森林意象中提取了颜色——一月是沉稳的冷杉绿，五月是明亮的苔原绿，十月是温暖的枫叶橙。每种颜色都不是随机的，它们对应着森林里真实发生的色彩变化。</p>
-                <p>这套系统不仅让网站有了呼吸感，也成为了我们设计语言的核心。当你在不同月份访问，页面会悄然换上新的“外衣”，这是我们送给访客的一份小小自然礼物。</p>
-                <p style="opacity:0.6; margin-top:2rem;">—— 本文由藤栖龟舍编辑部撰写</p>
-            </div>
-        </article>
+        <a href="index.html" class="back-link" id="backLink">← 返回博客列表</a>
+        <div id="postContent"></div>
     </div>
 </main>
 <div id="footer-placeholder"></div>
