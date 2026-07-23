@@ -73,8 +73,8 @@
         <a href="${indexUrl}#page-more" class="nav-link">🌿 更多</a>
     `;
 
-    const isSpecialPage = window.location.pathname.includes('/SpecialPages/');
-
+    //const isSpecialPage = window.location.pathname.includes('/SpecialPages/');
+    const isSpecialPage = window.location.pathname.includes('/SpecialPages/') || window.location.pathname.includes('/privacy/');
     // ---------- 公共头部 ----------
     const headerHTML = `
         <header class="header">
@@ -92,12 +92,15 @@
         </header>
     `;
 
-    // ---------- 公共底部（无资源路径，直接保留） ----------
+    // ---------- 公共底部 ----------
     const footerHTML = `
-        <footer class="footer">
-            <p>© 2026 藤栖龟舍 VineTurtle Studio. 林间岁月，温柔相守。</p>
-        </footer>
-    `;
+    <footer class="footer">
+        <p>© 2026 藤栖龟舍 VineTurtle Studio. 林间岁月，温柔相守。</p>
+        <p style="margin-top: 6px; font-size: 0.8rem;">
+            <a href="../privacy/privacy.html" style="color: var(--primary, #2a5c3a); text-decoration: underline; opacity: 0.7;">隐私策略</a>
+        </p>
+    </footer>
+`;
 
     // ---------- 挂载模板 ----------
     document.addEventListener('DOMContentLoaded', function() {
