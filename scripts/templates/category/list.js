@@ -1,13 +1,13 @@
-// SpecialPages/Blog/blog.js —— 博客列表页配置（渲染逻辑见 JS/special-list.js）
+// SpecialPages/{{PAGE_NAME}}/{{KEY}}.js —— {{LABEL}}列表页配置（渲染逻辑见 JS/special-list.js）
 window.VTS.createListPage({
-    dataUrl: '../../data/blog/index.json',
+    dataUrl: '../../data/{{KEY}}/index.json',
     perPage: 6,
     gridId: 'blogGrid',
     filterBarId: 'filterBar',
     filterCountId: 'filterCount',
     paginationId: 'pagination',
     noun: '篇',
-    emptyNoun: '标签的文章',
+    emptyNoun: '标签的内容',
     mainSelector: '.blog-main',
     tagBadgeSelector: '.blog-tag-badge',
     coverClass: 'blog-card-cover',

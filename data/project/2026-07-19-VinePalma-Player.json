@@ -1,0 +1,9 @@
+{
+  "id": 1,
+  "slug": "2026-07-19-VinePalma-Player",
+  "title": "VinePalma Player软件",
+  "date": "2026-07-19",
+  "tags": ["软件开发", "Electron", "Linux"],
+  "hero": "../../Resources/images/blog/hero/electron_linux_icon.jpg",
+  "fallbackIcon": "🐧"
+}

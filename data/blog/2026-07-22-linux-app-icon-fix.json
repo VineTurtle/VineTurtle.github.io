@@ -1,9 +1,11 @@
 {
   "id": 1,
   "slug": "2026-07-22-linux-app-icon-fix",
-  "title": "Electron Linux 图标打包后不显示的问题及解决办法",
+  "title": "Electron Linux 图标踩坑记：从打包到任务栏的完整指南",
   "date": "2026-07-22",
   "tags": ["技术笔记", "Electron", "Linux"],
+  "excerpt": "打包后启动器图标正常，任务栏却是空白？问题出在桌面环境通过 WM_CLASS 关联窗口和 .desktop 文件。",
+  "thumbnail": "../../Resources/images/blog/thumbnails/electron_linux_icon.jpg",
   "hero": "../../Resources/images/blog/hero/electron_linux_icon.jpg",
   "fallbackIcon": "🐧"
 }

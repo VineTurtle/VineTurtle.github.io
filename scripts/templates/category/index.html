@@ -4,25 +4,36 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#2a5c3a" />
-    <meta name="description" content="藤栖博客文章详情。" />
-    <title>文章详情 · 藤栖龟舍</title>
+    <meta name="description" content="{{LABEL}} · 藤栖龟舍 — {{DESC}}" />
+    <title>{{LABEL}} · 藤栖龟舍</title>
     <link rel="icon" href="../../Resources/images/VineTurtleStudio.png" type="image/png" />
     <link rel="stylesheet" href="../../CSS/layout.css" />
     <link rel="stylesheet" href="../../CSS/style.css" />
     <link rel="stylesheet" href="../../CSS/special/blog.css" />
-    <link rel="stylesheet" href="../../CSS/special/post-detail.css" />
+    <link rel="stylesheet" href="../../CSS/special/list.css" />
     <script src="../../JS/layout.js" defer></script>
     <script src="../../JS/script.js" defer></script>
-    <script src="../../JS/special-detail.js" defer></script>
-    <script src="post.js" defer></script>
+    <script src="../../JS/special-list.js" defer></script>
+    <script src="{{KEY}}.js" defer></script>
 </head>
 <body>
 <noscript><div class="noscript-warn">本站需要启用 JavaScript 才能正常显示内容。</div></noscript>
 <div id="header-placeholder"></div>
 <main class="blog-main">
-    <div class="container post-container">
-        <a href="index.html" class="back-link" id="backLink">← 返回博客列表</a>
-        <div id="postContent"></div>
+    <div class="container">
+        <div class="page-header">
+            <h1>{{NAV_ICON}} {{LABEL}}</h1>
+            <p>{{DESC}}</p>
+        </div>
+        <!-- 标签筛选栏 -->
+        <div class="filter-bar" id="filterBar">
+            <span class="filter-label">🏷️ 筛选：</span>
+            <span class="filter-count" id="filterCount"></span>
+        </div>
+        <!-- 卡片网格 -->
+        <div class="blog-grid" id="blogGrid"></div>
+        <!-- 分页控件 -->
+        <div class="pagination" id="pagination"></div>
     </div>
 </main>
 <div id="footer-placeholder"></div>

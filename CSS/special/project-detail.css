@@ -13,6 +13,21 @@
     margin-bottom: 20px;
     background: rgba(255, 255, 255, 0.3);
 }
+/* hero 图片失败时切换到 fallback 图标 */
+.hero-img-wrap {
+    position: relative;
+}
+.hero-img-wrap .fallback-hero {
+    display: none;
+    margin: 0;
+}
+.hero-img-wrap.show-fallback .fallback-hero {
+    display: flex;
+    margin-bottom: 20px;
+}
+.hero-img-wrap.show-fallback img {
+    display: none;
+}
 .fallback-hero {
     display: flex;
     align-items: center;
@@ -65,6 +80,10 @@
     display: block;
     margin-bottom: 16px;
 }
+.detail-not-found .not-found-msg {
+    font-size: 0.85rem;
+    opacity: 0.6;
+}
 .project-gallery-mini {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -79,3 +98,81 @@
     font-size: 2.4rem;
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
+
+/* ===== 代码块与高亮 ===== */
+.detail-body pre {
+    position: relative;
+    background: rgba(0, 0, 0, 0.06);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 16px 0 24px;
+    overflow-x: auto;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+}
+.detail-body pre code {
+    font-family: 'JetBrains Mono', 'Fira Code', 'Menlo', 'Consolas', monospace;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--text, #23382c);
+    white-space: pre;
+    tab-size: 4;
+}
+.detail-body code:not(pre code) {
+    background: rgba(0, 0, 0, 0.06);
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    color: #b85a32;
+}
+.detail-body pre[data-lang] { padding-top: 38px; }
+.detail-body pre[data-lang]::before {
+    content: attr(data-lang);
+    position: absolute;
+    top: 10px;
+    left: 14px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    color: rgba(0, 0, 0, 0.45);
+    text-transform: lowercase;
+    user-select: none;
+}
+.detail-body pre code .tok-keyword { color: #7a3e9d; font-weight: 600; }
+.detail-body pre code .tok-string { color: #b85a32; }
+.detail-body pre code .tok-comment { color: #6a8f7a; font-style: italic; }
+.detail-body pre code .tok-number { color: #1d7a4d; }
+.detail-body pre code .tok-function { color: #1e5f9e; }
+.detail-body pre code .tok-tag { color: #7a3e9d; }
+
+/* ===== 复制按钮 ===== */
+.detail-body .copy-btn {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text, #23382c);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.25s, transform 0.2s, background 0.2s;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+.detail-body pre:hover .copy-btn { opacity: 1; }
+.detail-body .copy-btn:hover {
+    background: var(--primary, #2a5c3a);
+    color: #fff;
+    border-color: var(--primary, #2a5c3a);
+    transform: scale(1.04);
+}
+.detail-body .copy-btn.copied { background: #2a7a4a; color: #fff; border-color: #2a7a4a; }
+.detail-body .copy-btn.copied::after { content: ' ✓'; }

@@ -322,6 +322,43 @@ a.more-card p {
     border-top: 1px solid rgba(0,0,0,0.04);
 }
 
+.footer .privacy-row {
+    margin-top: 6px;
+    font-size: 0.8rem;
+}
+
+.footer .privacy-link {
+    color: var(--primary, #2a5c3a);
+    text-decoration: underline;
+    opacity: 0.7;
+}
+
+/* ===== 全局小工具类 ===== */
+.work-note {
+    margin-top: 16px;
+    opacity: 0.6;
+}
+
+.noscript-warn {
+    padding: 12px;
+    text-align: center;
+    background: #fff8e1;
+    color: #8a6d3b;
+    font-size: 0.9rem;
+}
+
+/* ===== 无障碍：用户偏好减少动画时关闭动效 ===== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
 /* ===== 响应式 ===== */
 @media (max-width: 600px) {
     .header-container {

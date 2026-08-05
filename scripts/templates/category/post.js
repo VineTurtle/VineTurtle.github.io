@@ -1,8 +1,8 @@
-// SpecialPages/Blog/post.js —— 文章详情页配置（加载逻辑见 JS/special-detail.js）
+// SpecialPages/{{PAGE_NAME}}/post.js —— {{LABEL}}详情页配置（加载逻辑见 JS/special-detail.js）
 window.VTS.createDetailPage({
-    indexUrl: '../../data/blog/index.json',
-    jsonDir: '../../data/blog',
-    htmlDir: '../../data/blog/posts',
+    indexUrl: '../../data/{{KEY}}/index.json',
+    jsonDir: '../../data/{{KEY}}',
+    htmlDir: '../../data/{{KEY}}/posts',
     contentId: 'postContent',
     notFoundClass: 'post-not-found',
     backLinkId: 'backLink',

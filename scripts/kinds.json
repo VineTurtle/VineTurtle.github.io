@@ -1,0 +1,20 @@
+{
+  "posts": {
+    "label": "博客文章",
+    "dataDir": "data/blog",
+    "imageSub": "blog",
+    "pageName": "Blog",
+    "navIcon": "📝",
+    "navDesc": "阅读文章与灵感随笔",
+    "builtin": true
+  },
+  "projects": {
+    "label": "项目",
+    "dataDir": "data/project",
+    "imageSub": "projects",
+    "pageName": "Project",
+    "navIcon": "🚀",
+    "navDesc": "我们的创意项目集锦",
+    "builtin": true
+  }
+}

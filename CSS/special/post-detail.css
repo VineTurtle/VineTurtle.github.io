@@ -7,6 +7,21 @@
     margin-bottom: 20px;
     background: rgba(255, 255, 255, 0.3);
 }
+/* hero 图片失败时切换到 fallback 图标 */
+.hero-img-wrap {
+    position: relative;
+}
+.hero-img-wrap .fallback-hero {
+    display: none;
+    margin: 0;
+}
+.hero-img-wrap.show-fallback .fallback-hero {
+    display: flex;
+    margin-bottom: 20px;
+}
+.hero-img-wrap.show-fallback img {
+    display: none;
+}
 .fallback-hero {
     display: flex;
     align-items: center;
@@ -51,6 +66,10 @@
     font-size: 4rem;
     display: block;
     margin-bottom: 16px;
+}
+.post-not-found .not-found-msg {
+    font-size: 0.85rem;
+    opacity: 0.6;
 }
 
 /* ===== 页面宽度调整 ===== */
@@ -141,6 +160,27 @@
     font-family: 'JetBrains Mono', 'Fira Code', monospace;
     color: #b85a32;
 }
+
+/* ===== 代码高亮（语言标注 + 语法着色） ===== */
+.post-body pre[data-lang] { padding-top: 38px; }
+.post-body pre[data-lang]::before {
+    content: attr(data-lang);
+    position: absolute;
+    top: 10px;
+    left: 14px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    color: rgba(0, 0, 0, 0.45);
+    text-transform: lowercase;
+    user-select: none;
+}
+.post-body pre code .tok-keyword { color: #7a3e9d; font-weight: 600; }
+.post-body pre code .tok-string { color: #b85a32; }
+.post-body pre code .tok-comment { color: #6a8f7a; font-style: italic; }
+.post-body pre code .tok-number { color: #1d7a4d; }
+.post-body pre code .tok-function { color: #1e5f9e; }
+.post-body pre code .tok-tag { color: #7a3e9d; }
 
 /* ===== 标题微调 ===== */
 .post-body h2 {

@@ -3,6 +3,7 @@
   "date": "2026-07-15",
   "tags": ["设计思考"],
   "excerpt": "从一片苔藓的颜色开始，我们构建了一套随月份自动流转的配色体系。",
+  "thumbnail": "../../Resources/images/blog/thumbnails/forest_seasons.jpg",
   "hero": "../../Resources/images/blog/hero/forest_seasons.jpg",
   "fallbackIcon": "🌲"
 }

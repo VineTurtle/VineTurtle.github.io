@@ -1,0 +1,12 @@
+{
+  "id": 2,
+  "title": "藤栖龟舍 · 品牌全案",
+  "thumbnail": "../../Resources/images/projects/thumbnails/branding.jpg",
+  "hero": "../../Resources/images/projects/hero/branding.jpg",
+  "fallbackIcon": "🌳",
+  "tags": ["品牌设计", "视觉系统"],
+  "status": "✅ 已完成",
+  "statusClass": "status-done",
+  "year": "2026",
+  "desc": "为藤栖龟舍打造完整的品牌识别系统。"
+}

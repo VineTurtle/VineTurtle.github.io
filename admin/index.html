@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>管理后台 · 藤栖龟舍</title>
+    <link rel="icon" href="../Resources/images/VineTurtleStudio.png" type="image/png">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <header class="topbar">
+        <h1 class="topbar-title">🌿 藤栖龟舍 · 本地管理后台</h1>
+        <div class="topbar-right">
+            <span class="pill">本地模式</span>
+            <a href="../index.html" target="_blank" class="link">站点预览 ↗</a>
+        </div>
+    </header>
+
+    <nav class="tabs" id="tabs"></nav>
+
+    <div class="notice">💾 增删改会<strong>即时写入本地文件</strong>（data/ 与 Resources/ 目录），保存即生效；上传到线上请到「部署发布」。</div>
+
+    <main class="view" id="view"></main>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="editor.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

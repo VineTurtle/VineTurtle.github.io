@@ -85,7 +85,7 @@
                         <span class="header-title">藤栖龟舍</span>
                     </a>
                 </div>
-                <nav class="main-nav" id="mainNav">
+                <nav class="main-nav" id="mainNav" aria-label="主导航">
                     ${isSpecialPage ? specialNav : homeNav}
                 </nav>
             </div>
@@ -96,8 +96,8 @@
     const footerHTML = `
     <footer class="footer">
         <p>© 2026 藤栖龟舍 VineTurtle Studio. 林间岁月，温柔相守。</p>
-        <p style="margin-top: 6px; font-size: 0.8rem;">
-            <a href="../privacy/privacy.html" style="color: var(--primary, #2a5c3a); text-decoration: underline; opacity: 0.7;">隐私策略</a>
+        <p class="privacy-row">
+            <a href="${pathPrefix}privacy/privacy.html" class="privacy-link">隐私策略</a>
         </p>
     </footer>
 `;
@@ -113,8 +113,6 @@
         if (!isSpecialPage) {
             initSPA();
         }
-
-        updateMonthBadge();
     });
 
     // ---------- SPA 切换（仅 hashchange 驱动） ----------
@@ -133,7 +131,6 @@
                 link.classList.toggle('active', link.dataset.page === pageId);
             });
         }
-        window.switchPage = switchPage;
 
         function getPageFromHash() {
             const hash = window.location.hash;
@@ -152,16 +149,5 @@
             const page = getPageFromHash();
             switchPage(page);
         });
-    }
-
-    // ---------- 月份徽标 ----------
-    function updateMonthBadge() {
-        const now = new Date();
-        const month = now.getMonth() + 1;
-        const badge = document.getElementById('monthBadge');
-        if (badge) {
-            const icons = ['❄️','🌲','🌱','🌸','🌿','🍊','💜','🌾','🍇','🍁','🌫️','🎄'];
-            badge.textContent = `${icons[month-1] || '🌿'} ${month}月`;
-        }
     }
 })();

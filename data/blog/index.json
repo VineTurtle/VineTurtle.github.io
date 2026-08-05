@@ -4,7 +4,11 @@
     "slug": "2026-07-22-linux-app-icon-fix",
     "title": "Electron Linux 图标踩坑记：从打包到任务栏的完整指南",
     "date": "2026-07-22",
-    "tags": ["技术笔记", "Electron", "Linux"],
+    "tags": [
+      "技术笔记",
+      "Electron",
+      "Linux"
+    ],
     "excerpt": "打包后启动器图标正常，任务栏却是空白？问题出在桌面环境通过 WM_CLASS 关联窗口和 .desktop 文件。",
     "thumbnail": "../../Resources/images/blog/thumbnails/electron_linux_icon.jpg",
     "hero": "../../Resources/images/blog/hero/electron_linux_icon.jpg",
@@ -15,7 +19,9 @@
     "slug": "2026-07-22",
     "title": "森林四季配色系统 · 诞生记",
     "date": "2026-07-15",
-    "tags": ["设计思考"],
+    "tags": [
+      "设计思考"
+    ],
     "excerpt": "从一片苔藓的颜色开始，我们构建了一套随月份自动流转的配色体系。",
     "thumbnail": "../../Resources/images/blog/thumbnails/forest_seasons.jpg",
     "hero": "../../Resources/images/blog/hero/forest_seasons.jpg",
@@ -23,9 +29,12 @@
   },
   {
     "id": 3,
+    "slug": "3",
     "title": "藤栖龟舍 · 品牌视觉全解析",
     "date": "2026-07-10",
-    "tags": ["品牌故事"],
+    "tags": [
+      "品牌故事"
+    ],
     "excerpt": "龟的沉稳、藤的柔韧——如何用视觉语言讲述一个森林工作室的故事。",
     "thumbnail": "../../Resources/images/blog/thumbnails/brand_vision.jpg",
     "hero": "../../Resources/images/blog/hero/brand_vision.jpg",
