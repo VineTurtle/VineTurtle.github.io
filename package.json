@@ -1,10 +1,13 @@
 {
   "name": "VineTurtleStudio",
   "version": "1.0.0",
-  "description": "",
-  "main": "JS/script.js",
+  "description": "藤栖龟舍官方网站（静态站点）",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "generate": "node scripts/generate-data.js",
+    "admin": "node scripts/admin-server.js",
+    "deploy": "node scripts/deploy.js",
+    "dev": "python3 -m http.server 8000",
+    "serve": "python3 -m http.server 8000"
   },
   "private": true
 }
