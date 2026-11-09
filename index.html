@@ -9,8 +9,10 @@
     <link rel="icon" href="./Resources/images/VineTurtleStudio.png" type="image/png">
     <link rel="stylesheet" href="./CSS/layout.css">
     <link rel="stylesheet" href="./CSS/style.css">
+    <link rel="stylesheet" href="./CSS/home-feed.css">
     <script src="./JS/layout.js" defer></script>
     <script src="./JS/script.js" defer></script>
+    <script src="./JS/home-feed.js" defer></script>
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -36,16 +38,48 @@
                     <img src="./Resources/images/VineTurtleStudio.png" alt="藤栖龟舍" class="hero-logo">
                     <h1 class="studio-name">藤栖龟舍</h1>
                     <p class="tagline">根植森林，四季共栖。</p>
+                    <p class="hero-lead">藤蔓与龟影交织的创意工坊，记录森林小镇的四季故事。</p>
+                    <div class="hero-actions">
+                        <a class="hero-btn is-primary" href="#page-works">看看作品</a>
+                        <a class="hero-btn" href="./SpecialPages/Blog/index.html">读读博客</a>
+                        <a class="hero-btn" href="./SpecialPages/Gallery/index.html">逛逛画廊</a>
+                    </div>
                 </div>
-                <div class="content-card">
-                    <p>欢迎来到藤栖龟舍。</p>
-                    <p>这里是藤蔓与龟影交织的创意工坊，记录着森林小镇的四季故事。</p>
+
+                <!-- 动态区块：精选固定、最近更新与热门自动生成，配置见 data/meta/home.json -->
+                <div class="home-feed" id="homeFeed">
+                    <p class="feed-loading" id="feedLoading">正在整理林间的作品与文章…</p>
+
+                    <section class="feed-block" data-block="featured" hidden>
+                        <div class="feed-head">
+                            <h2>🌟 精选</h2>
+                            <a class="feed-more" href="#page-more">更多内容 →</a>
+                        </div>
+                        <div class="feed-grid feed-grid-featured" data-slot="featured"></div>
+                    </section>
+
+                    <section class="feed-block" data-block="recent" hidden>
+                        <div class="feed-head">
+                            <h2>🕒 最近更新</h2>
+                            <span class="feed-note">按发布时间自动排序</span>
+                        </div>
+                        <div class="feed-grid" data-slot="recent"></div>
+                    </section>
+
+                    <section class="feed-block" data-block="hot" hidden>
+                        <div class="feed-head">
+                            <h2>🔥 热门内容</h2>
+                            <span class="feed-note">阅读量 + 编辑权重 + 新鲜度综合排序</span>
+                        </div>
+                        <div class="feed-grid" data-slot="hot"></div>
+                    </section>
                 </div>
-                <div class="feature-grid">
-                    <div class="feature-item"><span class="icon">🌿</span><h3>藤栖之域</h3><p>自然美学与数字灵感的栖息地</p></div>
-                    <div class="feature-item"><span class="icon">🐢</span><h3>龟舍时光</h3><p>缓慢而坚定的创作旅程</p></div>
-                    <div class="feature-item"><span class="icon">🌲</span><h3>森林四季</h3><p>随月份自动变换的森林色彩</p></div>
-                </div>
+                <noscript>
+                    <p class="feed-note">动态区块需要启用 JavaScript；你也可以直接进入
+                        <a href="./SpecialPages/Project/index.html">项目</a>、
+                        <a href="./SpecialPages/Blog/index.html">博客</a>、
+                        <a href="./SpecialPages/Gallery/index.html">画廊</a> 浏览全部内容。</p>
+                </noscript>
             </div>
         </section>
 

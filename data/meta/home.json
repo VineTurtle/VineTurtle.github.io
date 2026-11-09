@@ -1,0 +1,23 @@
+{
+  "_说明": "首页动态展示配置。featured 为固定精选（按数组顺序展示）；hotWeights 为编辑权重（0~1，越大越靠前）；可选 data/meta/stats.json 提供真实阅读量后，热门会优先按阅读量排序。",
+  "sections": {
+    "featured": "🌟 精选",
+    "recent": "🕒 最近更新",
+    "hot": "🔥 热门内容"
+  },
+  "featured": [
+    { "type": "project", "slug": "VinePalmaFlow-26-08-25", "badge": "本地优先" },
+    { "type": "project", "slug": "GrapeLeafi-26-08-25", "badge": "社区站点" },
+    { "type": "blog", "slug": "2026-08-25-static-site-pitfalls", "badge": "技术笔记" }
+  ],
+  "hotWeights": {
+    "VinePalmaFlow-26-08-25": 1,
+    "GrapeLeafi-26-08-25": 0.9,
+    "VinePalmaUninstaller-26-08-10": 0.8,
+    "2026-08-25-lan-tls-without-ca": 0.7,
+    "VinePalma-Player-26-08-07": 0.6,
+    "2026-08-25-uninstaller-safety": 0.5,
+    "VinePalmaToolbox-26-08-05": 0.4,
+    "2026-08-25-binary-encoder-ico-icns": 0.3
+  }
+}

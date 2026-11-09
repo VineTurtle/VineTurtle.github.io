@@ -84,6 +84,15 @@ npm run deploy       # rsync 到服务器，或 git push 由托管平台自动�
 > 封面图路径下暂时没有图片时，页面会自动用 `fallbackIcon` 的 emoji 占位，图片放进去即可显示。
 > 列表卡片会自动尝试加载路径旁的同名 `@thumb.jpg` 压缩图（仅当该图存在时使用），没有则用原图，不改变元数据里填写的路径。
 
+## 首页动态展示
+
+首页的「精选 / 最近更新 / 热门内容」由 `JS/home-feed.js` 读取数据后渲染，不需要手动改 HTML：
+
+- **精选**（固定顺序）：`data/meta/home.json` 的 `featured` 数组，按 `{ "type": "project" | "blog", "slug": "…", "badge": "…" }` 配置，顺序即展示顺序；条目被删除后会自动跳过。
+- **最近更新**（自动）：`data/blog/index.json` 与 `data/project/index.json` 合并后按日期倒序。
+- **热门内容**：按「阅读量 ×10 + 编辑权重 ×100 + 新鲜度」排序。`hotWeights` 是手动维护的 0~1 权重；如果以后接入统计，只需生成 `data/meta/stats.json`（`{ "slug": 阅读量 }`），无需改代码。
+- 区块标题可在 `data/meta/home.json` 的 `sections` 中修改；数据加载失败时页面会自动隐藏这些区块，不影响其余内容。
+
 ## 发布
 
 ### 方式一：rsync 上传到自己的服务器
