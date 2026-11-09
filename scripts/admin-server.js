@@ -410,9 +410,18 @@ function addHomeNav(cfg) {
                         <div class="more-icon">${cfg.navIcon}</div><h3>${cfg.label}</h3><p>${cfg.navDesc}</p><span class="more-badge">点击进入</span>
                     </a>`;
     if (html.includes(card)) return; // 已存在
-    const marker = '<div class="more-card" onclick="alert(\'更多展示开发中，敬请期待！\')">';
-    if (!html.includes(marker)) throw new Error('首页「更多」区结构变化，请手动添加导航链接');
-    fs.writeFileSync(home, html.replace(marker, card + '\n                    ' + marker));
+    const anchor = '<!-- more-nav-anchor -->';
+    const gridOpen = '<div class="more-grid">';
+    let next;
+    if (html.includes(anchor)) {
+        next = html.replace(anchor, card + '\n                    ' + anchor);
+    } else if (html.includes(gridOpen)) {
+        // 兜底：没有锚点时直接插到「更多」网格的最前面
+        next = html.replace(gridOpen, gridOpen + '\n                    ' + card);
+    } else {
+        throw new Error('首页「更多」区结构变化，请手动添加导航链接');
+    }
+    fs.writeFileSync(home, next);
 }
 
 // 移除首页导航中指向该分类页面的入口卡片

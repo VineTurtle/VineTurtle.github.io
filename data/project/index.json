@@ -84,55 +84,5 @@
     "statusClass": "status-progress",
     "year": "2026",
     "desc": "VinePalmaToolbox，一个值得你选择的工具箱"
-  },
-  {
-    "id": 1,
-    "slug": "2026-07-19-VinePalma-Player",
-    "title": "VinePalma Player软件",
-    "date": "2026-07-19",
-    "tags": [
-      "软件开发",
-      "Electron",
-      "Linux"
-    ],
-    "thumbnail": "../../Resources/images/projects/hero/vinepalma-player.jpg",
-    "hero": "../../Resources/images/projects/hero/vinepalma-player.jpg",
-    "fallbackIcon": "🐧",
-    "status": "🚧 迭代中",
-    "statusClass": "status-progress",
-    "year": "2026",
-    "desc": "基于 FFmpeg 的现代化本地播放器，从 Electron 起步的跨平台尝试"
-  },
-  {
-    "id": 2,
-    "slug": "branding",
-    "title": "藤栖龟舍 · 品牌全案",
-    "tags": [
-      "品牌设计",
-      "视觉系统"
-    ],
-    "thumbnail": "../../Resources/images/projects/thumbnails/branding.jpg",
-    "hero": "../../Resources/images/projects/hero/branding.jpg",
-    "fallbackIcon": "🌳",
-    "status": "✅ 已完成",
-    "statusClass": "status-done",
-    "year": "2026",
-    "desc": "为藤栖龟舍打造完整的品牌识别系统。"
-  },
-  {
-    "id": 3,
-    "slug": "forest-town-nft",
-    "title": "森林小镇 · 数字藏品",
-    "tags": [
-      "数字艺术",
-      "插画"
-    ],
-    "thumbnail": "../../Resources/images/projects/thumbnails/nft.jpg",
-    "hero": "../../Resources/images/projects/hero/nft.jpg",
-    "fallbackIcon": "📱",
-    "status": "✅ 已完成",
-    "statusClass": "status-done",
-    "year": "2026",
-    "desc": "以森林四季为灵感，创作了 12 幅动态数字插画。"
   }
 ]

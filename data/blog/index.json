@@ -93,31 +93,5 @@
     "thumbnail": "../../Resources/images/blog/thumbnails/electron_linux_icon.jpg",
     "hero": "../../Resources/images/blog/hero/electron_linux_icon.jpg",
     "fallbackIcon": "🐧"
-  },
-  {
-    "id": 2,
-    "slug": "2026-07-22",
-    "title": "森林四季配色系统 · 诞生记",
-    "date": "2026-07-15",
-    "tags": [
-      "设计思考"
-    ],
-    "excerpt": "从一片苔藓的颜色开始，我们构建了一套随月份自动流转的配色体系。",
-    "thumbnail": "../../Resources/images/blog/thumbnails/forest_seasons.jpg",
-    "hero": "../../Resources/images/blog/hero/forest_seasons.jpg",
-    "fallbackIcon": "🌲"
-  },
-  {
-    "id": 3,
-    "slug": "3",
-    "title": "藤栖龟舍 · 品牌视觉全解析",
-    "date": "2026-07-10",
-    "tags": [
-      "品牌故事"
-    ],
-    "excerpt": "龟的沉稳、藤的柔韧——如何用视觉语言讲述一个森林工作室的故事。",
-    "thumbnail": "../../Resources/images/blog/thumbnails/brand_vision.jpg",
-    "hero": "../../Resources/images/blog/hero/brand_vision.jpg",
-    "fallbackIcon": "🐢"
   }
 ]

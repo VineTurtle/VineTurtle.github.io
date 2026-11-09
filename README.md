@@ -11,7 +11,7 @@
 ├── SpecialPages/               # 博客 / 项目 / 画廊子页面
 │   ├── Blog/                   #   博客列表 + 文章详情
 │   ├── Project/                #   项目列表 + 项目详情
-│   └── Gallery/                #   画廊（占位）
+│   └── Gallery/                #   画廊（分类筛选 + 灯箱）
 ├── data/                       # 内容数据（见下文「数据文件格式」）
 │   ├── blog/
 │   │   ├── index.json          #   博客索引（自动生成，勿手改）
@@ -110,5 +110,6 @@ git push
 ## 注意事项
 
 - `data/*/index.json` 是自动生成的，请勿手动编辑；改了元数据/正文后运行 `npm run generate` 或通过后台保存。
-- `admin/` 目录只用于本地管理，rsync 部署时会自动排除。
-- 本项目当前未初始化 Git 仓库，若需 Git 方式发布请先 `git init`。
+- `admin/` 目录只用于本地管理，rsync 部署时会自动排除。**注意**：用 `git push` 发布时它会被一并推到 GitHub Pages 上，只是静态页面（没有后端和密钥），如需彻底不公开可把 `admin/` 移出仓库或加进部署排除规则。
+- 仓库已初始化并绑定 `VineTurtle/VineTurtle.github.io`，自定义域名为 `grapeleafi.top`（见 `CNAME`），推送到 `main` 后由 GitHub Pages 自动发布。
+- 首页「更多」区保留 `<!-- more-nav-anchor -->` 注释作为新增分类卡片的插入锚点，删除会导致后台「新增分类」报错。
