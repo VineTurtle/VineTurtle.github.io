@@ -1,0 +1,11 @@
+{
+  "id": 7,
+  "slug": "2026-08-25-binary-encoder-ico-icns",
+  "title": "在浏览器里手写二进制编码器：ICO / CUR / ICNS 拼装实录",
+  "date": "2026-08-25",
+  "tags": ["前端", "二进制", "VinePalmaToolbox", "踩坑"],
+  "excerpt": "Canvas 只能导出 PNG/JPEG/WebP，那 ICO、CUR、ICNS 图标格式怎么办？VinePalmaToolbox 的答案是：用 DataView 按 spec 一个字节一个字节拼。",
+  "thumbnail": "../../Resources/images/blog/hero/toolbox-binary.jpg",
+  "hero": "../../Resources/images/blog/hero/toolbox-binary.jpg",
+  "fallbackIcon": "🛠️"
+}

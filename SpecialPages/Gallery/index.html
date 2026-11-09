@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#2a5c3a">
-    <meta name="description" content="藤栖画廊 —— 展示我们的视觉创作成果。">
+    <meta name="description" content="藤栖画廊 —— 展示我们的视觉创作成果：场景插画、角色立绘与软件封面。">
     <title>画廊 - 藤栖龟舍</title>
     <link rel="icon" href="../../Resources/images/VineTurtleStudio.png" type="image/png">
     <link rel="stylesheet" href="../../CSS/layout.css">
@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="../../CSS/special/gallery.css">
     <script src="../../JS/layout.js" defer></script>
     <script src="../../JS/script.js" defer></script>
+    <script src="gallery.js" defer></script>
 </head>
 <body>
 <noscript><div class="noscript-warn">本站需要启用 JavaScript 才能正常显示内容。</div></noscript>
@@ -19,21 +20,10 @@
 <main class="gallery-main">
     <div class="container">
         <h1>🖼️ 藤栖画廊</h1>
-        <p>展示我们的创作成果</p>
-        <div class="gallery-grid">
-            <div class="gallery-item">
-                <div class="gallery-placeholder">🌿</div>
-                <p>森林插画 #1</p>
-            </div>
-            <div class="gallery-item">
-                <div class="gallery-placeholder">🐢</div>
-                <p>龟舍标志设计</p>
-            </div>
-            <div class="gallery-item">
-                <div class="gallery-placeholder">🌲</div>
-                <p>四季配色系统</p>
-            </div>
-        </div>
+        <p>展示我们的创作成果 —— 点击图片可查看大图</p>
+        <div class="gallery-filter" id="galleryFilter" role="tablist" aria-label="画廊分类"></div>
+        <div class="gallery-grid" id="galleryGrid"></div>
+        <p class="gallery-empty" id="galleryEmpty" hidden>这个分类还没有作品～</p>
     </div>
 </main>
 <div id="footer-placeholder"></div>

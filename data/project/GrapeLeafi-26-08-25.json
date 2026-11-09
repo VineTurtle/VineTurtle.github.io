@@ -1,0 +1,13 @@
+{
+  "id": 7,
+  "slug": "GrapeLeafi-26-08-25",
+  "title": "GrapeLeafi 葡叶酱的温暖小窝",
+  "date": "2026-08-25",
+  "tags": ["Web开发", "静态网站", "社区站点"],
+  "hero": "../../Resources/images/projects/hero/grapeleafi-site.jpg",
+  "thumbnail": "../../Resources/images/projects/thumbnails/grapeleafi-site.jpg",
+  "desc": "为零基础用户维护的纯静态粉丝社区站：倒计时、生日提醒、看板娘一个不少",
+  "status": "🚧 迭代中",
+  "statusClass": "status-progress",
+  "year": "2024"
+}

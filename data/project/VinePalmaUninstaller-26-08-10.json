@@ -1,11 +1,13 @@
 {
-  "title": "VinePalmaUninstaller软件开发",
+  "id": 6,
   "slug": "VinePalmaUninstaller-26-08-10",
+  "title": "VinePalmaUninstaller软件开发",
   "date": "2026-08-10",
-  "tags": [
-    "软件开发",
-    "Linux",
-    "Tauri"
-  ],
-  "id": 6
+  "tags": ["软件开发", "Linux", "Tauri"],
+  "hero": "../../Resources/images/projects/hero/vinepalma-uninstaller.jpg",
+  "thumbnail": "../../Resources/images/projects/hero/vinepalma-uninstaller.jpg",
+  "desc": "APT / Flatpak / Snap / Docker / AppImage / APM 六大来源统一的 Linux 卸载器",
+  "status": "🚧 迭代中",
+  "statusClass": "status-progress",
+  "year": "2026"
 }

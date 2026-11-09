@@ -1,0 +1,38 @@
+<p>开发 <strong>VinePalmaUninstaller</strong>（我们的 Linux 图形化卸载器）时，最常被问的问题不是「能卸载什么」，而是「<strong>会不会删错</strong>」。一个以删除为核心能力的工具，安全性不是特性，是底线。这篇笔记拆解我们的三重防线设计，以及 pkexec 提权路上踩的输出解析坑。</p>
+
+<h2>防线一：计划即白名单</h2>
+<h4>点击「卸载」并不是直接执行命令。后端先生成一份<strong>完整的卸载计划</strong>：对 APT 包先以模拟模式运行 <code>apt-get -s purge</code>，解析出将被移除的包列表；对残留文件，逐条列出将删除的路径。前端展示这份计划，用户勾选后提交。</h4>
+<h4>关键在于：前端提交的勾选结果<strong>不被信任</strong>。执行时后端会重新生成一遍计划，把提交的路径与重新生成的计划<strong>求交集</strong>——交集之外的一个字节都不会动。就算有人绕过界面伪造请求提交 <code>/etc/passwd</code>，它也不在服务端生成的计划里，直接被丢弃：</h4>
+<pre><code>// 执行时：以服务端重新生成的计划为准
+let plan = build_plan(pkg)?;               // 重新生成
+let allowed: HashSet&lt;_&gt; = plan.files.iter().collect();
+for path in user_selected {
+    if !allowed.contains(path) { continue; }  // 不在计划内，忽略
+    trash_or_delete(path)?;
+}</code></pre>
+
+<h2>防线二：路径黑名单与危险组件拦截</h2>
+<h4>即便路径出现在计划里，还有一层静态黑名单兜底：<code>/</code>、<code>/home</code>、<code>/etc</code>、<code>/usr</code>、<code>/var</code> 等 14 个系统关键目录及其直系子目录一律拒绝；用户家目录下的 <code>.config</code>、<code>.cache</code>、<code>.local</code> 等「配置根目录本身」也拒绝删除（里面的具体软件目录可以删）；含 <code>..</code> 组件的路径直接判非法——正常路径不需要它，需要它的必然不怀好意。</h4>
+
+<h2>防线三：保护开关与保守的默认勾选</h2>
+<h4>残留扫描通过「包名变体匹配」识别软件自己的目录（大小写不敏感、连字符/下划线等价），但匹配分两档：<strong>精确命中默认勾选</strong>，仅「包含」关系的模糊命中<strong>默认不勾选</strong>——宁可漏删，不可误删。界面上还有「保留用户配置」「保留系统配置」两个开关，勾选的路径若落在系统目录会被即时过滤。三道防线各司其职：白名单管「来源可信」，黑名单管「路径合法」，开关管「用户意图」。</h4>
+
+<h2>🧪 提权的玄学：pkexec 与 LC_ALL=C</h2>
+<h4>系统级卸载需要 root，我们用 <code>pkexec</code> 动态提权（弹出图形化密码框，比 sudo 友好）。这里有个隐蔽的坑：apt 的输出文案依赖 locale，中文环境下「正在移除」这样的前缀没法解析。解法是给所有外部命令强制 <code>LC_ALL=C</code>，然后同时兼容三种英文前缀：</h4>
+<pre><code>export LC_ALL=C
+apt-get purge -y pkg
+# 不同版本输出可能是：
+#   Removing pkg ...
+#   Purg pkg
+#   Purging config files pkg
+fn extract_removed(line: &amp;str) -&gt; Option&lt;String&gt; {
+    for prefix in ["Removing", "Purg", "Purging"] { /* ... */ }
+    None
+}</code></pre>
+<h4>另一个细节：判断自身是否 root 不能调 <code>getuid()</code>——Tauri 进程的环境变量可能干扰 libc 结果，直接解析 <code>/proc/self/status</code> 的 <code>Uid:</code> 行更可靠。所有外部命令都套 tokio <code>timeout</code>，个别卡死的 dpkg 前端不能拖死整个界面。</h4>
+
+<h2>📊 附赠：手撕 dpkg 数据库算风险</h2>
+<h4>风险等级（critical/high/medium/low）不靠猜包名，而是直接解析 <code>/var/lib/dpkg/status</code>：按空行分段、空格缩进续行，只认 <code>install ok installed</code> 状态，统计每个包被多少已安装包反向依赖，结合 <code>Essential</code> 与 <code>Priority: required</code> 字段判定核心组件——Essential 包直接标 critical，被 8 个以上包依赖标 high。真实数据胜过一切启发式规则。</h4>
+
+<h2>📝 小结</h2>
+<h4>删除类工具的安全设计可以总结为一句话：<strong>前端不可信、计划即白名单、黑名单兜底、默认保守</strong>。用户把系统交给你，你递回去的每一把刀都必须有鞘。</h4>

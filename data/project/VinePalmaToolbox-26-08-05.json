@@ -1,12 +1,13 @@
 {
-  "title": "VinePalmaToolbox软件开发",
+  "id": 5,
   "slug": "VinePalmaToolbox-26-08-05",
+  "title": "VinePalmaToolbox软件开发",
   "date": "2026-08-05",
-  "tags": [
-    "Tauri",
-    "软件开发",
-    "Linux"
-  ],
+  "tags": ["Tauri", "软件开发", "Linux"],
+  "hero": "../../Resources/images/projects/hero/vinepalma-toolbox.jpg",
+  "thumbnail": "../../Resources/images/projects/thumbnails/vinepalma-toolbox.jpg",
   "desc": "VinePalmaToolbox，一个值得你选择的工具箱",
-  "id": 5
+  "status": "🚧 迭代中",
+  "statusClass": "status-progress",
+  "year": "2026"
 }

@@ -1,0 +1,16 @@
+# 本机 IDE 配置
+.idea/
+
+# 依赖与构建产物
+node_modules/
+
+# 本地部署配置（可能含服务器地址/凭据，不要提交）
+scripts/deploy.config.json
+
+# 系统 / 编辑器杂项
+.DS_Store
+Thumbs.db
+*.log
+
+# 从 GitHub 打包下载的历史副本，避免误提交
+VineTurtle.github.io-main/

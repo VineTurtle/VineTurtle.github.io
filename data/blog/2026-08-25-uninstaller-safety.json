@@ -1,0 +1,11 @@
+{
+  "id": 8,
+  "slug": "2026-08-25-uninstaller-safety",
+  "title": "卸载器的安全设计：Linux 上绝不误删的三重防线",
+  "date": "2026-08-25",
+  "tags": ["Rust", "Linux", "安全设计", "VinePalmaUninstaller"],
+  "excerpt": "一个能删文件的工具，怎么保证自己永远不删错？VinePalmaUninstaller 的答案：计划即白名单、路径黑名单、保护开关三道防线，外加 pkexec 提权时的输出解析玄学。",
+  "thumbnail": "../../Resources/images/blog/hero/uninstaller-safety.jpg",
+  "hero": "../../Resources/images/blog/hero/uninstaller-safety.jpg",
+  "fallbackIcon": "🛡️"
+}

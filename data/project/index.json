@@ -1,5 +1,40 @@
 [
   {
+    "id": 7,
+    "slug": "GrapeLeafi-26-08-25",
+    "title": "GrapeLeafi 葡叶酱的温暖小窝",
+    "date": "2026-08-25",
+    "tags": [
+      "Web开发",
+      "静态网站",
+      "社区站点"
+    ],
+    "thumbnail": "../../Resources/images/projects/thumbnails/grapeleafi-site.jpg",
+    "hero": "../../Resources/images/projects/hero/grapeleafi-site.jpg",
+    "status": "🚧 迭代中",
+    "statusClass": "status-progress",
+    "year": "2024",
+    "desc": "为零基础用户维护的纯静态粉丝社区站：倒计时、生日提醒、看板娘一个不少"
+  },
+  {
+    "id": 8,
+    "slug": "VinePalmaFlow-26-08-25",
+    "title": "VinePalmaFlow 本地项目管理",
+    "date": "2026-08-25",
+    "tags": [
+      "Tauri",
+      "Rust",
+      "项目管理",
+      "局域网同步"
+    ],
+    "thumbnail": "../../Resources/images/projects/hero/vinepalma-flow.jpg",
+    "hero": "../../Resources/images/projects/hero/vinepalma-flow.jpg",
+    "status": "🚧 迭代中",
+    "statusClass": "status-progress",
+    "year": "2026",
+    "desc": "永远不上云的本地优先项目管理工具：Markdown 即数据库，局域网像云一样协作"
+  },
+  {
     "id": 6,
     "slug": "VinePalmaUninstaller-26-08-10",
     "title": "VinePalmaUninstaller软件开发",
@@ -8,7 +43,13 @@
       "软件开发",
       "Linux",
       "Tauri"
-    ]
+    ],
+    "thumbnail": "../../Resources/images/projects/hero/vinepalma-uninstaller.jpg",
+    "hero": "../../Resources/images/projects/hero/vinepalma-uninstaller.jpg",
+    "status": "🚧 迭代中",
+    "statusClass": "status-progress",
+    "year": "2026",
+    "desc": "APT / Flatpak / Snap / Docker / AppImage / APM 六大来源统一的 Linux 卸载器"
   },
   {
     "id": 4,
@@ -20,6 +61,11 @@
       "Tauri",
       "播放器"
     ],
+    "thumbnail": "../../Resources/images/projects/hero/vinepalma-player.jpg",
+    "hero": "../../Resources/images/projects/hero/vinepalma-player.jpg",
+    "status": "🚧 迭代中",
+    "statusClass": "status-progress",
+    "year": "2026",
     "desc": "VinePalma Player播放器设置，一个值得选择的本地播放器"
   },
   {
@@ -32,6 +78,11 @@
       "软件开发",
       "Linux"
     ],
+    "thumbnail": "../../Resources/images/projects/thumbnails/vinepalma-toolbox.jpg",
+    "hero": "../../Resources/images/projects/hero/vinepalma-toolbox.jpg",
+    "status": "🚧 迭代中",
+    "statusClass": "status-progress",
+    "year": "2026",
     "desc": "VinePalmaToolbox，一个值得你选择的工具箱"
   },
   {
@@ -44,8 +95,13 @@
       "Electron",
       "Linux"
     ],
-    "hero": "../../Resources/images/blog/hero/electron_linux_icon.jpg",
-    "fallbackIcon": "🐧"
+    "thumbnail": "../../Resources/images/projects/hero/vinepalma-player.jpg",
+    "hero": "../../Resources/images/projects/hero/vinepalma-player.jpg",
+    "fallbackIcon": "🐧",
+    "status": "🚧 迭代中",
+    "statusClass": "status-progress",
+    "year": "2026",
+    "desc": "基于 FFmpeg 的现代化本地播放器，从 Electron 起步的跨平台尝试"
   },
   {
     "id": 2,

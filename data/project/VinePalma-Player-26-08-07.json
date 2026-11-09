@@ -1,12 +1,13 @@
 {
-  "title": "VinePalma Player本地播放器",
+  "id": 4,
   "slug": "VinePalma-Player-26-08-07",
+  "title": "VinePalma Player本地播放器",
   "date": "2026-08-07",
-  "tags": [
-    "Linux",
-    "Tauri",
-    "播放器"
-  ],
+  "tags": ["Linux", "Tauri", "播放器"],
+  "hero": "../../Resources/images/projects/hero/vinepalma-player.jpg",
+  "thumbnail": "../../Resources/images/projects/hero/vinepalma-player.jpg",
   "desc": "VinePalma Player播放器设置，一个值得选择的本地播放器",
-  "id": 4
+  "status": "🚧 迭代中",
+  "statusClass": "status-progress",
+  "year": "2026"
 }
