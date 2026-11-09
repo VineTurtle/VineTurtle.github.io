@@ -117,9 +117,16 @@ function xmlEscape(value) {
         .replace(/'/g, '&apos;');
 }
 
+// 本地日期（YYYY-MM-DD）。不用 toISOString()，否则东八区凌晨会被算成前一天。
+function todayLocal() {
+    const d = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+}
+
 // 汇总固定页面 + 每个分类下所有内容的详情页，输出 sitemap.xml
 function buildSitemap() {
-    const today = new Date().toISOString().slice(0, 10);
+    const today = todayLocal();
     const urls = [
         { loc: SITE_URL + '/', lastmod: today, changefreq: 'weekly', priority: '1.0' },
         { loc: SITE_URL + '/SpecialPages/Blog/index.html', lastmod: today, changefreq: 'weekly', priority: '0.9' },

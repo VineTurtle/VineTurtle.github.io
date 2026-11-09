@@ -21,7 +21,7 @@
 │   │   ├── <slug>.json         #   每篇文章的元数据
 │   │   └── posts/<slug>.html   #   每篇文章的正文
 │   └── project/                #   项目，结构同 blog
-├── admin/                      # 本地管理后台（只在本机使用，不上线）
+├── admin/                      # 本地管理后台（不纳入版本库，只在本机运行）
 └── scripts/                    # 生成索引 / 管理后台 / 部署脚本
 ```
 
@@ -131,6 +131,6 @@ git push
 ## 注意事项
 
 - `data/*/index.json` 是自动生成的，请勿手动编辑；改了元数据/正文后运行 `npm run generate` 或通过后台保存。
-- `admin/` 目录只用于本地管理，rsync 部署时会自动排除。**注意**：用 `git push` 发布时它会被一并推到 GitHub Pages 上，只是静态页面（没有后端和密钥），如需彻底不公开可把 `admin/` 移出仓库或加进部署排除规则。
+- `admin/` 是只在本机运行的便携式内容管理器（`npm run admin`），已加入 `.gitignore`、不再纳入版本库，所以不会被推送到 GitHub Pages；换电脑时手动把该目录拷走即可。注意它在早期提交里曾公开过，如需彻底抹除要重写 git 历史。
 - 仓库已初始化并绑定 `VineTurtle/VineTurtle.github.io`，自定义域名为 `grapeleafi.top`（见 `CNAME`），推送到 `main` 后由 GitHub Pages 自动发布。
 - 首页「更多」区保留 `<!-- more-nav-anchor -->` 注释作为新增分类卡片的插入锚点，删除会导致后台「新增分类」报错。
