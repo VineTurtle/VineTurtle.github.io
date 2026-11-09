@@ -98,8 +98,8 @@
 .feed-card {
     display: flex;
     flex-direction: column;
-    background: rgba(255, 255, 255, 0.62);
-    border: 1px solid rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.8);
     border-radius: 18px;
     overflow: hidden;
     text-decoration: none;
@@ -123,7 +123,7 @@
     position: relative;
     display: block;
     aspect-ratio: 16 / 9;
-    background: linear-gradient(135deg, rgba(136, 177, 126, 0.35), rgba(255, 255, 255, 0.2));
+    background: #f2f7ee;
     overflow: hidden;
 }
 
@@ -209,11 +209,7 @@
     white-space: nowrap;
 }
 
-/* 精选卡片：图片更高一些 */
-.is-featured .feed-cover {
-    aspect-ratio: 4 / 3;
-}
-
+/* 精选卡片：标题稍大 */
 .is-featured .feed-title {
     font-size: 16px;
 }
