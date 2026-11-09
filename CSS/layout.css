@@ -317,7 +317,7 @@ a.more-card p {
     text-align: center;
     padding: 20px;
     color: var(--text, #23382c);
-    opacity: 0.5;
+    opacity: 0.62;
     font-size: 0.85rem;
     border-top: 1px solid rgba(0,0,0,0.04);
 }
@@ -330,7 +330,7 @@ a.more-card p {
 .footer .privacy-link {
     color: var(--primary, #2a5c3a);
     text-decoration: underline;
-    opacity: 0.7;
+    opacity: 1;
 }
 
 /* ===== 全局小工具类 ===== */

@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# 管理后台不在线上使用，也没有需要收录的内容
+Disallow: /admin/
+
+Sitemap: https://grapeleafi.top/sitemap.xml

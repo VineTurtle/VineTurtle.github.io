@@ -182,6 +182,38 @@
         });
     }
 
+    // 详情页分享信息：把 canonical / og:* 更新为当前内容。
+    // 静态 HTML 里的默认值只作兜底，爬虫执行 JS 时才能拿到每条内容自己的标题与头图。
+    function enhanceShareMeta(item) {
+        if (!item || !item.title) return;
+        const pageUrl = window.location.origin + window.location.pathname + window.location.search;
+        const absolute = function(p) {
+            if (!p) return '';
+            try { return new URL(p, window.location.href).href; } catch (e) { return ''; }
+        };
+        function setMeta(prop, value) {
+            if (!value) return;
+            let el = document.querySelector('meta[property="' + prop + '"]');
+            if (!el) {
+                el = document.createElement('meta');
+                el.setAttribute('property', prop);
+                document.head.appendChild(el);
+            }
+            el.setAttribute('content', value);
+        }
+        let canonical = document.querySelector('link[rel="canonical"]');
+        if (!canonical) {
+            canonical = document.createElement('link');
+            canonical.rel = 'canonical';
+            document.head.appendChild(canonical);
+        }
+        canonical.href = pageUrl;
+        setMeta('og:url', pageUrl);
+        setMeta('og:title', item.title + ' · 藤栖龟舍');
+        setMeta('og:description', item.excerpt || item.desc || '');
+        setMeta('og:image', absolute(item.hero || item.thumbnail));
+    }
+
     function createDetailPage(config) {
         // config: {
         //   indexUrl, jsonDir, htmlDir,
@@ -216,6 +248,7 @@
             return chain.then(function(results) {
                 const item = JSON.parse(results[0]);
                 config.render(item, results[1], container);
+                enhanceShareMeta(item);
                 return true;
             });
         }

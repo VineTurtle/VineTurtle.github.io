@@ -102,6 +102,66 @@ function buildIndex(dir, indexName) {
     return index.length;
 }
 
+// ---------- 站点地图 ----------
+
+const SITE_URL = 'https://grapeleafi.top';
+// 分类 key → 详情页文件名（找不到时默认 post.html）
+const DETAIL_PAGE = { posts: 'post.html', projects: 'detail.html' };
+
+function xmlEscape(value) {
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;');
+}
+
+// 汇总固定页面 + 每个分类下所有内容的详情页，输出 sitemap.xml
+function buildSitemap() {
+    const today = new Date().toISOString().slice(0, 10);
+    const urls = [
+        { loc: SITE_URL + '/', lastmod: today, changefreq: 'weekly', priority: '1.0' },
+        { loc: SITE_URL + '/SpecialPages/Blog/index.html', lastmod: today, changefreq: 'weekly', priority: '0.9' },
+        { loc: SITE_URL + '/SpecialPages/Project/index.html', lastmod: today, changefreq: 'weekly', priority: '0.9' },
+        { loc: SITE_URL + '/SpecialPages/Gallery/index.html', lastmod: today, changefreq: 'monthly', priority: '0.8' },
+        { loc: SITE_URL + '/privacy/privacy.html', lastmod: today, changefreq: 'yearly', priority: '0.3' }
+    ];
+
+    for (const key of Object.keys(kinds)) {
+        const cfg = kinds[key];
+        const indexFile = path.join(ROOT, cfg.dataDir || ('data/' + key), 'index.json');
+        if (!fs.existsSync(indexFile)) continue;
+        const items = JSON.parse(fs.readFileSync(indexFile, 'utf-8'));
+        const detail = DETAIL_PAGE[key] || 'post.html';
+        for (const item of items) {
+            if (!item.slug) continue;
+            urls.push({
+                loc: SITE_URL + '/SpecialPages/' + cfg.pageName + '/' + detail + '?slug=' + encodeURIComponent(item.slug),
+                lastmod: item.date || today,
+                changefreq: 'monthly',
+                priority: '0.6'
+            });
+        }
+    }
+
+    const rows = urls.map(u =>
+        '  <url>\n'
+        + '    <loc>' + xmlEscape(u.loc) + '</loc>\n'
+        + '    <lastmod>' + u.lastmod + '</lastmod>\n'
+        + '    <changefreq>' + u.changefreq + '</changefreq>\n'
+        + '    <priority>' + u.priority + '</priority>\n'
+        + '  </url>'
+    ).join('\n');
+
+    const xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        + '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        + rows + '\n</urlset>\n';
+
+    fs.writeFileSync(path.join(ROOT, 'sitemap.xml'), xml);
+    return urls.length;
+}
+
 // ---------- 执行 ----------
 
 const kinds = loadKinds();
@@ -114,4 +174,12 @@ for (const key of Object.keys(kinds)) {
     } catch (e) {
         console.error(`❌ ${cfg.label || key}数据生成失败：${e.message}`);
     }
+}
+
+// sitemap.xml 依赖上面的索引，放在最后生成
+try {
+    const total = buildSitemap();
+    console.log(`✅ sitemap.xml 生成完成（${total} 个地址）`);
+} catch (e) {
+    console.error('❌ sitemap.xml 生成失败：' + e.message);
 }

@@ -36,6 +36,50 @@
     color: var(--primary, #2a5c3a);
 }
 
+.privacy-updated {
+    font-size: 0.9rem;
+    opacity: 0.7;
+    margin-bottom: 18px;
+}
+
+.privacy-toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 24px;
+    padding: 14px 18px;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 40px;
+}
+
+.privacy-toc a {
+    font-size: 0.82rem;
+    padding: 4px 12px;
+    border-radius: 40px;
+    background: rgba(255, 255, 255, 0.65);
+    color: var(--primary, #2a5c3a);
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+}
+
+.privacy-toc a:hover,
+.privacy-toc a:focus-visible {
+    background: #fff;
+    transform: translateY(-1px);
+}
+
+.privacy-container h2 {
+    scroll-margin-top: 80px;
+}
+
+.privacy-container code {
+    padding: 1px 6px;
+    border-radius: 6px;
+    background: rgba(42, 92, 58, 0.08);
+    font-size: 0.9em;
+}
+
 .privacy-copyright {
     margin-top: 32px;
     padding-top: 16px;

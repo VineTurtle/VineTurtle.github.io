@@ -196,6 +196,31 @@
     cursor: default;
 }
 
+/* ---------- 与首页卡片统一：等高卡片 + 悬停反馈 ---------- */
+.blog-card {
+    display: flex;
+    flex-direction: column;
+}
+.blog-card-link {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+.blog-card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+.blog-readmore {
+    margin-top: auto;
+    padding-top: 10px;
+}
+.blog-card:hover,
+.project-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+}
+
 /* ---------- 响应式 ---------- */
 @media (max-width: 600px) {
     .filter-bar {

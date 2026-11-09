@@ -6,6 +6,9 @@
 
 ```
 ├── index.html                  # 首页（SPA）
+├── 404.html                    # 自定义 404 页（GitHub Pages 自动使用）
+├── robots.txt                  # 爬虫规则（后台目录不收录）
+├── sitemap.xml                 # 站点地图（npm run generate 自动生成）
 ├── CSS/                        # 全局样式（layout.css / style.css / special/）
 ├── JS/                         # 全局脚本（layout.js / script.js / special-*.js）
 ├── SpecialPages/               # 博客 / 项目 / 画廊子页面
@@ -115,6 +118,15 @@ git push
 ```
 
 之后每次更新只需 `npm run deploy`（会自动 commit + push，托管平台检测到更新即自动发布）。
+
+## SEO 与分享
+
+- `npm run generate` 除了重建 `data/*/index.json`，还会生成 `sitemap.xml`（固定页面 + 每篇内容详情页，`lastmod` 取内容日期）。
+- `robots.txt` 指向站点地图，并排除 `/admin/`。
+- 各页面带 `canonical`、Open Graph 与 Twitter 卡片标签；详情页会在加载后用 JS 把标题、描述、头图替换成当前内容（爬虫不执行 JS 时回退到页面默认值）。
+- 分享封面是 `Resources/images/og-cover.png`（1200×630），换品牌图时同名替换即可。
+- `404.html` 为独立样式页，GitHub Pages 对未知路径会自动返回它。
+- 隐私策略已升级为站点级（`privacy/privacy.html`），同时覆盖站点与桌面应用。
 
 ## 注意事项
 
