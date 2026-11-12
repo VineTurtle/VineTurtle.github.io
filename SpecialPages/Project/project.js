@@ -16,7 +16,7 @@ window.VTS.createListPage({
         const cardClass = isPlaceholder ? 'project-card project-card-placeholder' : 'project-card';
 
         const baseLink = proj.slug
-            ? 'detail.html?slug=' + encodeURIComponent(proj.slug)
+            ? encodeURIComponent(proj.slug) + '.html'
             : 'detail.html?id=' + encodeURIComponent(proj.id);
         const linkHref = isPlaceholder ? '#' : h.buildDetailLink(baseLink);
 

@@ -57,6 +57,10 @@ function deployGit() {
         console.error('   请先执行 git init 并关联远程仓库，或参考 deploy.config.json 配置 rsync。');
         return false;
     }
+    console.log('🏗️  正在重新生成索引、RSS、搜索索引与静态详情页 ...');
+    if (!run('node', ['scripts/generate-data.js'])) return false;
+    if (!run('node', ['scripts/generate-pages.js'])) return false;
+
     console.log('🚀 正在提交并推送 Git 仓库 ...');
     if (!run('git', ['add', '-A'])) return false;
     if (!run('git', ['commit', '-m', '更新网站内容'])) {

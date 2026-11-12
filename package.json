@@ -4,8 +4,10 @@
   "description": "藤栖龟舍官方网站（静态站点）",
   "scripts": {
     "generate": "node scripts/generate-data.js",
+    "build": "node scripts/generate-data.js && node scripts/generate-pages.js",
     "admin": "node scripts/admin-server.js",
     "deploy": "node scripts/deploy.js",
+    "set-domain": "node scripts/set-domain.js",
     "dev": "python3 -m http.server 8000",
     "serve": "python3 -m http.server 8000"
   },

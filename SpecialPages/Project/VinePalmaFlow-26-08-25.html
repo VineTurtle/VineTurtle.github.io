@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2a5c3a" />
+    <meta name="description" content="永远不上云的本地优先项目管理工具：Markdown 即数据库，局域网像云一样协作" />
+    <title>VinePalmaFlow 本地项目管理 · 藤栖龟舍</title>
+    <link rel="canonical" href="https://grapeleafi.top/SpecialPages/Project/VinePalmaFlow-26-08-25.html" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="藤栖龟舍 VineTurtle Studio" />
+    <meta property="og:title" content="VinePalmaFlow 本地项目管理 · 藤栖龟舍" />
+    <meta property="og:description" content="永远不上云的本地优先项目管理工具：Markdown 即数据库，局域网像云一样协作" />
+    <meta property="og:url" content="https://grapeleafi.top/SpecialPages/Project/VinePalmaFlow-26-08-25.html" />
+    <meta property="og:image" content="https://grapeleafi.top/Resources/images/projects/hero/vinepalma-flow.jpg" />
+    <meta property="article:published_time" content="2026-08-25" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="../../Resources/images/VineTurtleStudio.png" type="image/png" />
+    <link rel="stylesheet" href="../../CSS/layout.css" />
+    <link rel="stylesheet" href="../../CSS/style.css" />
+    <link rel="stylesheet" href="../../CSS/special/project.css">
+    <link rel="stylesheet" href="../../CSS/special/project-detail.css">
+    <link rel="stylesheet" href="../../CSS/dynamic.css" />
+    <script src="../../JS/layout.js" defer></script>
+    <script src="../../JS/script.js" defer></script>
+    <script src="../../JS/special-detail.js" defer></script>
+    <script src="../../JS/static-detail.js" defer></script>
+    <script src="../../JS/dynamic.js" defer></script>
+<script type="application/ld+json">
+[{"@context":"https://schema.org","@type":"CreativeWork","headline":"VinePalmaFlow 本地项目管理","name":"VinePalmaFlow 本地项目管理","description":"永远不上云的本地优先项目管理工具：Markdown 即数据库，局域网像云一样协作","url":"https://grapeleafi.top/SpecialPages/Project/VinePalmaFlow-26-08-25.html","datePublished":"2026-08-25","dateModified":"2026-08-25","image":"https://grapeleafi.top/Resources/images/projects/hero/vinepalma-flow.jpg","author":{"@type":"Organization","name":"藤栖龟舍 VineTurtle Studio","url":"https://grapeleafi.top/"},"publisher":{"@type":"Organization","name":"藤栖龟舍 VineTurtle Studio","url":"https://grapeleafi.top/"},"keywords":"Tauri, Rust, 项目管理, 局域网同步"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://grapeleafi.top/"},{"@type":"ListItem","position":2,"name":"项目","item":"https://grapeleafi.top/SpecialPages/Project/index.html"},{"@type":"ListItem","position":3,"name":"VinePalmaFlow 本地项目管理","item":"https://grapeleafi.top/SpecialPages/Project/VinePalmaFlow-26-08-25.html"}]}]
+</script>
+</head>
+<body data-content-kind="project" data-content-slug="VinePalmaFlow-26-08-25" data-content-key="project:VinePalmaFlow-26-08-25">
+<noscript><div class="noscript-warn">本站需要启用 JavaScript 才能正常显示内容。</div></noscript>
+<div id="header-placeholder"></div>
+<main class="project-main">
+    <div class="container detail-container">
+        <a href="index.html" class="back-link" id="backLink">← 返回项目列表</a>
+        <article class="project-detail">
+            <div class="hero-img-wrap"><img src="../../Resources/images/projects/hero/vinepalma-flow.jpg" alt="VinePalmaFlow 本地项目管理" class="detail-hero-img" data-fallback="📄"><div class="fallback-hero">📄</div></div>
+            <header class="detail-header">
+                <h1>VinePalmaFlow 本地项目管理</h1>
+                <div class="detail-meta"><span class="project-status status-progress">🚧 迭代中</span><span class="detail-year">📅 2026</span><div class="dynamic-stats" data-dynamic-stats></div></div>
+<div class="detail-tags-display"><span class="tag">#Tauri</span><span class="tag">#Rust</span><span class="tag">#项目管理</span><span class="tag">#局域网同步</span></div>
+                <div class="content-actions" data-content-actions></div>
+            </header>
+            <nav class="post-toc" data-toc hidden aria-label="文章目录"></nav>
+            <div class="detail-body">
+<h1>VinePalmaFlow：纯本地的项目管理与协作工具</h1>
+<h4>VinePalmaFlow 的口号是「永远不上云，但在局域网里像云一样协作」。它是一款本地优先（Local-first）的项目管理桌面应用，基于 Tauri 2 + React + Rust 构建：零账号、零上传，所有项目数据只留在你自己的设备上；当两台设备处在同一局域网时，又能通过加密配对实现增量同步——云的体验，没有云的隐私代价。</h4>
+
+<h2>设计哲学：Markdown 文件就是数据库</h2>
+<h4>大多数项目管理工具把你的数据锁进专有数据库，而 VinePalmaFlow 的唯一事实源是<b>人可读的 Markdown 文件</b>。每个项目是一个文件夹：project.md 用 YAML Front Matter 描述元数据（名称、状态、负责人、截止日、进度、标签、自定义字段……），正文就是普通 Markdown；tasks/ 目录下每个任务一个原子文件；附件、模板、备份、回收站各归其位。哪怕有一天你卸载了 VinePalmaFlow，这些文件依然可以用任何编辑器打开、用 Git 管理、用脚本批量处理。</h4>
+<h4>新手可以完全通过表单操作，不必知道 Front Matter 的存在；进阶用户则可以直接改文件，应用会忠实地解析回来。表单与文本两种心智模型，指向同一份数据。</h4>
+
+<h2>局域网同步：mDNS 发现 + TLS 加密 + 6 位配对码</h2>
+<h4>同步是整个项目技术含量最高的部分。设备发现基于 mDNS（服务类型 _localflow._tcp.local.，默认端口 4485），传输层是 TLS 1.3 之上的 WebSocket。难点在于局域网里没有 CA、没有域名——我们用自签证书承载设备身份，真正的认证下沉到应用层：两台设备各自屏幕上显示一个 6 位配对码，互相输入对方屏幕上的码，双向核对通过后才把对方写入信任列表。此后每次连接，服务端都会从对方的 TLS 客户端证书里解析出设备 ID，凡是不在信任列表里的推送一律拒绝——伪造消息体里的身份是过不了关的。</h4>
+<h4>这中间踩过的 rustls 0.23 的坑（crypto provider 安装、IP 直连的 SNI 构造、证书有效期的时钟偏移），我们单独写成了博客《没有 CA 的局域网，怎么做双向 TLS》。</h4>
+
+<h2>增量同步与冲突合并</h2>
+<h4>全量互传太浪费，VinePalmaFlow 为每个项目计算内容指纹（project.md + 排序后的任务文件，手写 FNV-1a 哈希）。同步时先交换指纹表，相同的直接跳过，只传有差异的项目。合并采用三方合并：每个设备目录下保存着上次同步的基准镜像，本地版本、对方版本、基准版本三者对比——单边修改直接采纳；双边都改了同一个字段才判定冲突。</h4>
+<h4>更精细的一层是 project.md 的<b>字段级合并</b>：A 设备改了进度、B 设备改了正文，整文件对比会误判冲突，而按 YAML 字段逐个三方合并后，两处修改可以自动合并成一份。真正的冲突会进入 UI，由用户二选一，选择结果同时写回基准镜像——否则同一个冲突会在下次同步时无限复活。</h4>
+
+<h2>导出：Excel 不是终点，而是入口</h2>
+<h4>导出用 rust_xlsxwriter 实现，导入用 calamine 读回。我们不满足于"把任务表丢进 Excel"：概览页带条件格式（已完成绿、进行中黄、已延期红），进度列用百分比数字格式；更关键的是第 4 个 Sheet 嵌入了完整的 YAML Front Matter 与 Markdown 原文——导出再导入，信息零损失，真正意义上的无损往返。此外还支持 CSV、JSON，以及用 pulldown-cmark 渲染的 HTML（方便浏览器打印成 PDF）。</h4>
+
+<h2>周边能力</h2>
+<h4>模板系统：内置软件开发、客户跟进漏斗等模板，模板定义的列表型字段存进 custom_fields，导出任务明细时自动提取；全文搜索：线性扫描 + 大小写折叠，单机几百个项目规模下足够快；变更日志：字段级 diff 追加存储，保留 30 天、上限 2000 条；每次保存自动生成旧版本快照，配合回收站，误删误改都有后悔药。</h4>
+
+<h2>工程取舍</h2>
+<h4>PRD 里原本规划了 tokio 异步栈，实际落地时我们选择了 std::thread + 同步版 tungstenite——单条 JSON 请求-响应、设备数量个位数的场景，引入异步运行时的复杂度并不划算。类似的取舍贯穿全项目：不用 apt 库、不用 YAML 库做序列化（手写固定字段顺序的幂等输出）、不用异步 mDNS（零conf 库同步 API）。Rust 的好处就是这些"降级"都不牺牲类型安全。</h4>
+
+<h2>结语</h2>
+<h4>VinePalmaFlow 目前仍在快速迭代，蓝牙备用通道、更多模板还在路线图上。如果你受够了把任务清单交给别人的服务器，不妨试试这株只生长在自己设备上的藤蔓——数据在哪里，安全感就在哪里。</h4>
+
+            </div>
+        </article>
+        <section class="comments-section" id="commentsSection" hidden></section>
+    </div>
+</main>
+<div id="footer-placeholder"></div>
+<div class="month-badge" id="monthBadge">🌿 1月</div>
+</body>
+</html>

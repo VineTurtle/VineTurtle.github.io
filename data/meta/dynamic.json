@@ -1,0 +1,16 @@
+{
+  "_说明": "动态功能配置。giscus 需要先在 GitHub 仓库启用 Discussions 并安装 giscus App，再填入 repoId/categoryId；stats 需要先部署 worker/ 并填入 apiBase。未启用的功能不会加载，站点保持纯静态。",
+  "giscus": {
+    "enabled": false,
+    "repo": "VineTurtle/VineTurtle.github.io",
+    "repoId": "",
+    "category": "Comments",
+    "categoryId": "",
+    "reactionsEnabled": true,
+    "theme": "light"
+  },
+  "stats": {
+    "enabled": false,
+    "apiBase": "https://api.grapeleafi.top"
+  }
+}

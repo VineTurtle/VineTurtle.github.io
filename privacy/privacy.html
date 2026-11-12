@@ -32,11 +32,12 @@
 <main class="main-content">
     <div class="container privacy-container">
         <h1>📄 隐私策略</h1>
-        <p class="privacy-updated"><strong>最后更新：</strong>2026 年 11 月 10 日</p>
+        <p class="privacy-updated"><strong>最后更新：</strong>2026 年 11 月 13 日</p>
 
         <nav class="privacy-toc" aria-label="目录">
             <a href="#scope">适用范围</a>
             <a href="#site">本站点</a>
+            <a href="#interaction">互动功能</a>
             <a href="#storage">Cookie 与本地存储</a>
             <a href="#links">外部链接</a>
             <a href="#apps">桌面应用</a>
@@ -48,7 +49,7 @@
         <p>藤栖龟舍（VineTurtle Studio）希望你在浏览本站、使用我们的桌面应用时都能放心。这份策略说明我们处理哪些信息、不处理哪些信息，以及你可以怎么联系我们。</p>
 
         <div class="privacy-note">
-            <p><strong>一句话版本：</strong>本站没有后端，不设账号、不写 Cookie、不接统计与广告脚本；桌面应用只在本机读写你自己的文件，不做任何上传。</p>
+            <p><strong>一句话版本：</strong>本站默认是纯静态站点，不设账号、不接统计与广告脚本；只有在你使用可选的评论或点赞功能时，才会与 GitHub 或 Cloudflare 发生必要的数据交互。桌面应用只在本机读写你自己的文件，不做任何上传。</p>
         </div>
 
         <h2 id="scope">1. 适用范围</h2>
@@ -61,25 +62,37 @@
 
         <h2 id="site">2. 本站点收集哪些信息</h2>
         <ul>
-            <li><strong>没有账号、评论、留言或表单</strong>：本站是纯静态站点，不要求你注册，也不提供需要提交个人信息的交互功能。</li>
-            <li><strong>不使用 Cookie、统计脚本和广告</strong>：页面不植入第三方分析工具，不使用像素追踪，也不做用户画像。</li>
-            <li><strong>资源全部自托管</strong>：样式、脚本、图片都来自本站，不请求第三方 CDN，因此你的访问不会被其他服务顺带记录。</li>
+            <li><strong>默认不需要注册</strong>：本站主体是纯静态页面，浏览文章、项目和画廊不需要账号，也不要求提交个人信息。</li>
+            <li><strong>不使用统计脚本和广告</strong>：页面不植入第三方分析工具，不使用像素追踪，也不做用户画像。</li>
+            <li><strong>主体资源自托管</strong>：样式、脚本、图片都来自本站。只有在你使用评论功能时，页面才会加载 GitHub 提供的 giscus 评论组件。</li>
         </ul>
         <div class="privacy-note">
             <p><strong>托管方日志：</strong>本站托管在 GitHub Pages。作为托管服务商，GitHub 可能记录访问日志（如 IP 地址、浏览器标识、访问时间）用于安全防护和流量统计。这些日志由 GitHub 按自身策略处理，我们只能看到聚合后的访问数据，无法据此识别具体个人。<a href="https://docs.github.com/zh/site-policy/privacy-policies/github-privacy-statement" target="_blank" rel="noopener noreferrer">GitHub 隐私声明</a></p>
         </div>
 
-        <h2 id="storage">3. Cookie 与本地存储</h2>
+        <h2 id="interaction">3. 评论、点赞与阅读量（可选）</h2>
+        <p>本站默认不加载任何互动组件。只有在站点启用以下功能时，相关数据才会被处理：</p>
         <ul>
-            <li>浏览本站<strong>不会写入任何 Cookie</strong>。</li>
+            <li><strong>评论</strong>：使用 giscus，评论内容存放在本项目的 GitHub Discussions 中。发表评论需要登录 GitHub 账号，GitHub 会按其隐私声明处理账号信息；评论由我们审核，必要时可删除。</li>
+            <li><strong>点赞与阅读量</strong>：使用 Cloudflare Workers + D1 记录内容标识和计数。为防止刷量，服务端会短暂处理 IP 地址的哈希值，不保存原始 IP，也不与账号关联。</li>
+            <li><strong>本地去重</strong>：浏览器 <code>localStorage</code> 会记录「今天已阅读」「已点赞」等标记，仅用于避免重复计数；你可以随时在浏览器设置中清除。</li>
+        </ul>
+        <div class="privacy-note">
+            <p><strong>第三方服务：</strong>启用评论时会连接 GitHub（giscus）；启用点赞/阅读量时会连接 Cloudflare。它们分别按各自的隐私策略处理必要的网络与账号信息。我们不会把互动数据出售或用于广告画像。</p>
+        </div>
+
+        <h2 id="storage">4. Cookie 与本地存储</h2>
+        <ul>
+            <li>本站主体<strong>不写入 Cookie</strong>。启用 giscus 评论后，评论组件运行在 GitHub 的 iframe 中，可能按 GitHub 的策略使用 Cookie 或本地存储，我们无法读取其中的内容。</li>
+            <li>点赞/阅读量功能使用 <code>localStorage</code> 记录去重标记，不包含个人身份信息。</li>
             <li>本站的<strong>内容管理后台</strong>只在你自己的电脑上运行（本地服务，不对公网开放），使用浏览器 <code>localStorage</code> / <code>sessionStorage</code> 暂存编辑草稿和本次会话的临时令牌。这些数据留在你的浏览器里，不发送到任何服务器。</li>
             <li>页面刷新或关闭浏览器后，会话令牌即失效；草稿可由你在后台手动清除。</li>
         </ul>
 
-        <h2 id="links">4. 外部链接</h2>
+        <h2 id="links">5. 外部链接</h2>
         <p>站内可能出现指向 GitHub、软件下载页等第三方站点的链接。点击后你即离开本站，第三方站点会按其自己的隐私策略处理信息，我们无法控制，也不对其内容负责。建议你在提交任何信息前先阅读对方的隐私说明。</p>
 
-        <h2 id="apps">5. 桌面应用（VinePalma Player 等）</h2>
+        <h2 id="apps">6. 桌面应用（VinePalma Player 等）</h2>
         <ul>
             <li><strong>本地文件访问</strong>：为了播放或处理你选择的文件，应用会请求读取本地存储的权限。该权限仅用于你主动选择的文件，不会扫描无关目录。</li>
             <li><strong>不收集个人信息</strong>：应用不会以任何方式收集、存储或传输姓名、邮箱、电话、设备标识等个人身份信息。</li>
@@ -88,16 +101,16 @@
             <li><strong>不集成第三方 SDK</strong>：应用不包含第三方分析、广告或社交平台 SDK。</li>
         </ul>
 
-        <h2 id="children">6. 儿童隐私</h2>
+        <h2 id="children">7. 儿童隐私</h2>
         <p>本站与我们的应用不会有意收集任何年龄段用户的个人信息，内容也不包含成人主题，适合各年龄段浏览与使用。若你认为我们无意中持有了未成年人的信息，请通过下方邮箱联系我们，我们会尽快删除。</p>
 
-        <h2 id="rights">7. 你的权利与联系方式</h2>
-        <p>由于本站不收集可识别个人身份的信息，通常不存在需要导出或删除的个人数据。如果你对隐私处理有疑问，或希望确认、删除某些信息，可以随时邮件联系：</p>
+        <h2 id="rights">8. 你的权利与联系方式</h2>
+        <p>本站主体不收集可识别个人身份的信息。如果你使用过评论功能，评论内容保存在 GitHub Discussions，可在 GitHub 上编辑或删除；点赞/阅读量只保存计数，无法关联到具体个人。如果你对隐私处理有疑问，可以随时邮件联系：</p>
         <ul>
             <li class="privacy-contact"><strong>邮箱：</strong> <a href="mailto:VineTurtleStudio@outlook.com">VineTurtleStudio@outlook.com</a></li>
         </ul>
 
-        <h2 id="updates">8. 政策更新</h2>
+        <h2 id="updates">9. 政策更新</h2>
         <p>我们可能会更新本策略，例如新增统计工具或上线新的应用功能时。任何实质性变更都会更新本页顶部的「最后更新」日期；如变更影响较大，我们会在站内显著位置提示。建议你定期回来查看。</p>
 
         <div class="privacy-copyright">

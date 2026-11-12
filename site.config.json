@@ -1,0 +1,9 @@
+{
+  "siteUrl": "https://grapeleafi.top",
+  "siteName": "藤栖龟舍 VineTurtle Studio",
+  "shortName": "藤栖龟舍",
+  "defaultOgImage": "/Resources/images/og-cover.png",
+  "rssPath": "/feed.xml",
+  "searchPath": "/SpecialPages/Search/index.html",
+  "_说明": "站点域名与公共信息的唯一配置源。修改后运行 npm run set-domain 同步 HTML/robots/CNAME，再运行 npm run build。"
+}

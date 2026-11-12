@@ -44,8 +44,8 @@
             cover: fixPath(entry.thumbnail || entry.hero || ''),
             icon: entry.fallbackIcon || (isBlog ? '📝' : '🚀'),
             href: (isBlog
-                ? './SpecialPages/Blog/post.html?slug='
-                : './SpecialPages/Project/detail.html?slug=') + encodeURIComponent(slug)
+                ? './SpecialPages/Blog/'
+                : './SpecialPages/Project/') + encodeURIComponent(slug) + '.html'
         };
         item.time = item.date ? new Date(item.date + 'T00:00:00').getTime() : 0;
         return item;

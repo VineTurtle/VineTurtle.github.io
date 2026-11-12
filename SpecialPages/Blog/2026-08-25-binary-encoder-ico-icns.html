@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2a5c3a" />
+    <meta name="description" content="Canvas 只能导出 PNG/JPEG/WebP，那 ICO、CUR、ICNS 图标格式怎么办？VinePalmaToolbox 的答案是：用 DataView 按 spec 一个字节一个字节拼。" />
+    <title>在浏览器里手写二进制编码器：ICO / CUR / ICNS 拼装实录 · 藤栖龟舍</title>
+    <link rel="canonical" href="https://grapeleafi.top/SpecialPages/Blog/2026-08-25-binary-encoder-ico-icns.html" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="藤栖龟舍 VineTurtle Studio" />
+    <meta property="og:title" content="在浏览器里手写二进制编码器：ICO / CUR / ICNS 拼装实录 · 藤栖龟舍" />
+    <meta property="og:description" content="Canvas 只能导出 PNG/JPEG/WebP，那 ICO、CUR、ICNS 图标格式怎么办？VinePalmaToolbox 的答案是：用 DataView 按 spec 一个字节一个字节拼。" />
+    <meta property="og:url" content="https://grapeleafi.top/SpecialPages/Blog/2026-08-25-binary-encoder-ico-icns.html" />
+    <meta property="og:image" content="https://grapeleafi.top/Resources/images/blog/hero/toolbox-binary.jpg" />
+    <meta property="article:published_time" content="2026-08-25" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="../../Resources/images/VineTurtleStudio.png" type="image/png" />
+    <link rel="alternate" type="application/rss+xml" title="藤栖博客 RSS" href="https://grapeleafi.top/feed.xml">
+    <link rel="stylesheet" href="../../CSS/layout.css" />
+    <link rel="stylesheet" href="../../CSS/style.css" />
+    <link rel="stylesheet" href="../../CSS/special/blog.css">
+    <link rel="stylesheet" href="../../CSS/special/post-detail.css">
+    <link rel="stylesheet" href="../../CSS/dynamic.css" />
+    <script src="../../JS/layout.js" defer></script>
+    <script src="../../JS/script.js" defer></script>
+    <script src="../../JS/special-detail.js" defer></script>
+    <script src="../../JS/static-detail.js" defer></script>
+    <script src="../../JS/dynamic.js" defer></script>
+<script type="application/ld+json">
+[{"@context":"https://schema.org","@type":"BlogPosting","headline":"在浏览器里手写二进制编码器：ICO / CUR / ICNS 拼装实录","name":"在浏览器里手写二进制编码器：ICO / CUR / ICNS 拼装实录","description":"Canvas 只能导出 PNG/JPEG/WebP，那 ICO、CUR、ICNS 图标格式怎么办？VinePalmaToolbox 的答案是：用 DataView 按 spec 一个字节一个字节拼。","url":"https://grapeleafi.top/SpecialPages/Blog/2026-08-25-binary-encoder-ico-icns.html","datePublished":"2026-08-25","dateModified":"2026-08-25","image":"https://grapeleafi.top/Resources/images/blog/hero/toolbox-binary.jpg","author":{"@type":"Organization","name":"藤栖龟舍 VineTurtle Studio","url":"https://grapeleafi.top/"},"publisher":{"@type":"Organization","name":"藤栖龟舍 VineTurtle Studio","url":"https://grapeleafi.top/"},"keywords":"前端, 二进制, VinePalmaToolbox, 踩坑"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://grapeleafi.top/"},{"@type":"ListItem","position":2,"name":"博客文章","item":"https://grapeleafi.top/SpecialPages/Blog/index.html"},{"@type":"ListItem","position":3,"name":"在浏览器里手写二进制编码器：ICO / CUR / ICNS 拼装实录","item":"https://grapeleafi.top/SpecialPages/Blog/2026-08-25-binary-encoder-ico-icns.html"}]}]
+</script>
+</head>
+<body data-content-kind="blog" data-content-slug="2026-08-25-binary-encoder-ico-icns" data-content-key="blog:2026-08-25-binary-encoder-ico-icns">
+<noscript><div class="noscript-warn">本站需要启用 JavaScript 才能正常显示内容。</div></noscript>
+<div id="header-placeholder"></div>
+<main class="blog-main">
+    <div class="container post-container">
+        <a href="index.html" class="back-link" id="backLink">← 返回博客列表</a>
+        <article class="post-article">
+            <div class="hero-img-wrap"><img src="../../Resources/images/blog/hero/toolbox-binary.jpg" alt="在浏览器里手写二进制编码器：ICO / CUR / ICNS 拼装实录" class="post-hero-img" data-fallback="🛠️"><div class="fallback-hero">🛠️</div></div>
+            <header class="post-header">
+                <h1>在浏览器里手写二进制编码器：ICO / CUR / ICNS 拼装实录</h1>
+                <div class="post-meta"><span>📅 2026年8月25日</span><span>⏱ 约 4 分钟</span><div class="dynamic-stats" data-dynamic-stats></div></div>
+<div class="post-tags-display"><span class="tag">#前端</span><span class="tag">#二进制</span><span class="tag">#VinePalmaToolbox</span><span class="tag">#踩坑</span></div>
+                <div class="content-actions" data-content-actions></div>
+            </header>
+            <nav class="post-toc" data-toc hidden aria-label="文章目录"></nav>
+            <div class="post-body">
+<p>给 <strong>VinePalmaToolbox</strong> 做「图片格式转换」工具时遇到了一个尴尬：浏览器 Canvas 的 <code>toBlob()</code> 只支持 PNG / JPEG / WebP，而用户偏偏最常要求「把这张图转成 ICO 图标」。找遍 npm，好用的 ICO 编码库寥寥无几，ICNS（macOS 图标）更是没有维护良好的纯前端实现。最后我们决定：照着格式规范，用 <code>DataView</code> 一个字节一个字节自己拼。</p>
+
+<h2>🧱 ICO：最「简单」的容器格式</h2>
+<h4>ICO 本质是一个「PNG 打包器」：文件头 + 目录 + 图片数据。Vista 之后允许直接内嵌 PNG 数据，这大大简化了实现——用 Canvas 把原图缩放到各尺寸导出 PNG，再拼装即可：</h4>
+<pre><code>// 文件头：6 字节，小端
+writeU16(0);        // 保留字段，必须为 0
+writeU16(1);        // 1 = ICO，2 = CUR
+writeU16(count);    // 目录项数量
+
+// 每个尺寸一个目录项：16 字节
+writeU8(size === 256 ? 0 : size);  // 宽（256 写 0！）
+writeU8(size === 256 ? 0 : size);  // 高
+writeU8(0);          // 调色板数
+writeU8(0);          // 保留
+writeU16(1);         // 色彩平面（ICO）
+writeU16(32);        // 色深
+writeU32(png.length);// 数据长度
+writeU32(offset);    // 数据偏移</code></pre>
+<h4>三个容易翻车的细节：<strong>① 256px 的宽高要写 0 而不是 256</strong>（一个字节装不下，规范约定 0 表示 256）；② 偏移量必须累加计算，目录区之后第一个数据块的偏移是 6 + 16×count；③ ICO 与 CUR 的区别除了类型字段，CUR 还要把「色彩平面/色深」字段改写为热点坐标（hotspot x/y）——鼠标指针的点击位置就存在这两个字段里。</h4>
+
+<h2>🍎 ICNS：大端序的另一套世界</h2>
+<h4>ICNS 是 macOS 的图标格式，与 ICO 最大的不同是<strong>大端序</strong>，以及用 4 字节 ASCII 类型码标识尺寸：</h4>
+<pre><code>writeU32(0x69636e73);  // 'icns' 魔数（大端）
+writeU32(totalLength); // 整个文件长度
+// 每个尺寸一个块：
+// 4 字节类型码 + 4 字节块长 + PNG 数据
+writeType('icp4');   // 16x16
+writeType('ic07');   // 128x128
+writeType('ic10');   // 512x512（或 1024@2x）</code></pre>
+<h4>调试时最费时间的是「文件长度」字段：必须等于所有块长之和加 8 字节头，写错一个字节 macOS 直接拒绝加载，而且不报错。</h4>
+
+<h2>🔍 通用经验：用十六进制编辑器验收</h2>
+<h4>二进制代码的正确性没法 console.log 出来看。我们的验收流程是：生成文件 → <code>xxd</code> 查看头十六个字节 → 对照 spec 逐字段核对 → 再用系统工具（<code>file</code> 命令、macOS 预览、Windows 资源管理器）交叉验证。<code>file x.ico</code> 输出 "MS Windows icon resource - 5 images" 的那一刻，比任何单元测试都踏实。</h4>
+
+<h2>📝 小结</h2>
+<h4>这轮手搓的收获：二进制格式没有想象中神秘——ICO 是「数组 + 偏移」，ICNS 是「TLV 列表」，真正的工作量在于<strong>边界约定</strong>（256 写 0、长度含头不含头、大端小端）。这些约定在 spec 里往往只有半句话，却是全部的坑所在。VinePalmaToolbox 的图片转换工具现在支持 PNG/JPEG/WebP/BMP/ICO/CUR/ICNS/DDS 互转，全部核心编码逻辑不超过 400 行 TypeScript。</h4>
+
+            </div>
+        </article>
+        <section class="comments-section" id="commentsSection" hidden></section>
+    </div>
+</main>
+<div id="footer-placeholder"></div>
+<div class="month-badge" id="monthBadge">🌿 1月</div>
+</body>
+</html>

@@ -22,6 +22,7 @@ window.VTS.createDetailPage({
             + '<div class="detail-meta">'
             + '<span class="project-status ' + h.escapeHtml(project.statusClass || 'status-plan') + '">' + h.escapeHtml(project.status || '进行中') + '</span>'
             + '<span class="detail-year">📅 ' + h.escapeHtml(project.year || '待定') + '</span>'
+            + '<div class="dynamic-stats" data-dynamic-stats></div>'
             + '</div>'
             + '</div>'
             + '<div class="detail-tags-display">' + tagsHtml + '</div>'
@@ -32,5 +33,9 @@ window.VTS.createDetailPage({
         h.setupCopyButtons(container);
         h.highlightCode(container);
         document.title = project.title + ' · 藤栖龟舍';
+        document.body.dataset.contentKind = 'project';
+        document.body.dataset.contentSlug = project.slug || '';
+        document.body.dataset.contentKey = 'project:' + (project.slug || '');
+        if (window.VTSDynamic) window.VTSDynamic.refresh();
     }
 });

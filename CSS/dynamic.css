@@ -1,0 +1,212 @@
+/* CSS/dynamic.css —— 阅读进度、目录、分享、点赞与评论 */
+
+/* 顶部阅读进度 */
+.reading-progress {
+    position: fixed;
+    top: var(--header-h, 64px);
+    left: 0;
+    right: 0;
+    height: 3px;
+    z-index: 99;
+    background: rgba(42, 92, 58, 0.08);
+    pointer-events: none;
+}
+
+.reading-progress > span {
+    display: block;
+    width: 0;
+    height: 100%;
+    background: linear-gradient(90deg, var(--secondary, #88b17e), var(--primary, #2a5c3a));
+    transition: width 0.08s linear;
+}
+
+/* 目录 */
+.post-toc {
+    margin: 0 0 24px;
+    padding: 18px 22px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.62);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 3px 14px rgba(42, 92, 58, 0.05);
+}
+
+.post-toc-title {
+    margin: 0 0 10px;
+    color: var(--primary, #2a5c3a);
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.post-toc ol {
+    margin: 0;
+    padding-left: 1.2em;
+    columns: 2;
+    column-gap: 28px;
+}
+
+.post-toc li {
+    break-inside: avoid;
+    margin: 0 0 6px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.post-toc li.toc-level-h3 {
+    margin-left: 1em;
+    font-size: 0.86rem;
+    opacity: 0.82;
+}
+
+.post-toc a {
+    color: var(--text, #23382c);
+    text-decoration: none;
+}
+
+.post-toc a:hover {
+    color: var(--primary, #2a5c3a);
+    text-decoration: underline;
+}
+
+/* 分享 / 复制链接 */
+.content-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.content-action-btn {
+    border: 1px solid rgba(42, 92, 58, 0.18);
+    background: rgba(255, 255, 255, 0.65);
+    color: var(--primary, #2a5c3a);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.content-action-btn:hover {
+    background: white;
+    transform: translateY(-1px);
+}
+
+.content-action-btn.copied {
+    background: var(--primary, #2a5c3a);
+    color: #fff;
+    border-color: var(--primary, #2a5c3a);
+}
+
+/* 点赞 / 阅读量 */
+.post-meta,
+.detail-meta {
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.detail-meta {
+    white-space: normal;
+}
+
+.post-meta .dynamic-stats,
+.detail-meta .dynamic-stats {
+    opacity: 1;
+}
+
+.dynamic-stats {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-left: auto;
+    font-size: 0.82rem;
+    opacity: 0.8;
+}
+
+.dynamic-stats:empty,
+.dynamic-stats.is-hidden {
+    display: none;
+}
+
+.dynamic-stats .stat-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.like-btn {
+    border: 1px solid rgba(42, 92, 58, 0.18);
+    background: rgba(255, 255, 255, 0.7);
+    color: var(--primary, #2a5c3a);
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.like-btn:hover {
+    background: white;
+    transform: translateY(-1px);
+}
+
+.like-btn.is-liked {
+    background: var(--primary, #2a5c3a);
+    color: #fff;
+    border-color: var(--primary, #2a5c3a);
+    cursor: default;
+}
+
+/* 评论 */
+.comments-section {
+    margin-top: 34px;
+    padding: 24px 22px;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.58);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 4px 18px rgba(42, 92, 58, 0.05);
+}
+
+.comments-section[hidden] {
+    display: none;
+}
+
+.comments-section .comments-title {
+    margin: 0 0 16px;
+    color: var(--primary, #2a5c3a);
+    font-size: 1.15rem;
+}
+
+.comments-section .giscus {
+    margin-top: 4px;
+}
+
+.comments-hint {
+    margin: 0;
+    font-size: 0.85rem;
+    opacity: 0.65;
+    line-height: 1.7;
+}
+
+@media (max-width: 600px) {
+    .post-toc ol {
+        columns: 1;
+    }
+
+    .comments-section {
+        padding: 18px 14px;
+    }
+
+    .dynamic-stats {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 6px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reading-progress > span {
+        transition: none;
+    }
+}

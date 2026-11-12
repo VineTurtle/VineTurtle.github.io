@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2a5c3a" />
+    <meta name="description" content="藤栖龟舍站内搜索 —— 搜索博客文章、项目与标签。" />
+    <title>搜索 · 藤栖龟舍</title>
+    <link rel="canonical" href="https://grapeleafi.top/SpecialPages/Search/index.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="藤栖龟舍 VineTurtle Studio" />
+    <meta property="og:title" content="搜索 · 藤栖龟舍" />
+    <meta property="og:description" content="搜索博客文章、项目与标签。" />
+    <meta property="og:url" content="https://grapeleafi.top/SpecialPages/Search/index.html" />
+    <meta property="og:image" content="https://grapeleafi.top/Resources/images/og-cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="../../Resources/images/VineTurtleStudio.png" type="image/png" />
+    <link rel="stylesheet" href="../../CSS/layout.css" />
+    <link rel="stylesheet" href="../../CSS/style.css" />
+    <link rel="stylesheet" href="../../CSS/special/search.css" />
+    <script src="../../JS/layout.js" defer></script>
+    <script src="../../JS/script.js" defer></script>
+    <script src="../../JS/search.js" defer></script>
+</head>
+<body>
+<noscript><div class="noscript-warn">本站需要启用 JavaScript 才能正常显示内容。</div></noscript>
+<div id="header-placeholder"></div>
+<main class="search-main">
+    <div class="container">
+        <div class="page-header">
+            <h1>🔍 站内搜索</h1>
+            <p>输入标题、标签或关键词，搜索文章与项目</p>
+        </div>
+
+        <form class="search-form" role="search" id="searchForm">
+            <label class="visually-hidden" for="searchInput">搜索关键词</label>
+            <input id="searchInput" type="search" name="q" placeholder="例如：Electron、TLS、图标、VinePalma…" autocomplete="off" />
+            <button type="submit">搜索</button>
+        </form>
+
+        <p class="search-status" id="searchStatus" role="status">正在加载索引…</p>
+        <div class="search-results" id="searchResults"></div>
+    </div>
+</main>
+<div id="footer-placeholder"></div>
+<div class="month-badge" id="monthBadge">🌿 1月</div>
+</body>
+</html>

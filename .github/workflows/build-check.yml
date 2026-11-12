@@ -1,0 +1,27 @@
+name: Build check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build generated files
+        run: npm run build
+
+      - name: Check generated files are committed
+        run: git diff --ignore-space-at-eol --exit-code

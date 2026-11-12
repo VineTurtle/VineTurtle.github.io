@@ -19,7 +19,7 @@ window.VTS.createDetailPage({
             + heroHtml
             + '<header class="post-header">'
             + '<h1>' + h.escapeHtml(post.title) + '</h1>'
-            + '<div class="post-meta"><span>📅 ' + h.escapeHtml(h.formatDate(post.date)) + '</span></div>'
+            + '<div class="post-meta"><span>📅 ' + h.escapeHtml(h.formatDate(post.date)) + '</span><div class="dynamic-stats" data-dynamic-stats></div></div>'
             + '<div class="post-tags-display">' + tagsHtml + '</div>'
             + '</header>'
             + '<div class="post-body">' + htmlContent + '</div>'
@@ -29,5 +29,9 @@ window.VTS.createDetailPage({
         h.setupCopyButtons(container);
         h.highlightCode(container);
         document.title = post.title + ' · 藤栖龟舍';
+        document.body.dataset.contentKind = 'blog';
+        document.body.dataset.contentSlug = post.slug || '';
+        document.body.dataset.contentKey = 'blog:' + (post.slug || '');
+        if (window.VTSDynamic) window.VTSDynamic.refresh();
     }
 });

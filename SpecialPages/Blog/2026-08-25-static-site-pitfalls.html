@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2a5c3a" />
+    <meta name="description" content="维护 GrapeLeafi 粉丝站几年，攒下四个最典型的静态站 bug：永不触发的「今天」、手机上失效的 hover、GitHub Pages 的大小写 404、以及 @latest 的定时炸弹。" />
+    <title>纯静态网站的四个经典坑 · 藤栖龟舍</title>
+    <link rel="canonical" href="https://grapeleafi.top/SpecialPages/Blog/2026-08-25-static-site-pitfalls.html" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="藤栖龟舍 VineTurtle Studio" />
+    <meta property="og:title" content="纯静态网站的四个经典坑 · 藤栖龟舍" />
+    <meta property="og:description" content="维护 GrapeLeafi 粉丝站几年，攒下四个最典型的静态站 bug：永不触发的「今天」、手机上失效的 hover、GitHub Pages 的大小写 404、以及 @latest 的定时炸弹。" />
+    <meta property="og:url" content="https://grapeleafi.top/SpecialPages/Blog/2026-08-25-static-site-pitfalls.html" />
+    <meta property="og:image" content="https://grapeleafi.top/Resources/images/blog/hero/static-site-pitfalls.jpg" />
+    <meta property="article:published_time" content="2026-08-25" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="../../Resources/images/VineTurtleStudio.png" type="image/png" />
+    <link rel="alternate" type="application/rss+xml" title="藤栖博客 RSS" href="https://grapeleafi.top/feed.xml">
+    <link rel="stylesheet" href="../../CSS/layout.css" />
+    <link rel="stylesheet" href="../../CSS/style.css" />
+    <link rel="stylesheet" href="../../CSS/special/blog.css">
+    <link rel="stylesheet" href="../../CSS/special/post-detail.css">
+    <link rel="stylesheet" href="../../CSS/dynamic.css" />
+    <script src="../../JS/layout.js" defer></script>
+    <script src="../../JS/script.js" defer></script>
+    <script src="../../JS/special-detail.js" defer></script>
+    <script src="../../JS/static-detail.js" defer></script>
+    <script src="../../JS/dynamic.js" defer></script>
+<script type="application/ld+json">
+[{"@context":"https://schema.org","@type":"BlogPosting","headline":"纯静态网站的四个经典坑","name":"纯静态网站的四个经典坑","description":"维护 GrapeLeafi 粉丝站几年，攒下四个最典型的静态站 bug：永不触发的「今天」、手机上失效的 hover、GitHub Pages 的大小写 404、以及 @latest 的定时炸弹。","url":"https://grapeleafi.top/SpecialPages/Blog/2026-08-25-static-site-pitfalls.html","datePublished":"2026-08-25","dateModified":"2026-08-25","image":"https://grapeleafi.top/Resources/images/blog/hero/static-site-pitfalls.jpg","author":{"@type":"Organization","name":"藤栖龟舍 VineTurtle Studio","url":"https://grapeleafi.top/"},"publisher":{"@type":"Organization","name":"藤栖龟舍 VineTurtle Studio","url":"https://grapeleafi.top/"},"keywords":"JavaScript, CSS, GitHub Pages, 踩坑"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://grapeleafi.top/"},{"@type":"ListItem","position":2,"name":"博客文章","item":"https://grapeleafi.top/SpecialPages/Blog/index.html"},{"@type":"ListItem","position":3,"name":"纯静态网站的四个经典坑","item":"https://grapeleafi.top/SpecialPages/Blog/2026-08-25-static-site-pitfalls.html"}]}]
+</script>
+</head>
+<body data-content-kind="blog" data-content-slug="2026-08-25-static-site-pitfalls" data-content-key="blog:2026-08-25-static-site-pitfalls">
+<noscript><div class="noscript-warn">本站需要启用 JavaScript 才能正常显示内容。</div></noscript>
+<div id="header-placeholder"></div>
+<main class="blog-main">
+    <div class="container post-container">
+        <a href="index.html" class="back-link" id="backLink">← 返回博客列表</a>
+        <article class="post-article">
+            <div class="hero-img-wrap"><img src="../../Resources/images/blog/hero/static-site-pitfalls.jpg" alt="纯静态网站的四个经典坑" class="post-hero-img" data-fallback="⚠️"><div class="fallback-hero">⚠️</div></div>
+            <header class="post-header">
+                <h1>纯静态网站的四个经典坑</h1>
+                <div class="post-meta"><span>📅 2026年8月25日</span><span>⏱ 约 5 分钟</span><div class="dynamic-stats" data-dynamic-stats></div></div>
+<div class="post-tags-display"><span class="tag">#JavaScript</span><span class="tag">#CSS</span><span class="tag">#GitHub Pages</span><span class="tag">#踩坑</span></div>
+                <div class="content-actions" data-content-actions></div>
+            </header>
+            <nav class="post-toc" data-toc hidden aria-label="文章目录"></nav>
+            <div class="post-body">
+<p><a href="../Project/detail.html?slug=GrapeLeafi-26-08-25">葡叶酱的温暖小窝</a>（GrapeLeafi）是我们维护时间最长的项目：一个没有框架、没有构建、没有后端的纯静态粉丝站。正因为它「谁都能改」，几年间积累了一堆静态站的典型 bug。这四个坑每一个都简单到不值一提，却又每一个都真实地在线上存活了很久。</p>
+
+<h2>坑一：永不触发的「今天过生日」</h2>
+<h4>站点有个角色生日提醒功能，代码里明确写着庆祝分支：</h4>
+<pre><code>if (diffDays === 0) {
+    // 🎉 今天生日！撒花
+}</code></pre>
+<h4>但这个分支<strong>从未被执行过</strong>。根因在上游的日期比较：</h4>
+<pre><code>birthdayDate.setFullYear(today.getFullYear());
+if (birthdayDate &lt; today) {      // ← 问题在这
+    birthdayDate.setFullYear(today.getFullYear() + 1);
+}
+const diffDays = Math.ceil((birthdayDate - today) / 86400000);</code></pre>
+<h4><code>today</code> 是 <code>new Date()</code>——<strong>带当前时刻</strong>（比如 14:30），而 <code>birthdayDate</code> 被设置为生日的<strong>零点</strong>。生日当天零点必然早于 14:30，于是日期被推到明年，<code>diffDays</code> 变成 364——「今天」永远显示成「还有 364 天」。这是「时刻」与「日期」比较的经典混淆。解法是把两边都归零到当天零点，再判断是否同一天：</h4>
+<pre><code>const startOfToday = new Date();
+startOfToday.setHours(0, 0, 0, 0);
+const isToday = birthdayDate.getTime() === startOfToday.getTime();</code></pre>
+
+<h2>坑二：手机上永远弹不出的二维码</h2>
+<h4>QQ 群二维码用的是纯 CSS 方案：</h4>
+<pre><code>.qrLinkContainer:hover #qrCodeContainer { display: block; }</code></pre>
+<h4>桌面端体验完美，但触屏设备没有 hover——手机用户点按钮毫无反应，加群入口直接消失。这是纯 CSS 交互的天然盲区。解法是补一个 click/touch 切换 class 的兜底，或者用原生 <code>&lt;details&gt;</code> 元素实现「点开显示」，零 JS 也能在触屏正常工作。</h4>
+
+<h2>坑三：GitHub Pages 的大小写与特殊字符 404</h2>
+<h4>资源目录里混着历史遗留命名：<code>tuan-zi/团子 (1).ico</code>——中文、空格、括号三件套，favicon 引用不得不写成 <code>团子%20(1).ico</code>。Windows 本地预览一切正常（NTFS 大小写不敏感），一推到 GitHub Pages（Linux 服务器，<strong>大小写敏感</strong>），任何一次「顺手改个路径大小写」都会批量 404。教训是：静态站资源文件名一律小写 ASCII、连字符分隔，中文素材名在入库时统一重命名。另外目录里 <code>tuan-zi/</code> 与 <code>tuanzi/</code> 并存这种「历史改名残留」，也该趁早清理。</h4>
+
+<h2>坑四：CDN @latest 是定时炸弹</h2>
+<h4>Live2D 看板娘是这样引入的：</h4>
+<pre><code>&lt;script src="https://fastly.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js" defer&gt;&lt;/script&gt;</code></pre>
+<h4><code>@latest</code> 意味着上游每次提交，你的站点都在「抽奖」：上游改了接口，全站看板娘原地消失，而你可能毫不知情。静态站引用第三方 CDN 资源必须<strong>锁定版本号甚至 commit hash</strong>。顺带一提，站点的倒计时用 <code>setInterval(update, 86400000)</code> 每天刷新一次——如果页面跨午夜一直开着，倒计时会显示过期数据；改成每分钟刷新或监听 <code>visibilitychange</code>（页面重新可见时更新）更稳妥。</h4>
+
+<h2>📝 写在最后</h2>
+<h4>这四个坑的共性：<strong>在开发者的设备上永远复现不了</strong>。生日 bug 只在生日当天出现、hover 问题只在触屏出现、大小写 404 只在 Linux 服务器出现、@latest 只在上游更新时爆炸。静态站虽小，测试矩阵却横跨时间、设备与操作系统。维护老站点的正确姿势，就是把这些「低级」坑一个个记录下来——它们是最便宜的老师。</h4>
+
+            </div>
+        </article>
+        <section class="comments-section" id="commentsSection" hidden></section>
+    </div>
+</main>
+<div id="footer-placeholder"></div>
+<div class="month-badge" id="monthBadge">🌿 1月</div>
+</body>
+</html>

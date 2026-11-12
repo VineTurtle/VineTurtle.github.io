@@ -1,0 +1,14 @@
+name = "vts-stats"
+main = "index.js"
+compatibility_date = "2026-11-13"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "vts-stats"
+database_id = "REPLACE_WITH_DATABASE_ID"
+
+[vars]
+ALLOWED_ORIGIN = "https://grapeleafi.top"
+
+# 建议再执行一次：wrangler secret put IP_SALT
+# 然后部署：wrangler deploy

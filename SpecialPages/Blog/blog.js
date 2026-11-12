@@ -15,7 +15,9 @@ window.VTS.createListPage({
         const isPlaceholder = h.isPlaceholder;
         const cardClass = isPlaceholder ? 'blog-card blog-card-placeholder' : 'blog-card';
 
-        const baseLink = post.link || 'post.html?slug=' + encodeURIComponent(post.slug || post.id);
+        const baseLink = post.slug
+            ? encodeURIComponent(post.slug) + '.html'
+            : 'post.html?slug=' + encodeURIComponent(post.id);
         const linkHref = isPlaceholder ? '#' : h.buildDetailLink(baseLink);
         const linkWrapper = isPlaceholder ? '' : '<a href="' + h.escapeHtml(linkHref) + '" class="blog-card-link">';
         const linkClose = isPlaceholder ? '' : '</a>';
