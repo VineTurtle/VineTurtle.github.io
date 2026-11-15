@@ -288,6 +288,10 @@
     function renderPalette(query) {
         const results = document.getElementById('cmdResults');
         if (!results) return;
+        if (!paletteState.entries && paletteState.loading) {
+            results.innerHTML = '<div class="cmd-empty"><span class="cmd-empty-icon">⏳</span><p>正在加载搜索索引…</p></div>';
+            return;
+        }
         const list = paletteSearch(query);
         paletteState.filtered = list;
         paletteState.active = list.length ? 0 : -1;
@@ -322,7 +326,7 @@
         }
         if (results) results.innerHTML = '<div class="cmd-empty"><span class="cmd-empty-icon">⏳</span><p>正在加载搜索索引…</p></div>';
         loadPaletteIndex().then(function () {
-            renderPalette('');
+            renderPalette(input.value);
         }).catch(function () {
             if (results) results.innerHTML = '<div class="cmd-empty"><span class="cmd-empty-icon">⚠️</span><p>搜索索引加载失败，请稍后重试。</p></div>';
         });
