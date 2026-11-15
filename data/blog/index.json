@@ -11,7 +11,7 @@
       "踩坑"
     ],
     "excerpt": "VinePalmaFlow 的局域网同步要在没有证书颁发机构、没有域名、甚至系统时钟都不准的环境里建立 TLS 1.3 双向认证——记录 rustls 0.23 的三个坑与我们的应用层认证设计。",
-    "thumbnail": "../../Resources/images/blog/hero/flow-tls.jpg",
+    "thumbnail": "../../Resources/images/blog/thumbnails/flow-tls.jpg",
     "hero": "../../Resources/images/blog/hero/flow-tls.jpg",
     "fallbackIcon": "🔐"
   },
@@ -27,7 +27,7 @@
       "同步"
     ],
     "excerpt": "用 std 的 DefaultHasher 做内容指纹，同一份文件在不同进程算出的哈希竟然不一样——增量同步退化成每次全量传输。聊聊假差异的根因与 FNV-1a + 幂等序列化的解法。",
-    "thumbnail": "../../Resources/images/blog/hero/content-hash.jpg",
+    "thumbnail": "../../Resources/images/blog/thumbnails/content-hash.jpg",
     "hero": "../../Resources/images/blog/hero/content-hash.jpg",
     "fallbackIcon": "#️⃣"
   },
@@ -43,7 +43,7 @@
       "踩坑"
     ],
     "excerpt": "维护 GrapeLeafi 粉丝站几年，攒下四个最典型的静态站 bug：永不触发的「今天」、手机上失效的 hover、GitHub Pages 的大小写 404、以及 @latest 的定时炸弹。",
-    "thumbnail": "../../Resources/images/blog/hero/static-site-pitfalls.jpg",
+    "thumbnail": "../../Resources/images/blog/thumbnails/static-site-pitfalls.jpg",
     "hero": "../../Resources/images/blog/hero/static-site-pitfalls.jpg",
     "fallbackIcon": "⚠️"
   },
@@ -59,7 +59,7 @@
       "踩坑"
     ],
     "excerpt": "Canvas 只能导出 PNG/JPEG/WebP，那 ICO、CUR、ICNS 图标格式怎么办？VinePalmaToolbox 的答案是：用 DataView 按 spec 一个字节一个字节拼。",
-    "thumbnail": "../../Resources/images/blog/hero/toolbox-binary.jpg",
+    "thumbnail": "../../Resources/images/blog/thumbnails/toolbox-binary.jpg",
     "hero": "../../Resources/images/blog/hero/toolbox-binary.jpg",
     "fallbackIcon": "🛠️"
   },
@@ -75,7 +75,7 @@
       "VinePalmaUninstaller"
     ],
     "excerpt": "一个能删文件的工具，怎么保证自己永远不删错？VinePalmaUninstaller 的答案：计划即白名单、路径黑名单、保护开关三道防线，外加 pkexec 提权时的输出解析玄学。",
-    "thumbnail": "../../Resources/images/blog/hero/uninstaller-safety.jpg",
+    "thumbnail": "../../Resources/images/blog/thumbnails/uninstaller-safety.jpg",
     "hero": "../../Resources/images/blog/hero/uninstaller-safety.jpg",
     "fallbackIcon": "🛡️"
   },

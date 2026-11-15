@@ -13,7 +13,7 @@
 ├── sitemap.xml                 # 站点地图（npm run build 自动生成）
 ├── feed.xml                    # 博客 RSS（npm run build 自动生成）
 ├── CSS/                        # 全局样式（layout.css / style.css / dynamic.css / special/）
-├── JS/                         # 全局脚本（layout.js / script.js / special-*.js / dynamic.js / search.js）
+├── JS/                         # 全局脚本（theme-init.js / layout.js / script.js / special-*.js / dynamic.js / search.js）
 ├── SpecialPages/               # 博客 / 项目 / 画廊 / 搜索子页面
 │   ├── Blog/                   #   博客列表 + 兼容详情入口 + 自动生成的静态详情页
 │   ├── Project/                 #   项目列表 + 兼容详情入口 + 自动生成的静态详情页
@@ -70,9 +70,11 @@ npm run deploy       # 会先自动 build，再 rsync 或 commit + push
 | `SpecialPages/<分类>/<slug>.html` | `generate-pages.js` | 每篇内容的独立静态详情页 |
 
 - 详情页把标题、摘要、头图、正文、目录和 JSON-LD 直接写进 HTML，分享卡片与搜索引擎无需执行 JS 就能拿到内容。
+- 详情页同时生成可见面包屑、**上一篇 / 下一篇**（按日期倒序：上一篇更早、下一篇更新）与**相关推荐**（优先共享标签，不足 3 条用同分类最近内容补齐），均为静态 HTML。
 - 旧入口 `SpecialPages/Blog/post.html?slug=…`、`SpecialPages/Project/detail.html?slug=…` 仍然保留，作为兼容与本地预览入口。
 - 列表页、首页与搜索结果的链接都指向静态详情页，并保留 `?page=` / `?tag=` 以便返回列表时回到原位置。
 - 固定页面的 `lastmod` 取所有内容里的最新日期，避免每次构建都产生无意义 diff。
+- 生成索引时会自动把 `thumbnail` 指向的 `hero/` 原图映射到同名 `Resources/images/<分类>/thumbnails/` 压缩图（存在才替换），`data/search-index.json` 的 `cover` 也优先使用缩略图。
 
 ## 管理后台（推荐方式）
 
@@ -116,7 +118,7 @@ npm run deploy       # 会先自动 build，再 rsync 或 commit + push
 项目文件结构相同，额外支持 `desc / status / statusClass / year` 字段。
 
 > 封面图路径下暂时没有图片时，页面会自动用 `fallbackIcon` 的 emoji 占位，图片放进去即可显示。
-> 列表卡片会自动尝试加载路径旁的同名 `@thumb.jpg` 压缩图（仅当该图存在时使用），没有则用原图，不改变元数据里填写的路径。
+> 列表卡片优先使用 `Resources/images/<分类>/thumbnails/` 下的同名压缩图：构建索引时会自动把 `hero/` 路径映射到 `thumbnails/`（仅当该图存在时替换），搜索索引的 `cover` 也使用缩略图。没有缩略图时回退原图，仍兼容旧的 `@thumb.jpg` 约定。
 
 ## 首页动态展示
 
@@ -135,9 +137,17 @@ npm run deploy       # 会先自动 build，再 rsync 或 commit + push
 - 锚点跳转与标题定位通过 `scroll-padding-top` / `scroll-margin-top` 避开固定页头。
 - 提供「跳到主要内容」skip link、`:focus-visible` 焦点样式与「回到顶部」按钮。
 
+## 主题（浅色 / 深色）
+
+- 每页 `<head>` 里的 `JS/theme-init.js` 会在样式表之前读取主题，避免深色模式闪白。
+- 默认跟随系统 `prefers-color-scheme`；手动切换后写入 `localStorage['vts-theme']`，并同步 `data-theme`、`color-scheme` 与浏览器地址栏 `theme-color`。
+- 入口是页头右侧的切换按钮；深色配色是固定的深绿调色板，会覆盖按月变化的 `body.month-*` 主题变量。
+- 详情页的正文 / 头图 / 隐私页插图支持点击放大，`Esc` 或点击遮罩关闭。
+
 ## 站内搜索
 
-- 入口：导航栏「🔍 搜索」、首页「更多」卡片，以及页脚的「搜索」链接。
+- 入口：导航栏「🔍 搜索」、页头搜索按钮、首页「更多」卡片、页脚「搜索」链接，以及 `Ctrl/⌘ + K` 命令面板。
+- 命令面板：任意页面按 `Ctrl/⌘ + K` 打开，直接检索标题 / 标签 / 摘要，`↑` `↓` 选择、`Enter` 跳转、`Esc` 关闭；在搜索页按 `Ctrl/⌘ + K` 会直接聚焦页面上的搜索框。
 - 页面：`SpecialPages/Search/index.html`，纯前端实现，读取 `data/search-index.json`，不依赖任何后端。
 - 排序按「标题命中 > 标签命中 > 摘要命中」，同分时按日期倒序；按 `/` 可快速聚焦搜索框，关键词会同步到 URL 的 `?q=`，可直接分享。
 - 新增内容后运行 `npm run build` 即可出现在搜索结果里。

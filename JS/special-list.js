@@ -35,6 +35,8 @@
     function thumbUrl(url) {
         if (!url) return url;
         const s = String(url);
+        // 索引生成阶段已优先换成 thumbnails/ 下的压缩图，直接使用即可。
+        if (/\/thumbnails\//i.test(s)) return s;
         if (/@thumb\./i.test(s)) return s;
         const m = s.match(/^(.+?)(\.(?:png|jpe?g|gif|webp|bmp|svg|ico))$/i);
         return m ? m[1] + '@thumb.jpg' : s;

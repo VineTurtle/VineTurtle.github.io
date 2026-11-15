@@ -210,3 +210,182 @@
         transition: none;
     }
 }
+
+/* ===== 面包屑 ===== */
+.breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+    font-size: 0.8rem;
+    opacity: 0.62;
+}
+
+.breadcrumb a {
+    color: var(--primary, #2a5c3a);
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb .crumb-sep {
+    opacity: 0.5;
+}
+
+.breadcrumb [aria-current="page"] {
+    overflow: hidden;
+    max-width: 34ch;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ===== 上一篇 / 下一篇 ===== */
+.content-pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 38px 0 0;
+}
+
+.pager-link {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 68px;
+    padding: 14px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.58);
+    color: inherit;
+    text-decoration: none;
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pager-link:hover,
+.pager-link:focus-visible {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.82);
+    box-shadow: 0 8px 22px rgba(42, 92, 58, 0.1);
+}
+
+.pager-link.is-empty {
+    visibility: hidden;
+}
+
+.pager-label {
+    font-size: 0.74rem;
+    color: var(--primary, #2a5c3a);
+    opacity: 0.8;
+}
+
+.pager-title {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 0.94rem;
+    font-weight: 600;
+    line-height: 1.5;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.content-pager .pager-next {
+    text-align: right;
+    align-items: flex-end;
+}
+
+/* ===== 相关推荐 ===== */
+.related-content {
+    margin-top: 38px;
+    padding-top: 26px;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.related-content h2 {
+    margin: 0 0 16px;
+    color: var(--primary, #2a5c3a);
+    font-size: 1.15rem;
+}
+
+.related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 12px;
+}
+
+.related-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 15px 17px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.55);
+    color: inherit;
+    text-decoration: none;
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.related-card:hover,
+.related-card:focus-visible {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.82);
+    box-shadow: 0 8px 22px rgba(42, 92, 58, 0.1);
+}
+
+.related-kind {
+    font-size: 0.7rem;
+    color: var(--primary, #2a5c3a);
+    opacity: 0.75;
+}
+
+.related-title {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 0.92rem;
+    font-weight: 600;
+    line-height: 1.5;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.related-date {
+    font-size: 0.73rem;
+    opacity: 0.55;
+}
+
+@media (max-width: 600px) {
+    .content-pager {
+        grid-template-columns: 1fr;
+    }
+
+    .content-pager .pager-next {
+        text-align: left;
+        align-items: flex-start;
+    }
+
+    .pager-link.is-empty {
+        display: none;
+    }
+}
+
+/* 深色主题下的翻页 / 相关推荐 */
+html[data-theme="dark"] .pager-link,
+html[data-theme="dark"] .related-card {
+    background: rgba(30, 42, 34, 0.7);
+    border-color: rgba(190, 225, 200, 0.1);
+}
+
+html[data-theme="dark"] .pager-link:hover,
+html[data-theme="dark"] .pager-link:focus-visible,
+html[data-theme="dark"] .related-card:hover,
+html[data-theme="dark"] .related-card:focus-visible {
+    background: rgba(38, 52, 42, 0.9);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.32);
+}
+
+html[data-theme="dark"] .related-content {
+    border-top-color: rgba(190, 225, 200, 0.1);
+}

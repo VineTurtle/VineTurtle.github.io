@@ -13,7 +13,7 @@
     ],
     "desc": "VinePalmaFlow 的局域网同步要在没有证书颁发机构、没有域名、甚至系统时钟都不准的环境里建立 TLS 1.3 双向认证——记录 rustls 0.23 的三个坑与我们的应用层认证设计。",
     "icon": "🔐",
-    "cover": "../../Resources/images/blog/hero/flow-tls.jpg",
+    "cover": "../../Resources/images/blog/thumbnails/flow-tls.jpg",
     "url": "SpecialPages/Blog/2026-08-25-lan-tls-without-ca.html"
   },
   {
@@ -30,7 +30,7 @@
     ],
     "desc": "用 std 的 DefaultHasher 做内容指纹，同一份文件在不同进程算出的哈希竟然不一样——增量同步退化成每次全量传输。聊聊假差异的根因与 FNV-1a + 幂等序列化的解法。",
     "icon": "#️⃣",
-    "cover": "../../Resources/images/blog/hero/content-hash.jpg",
+    "cover": "../../Resources/images/blog/thumbnails/content-hash.jpg",
     "url": "SpecialPages/Blog/2026-08-25-content-hash-fnv1a.html"
   },
   {
@@ -47,7 +47,7 @@
     ],
     "desc": "维护 GrapeLeafi 粉丝站几年，攒下四个最典型的静态站 bug：永不触发的「今天」、手机上失效的 hover、GitHub Pages 的大小写 404、以及 @latest 的定时炸弹。",
     "icon": "⚠️",
-    "cover": "../../Resources/images/blog/hero/static-site-pitfalls.jpg",
+    "cover": "../../Resources/images/blog/thumbnails/static-site-pitfalls.jpg",
     "url": "SpecialPages/Blog/2026-08-25-static-site-pitfalls.html"
   },
   {
@@ -64,7 +64,7 @@
     ],
     "desc": "Canvas 只能导出 PNG/JPEG/WebP，那 ICO、CUR、ICNS 图标格式怎么办？VinePalmaToolbox 的答案是：用 DataView 按 spec 一个字节一个字节拼。",
     "icon": "🛠️",
-    "cover": "../../Resources/images/blog/hero/toolbox-binary.jpg",
+    "cover": "../../Resources/images/blog/thumbnails/toolbox-binary.jpg",
     "url": "SpecialPages/Blog/2026-08-25-binary-encoder-ico-icns.html"
   },
   {
@@ -81,7 +81,7 @@
     ],
     "desc": "一个能删文件的工具，怎么保证自己永远不删错？VinePalmaUninstaller 的答案：计划即白名单、路径黑名单、保护开关三道防线，外加 pkexec 提权时的输出解析玄学。",
     "icon": "🛡️",
-    "cover": "../../Resources/images/blog/hero/uninstaller-safety.jpg",
+    "cover": "../../Resources/images/blog/thumbnails/uninstaller-safety.jpg",
     "url": "SpecialPages/Blog/2026-08-25-uninstaller-safety.html"
   },
   {
@@ -97,7 +97,7 @@
     ],
     "desc": "为零基础用户维护的纯静态粉丝社区站：倒计时、生日提醒、看板娘一个不少",
     "icon": "🚀",
-    "cover": "../../Resources/images/projects/hero/grapeleafi-site.jpg",
+    "cover": "../../Resources/images/projects/thumbnails/grapeleafi-site.jpg",
     "url": "SpecialPages/Project/GrapeLeafi-26-08-25.html"
   },
   {
@@ -114,7 +114,7 @@
     ],
     "desc": "永远不上云的本地优先项目管理工具：Markdown 即数据库，局域网像云一样协作",
     "icon": "🚀",
-    "cover": "../../Resources/images/projects/hero/vinepalma-flow.jpg",
+    "cover": "../../Resources/images/projects/thumbnails/vinepalma-flow.jpg",
     "url": "SpecialPages/Project/VinePalmaFlow-26-08-25.html"
   },
   {
@@ -130,7 +130,7 @@
     ],
     "desc": "APT / Flatpak / Snap / Docker / AppImage / APM 六大来源统一的 Linux 卸载器",
     "icon": "🚀",
-    "cover": "../../Resources/images/projects/hero/vinepalma-uninstaller.jpg",
+    "cover": "../../Resources/images/projects/thumbnails/vinepalma-uninstaller.jpg",
     "url": "SpecialPages/Project/VinePalmaUninstaller-26-08-10.html"
   },
   {
@@ -146,7 +146,7 @@
     ],
     "desc": "VinePalma Player播放器设置，一个值得选择的本地播放器",
     "icon": "🚀",
-    "cover": "../../Resources/images/projects/hero/vinepalma-player.jpg",
+    "cover": "../../Resources/images/projects/thumbnails/vinepalma-player.jpg",
     "url": "SpecialPages/Project/VinePalma-Player-26-08-07.html"
   },
   {
@@ -162,7 +162,7 @@
     ],
     "desc": "VinePalmaToolbox，一个值得你选择的工具箱",
     "icon": "🚀",
-    "cover": "../../Resources/images/projects/hero/vinepalma-toolbox.jpg",
+    "cover": "../../Resources/images/projects/thumbnails/vinepalma-toolbox.jpg",
     "url": "SpecialPages/Project/VinePalmaToolbox-26-08-05.html"
   },
   {
@@ -178,7 +178,7 @@
     ],
     "desc": "打包后启动器图标正常，任务栏却是空白？问题出在桌面环境通过 WM_CLASS 关联窗口和 .desktop 文件。",
     "icon": "🐧",
-    "cover": "../../Resources/images/blog/hero/electron_linux_icon.jpg",
+    "cover": "../../Resources/images/blog/thumbnails/electron_linux_icon.jpg",
     "url": "SpecialPages/Blog/2026-07-22-linux-app-icon-fix.html"
   }
 ]

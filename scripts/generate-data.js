@@ -55,6 +55,18 @@ function sortByDateDesc(a, b) {
     return (a.id || 0) - (b.id || 0);
 }
 
+// 列表/卡片优先使用 Resources/images/<分类>/thumbnails/ 下的压缩图。
+// 元数据通常指向 hero/ 原图，这里在生成索引时自动换成同名的缩略图，避免列表加载大图。
+function preferThumbnail(url) {
+    if (!url) return url;
+    const value = String(url);
+    const match = value.match(/^(.*\/)hero\/([^/]+)$/i);
+    if (!match) return url;
+    const candidate = match[1] + 'thumbnails/' + match[2];
+    const rel = candidate.replace(/^(\.\.\/)+/, '').replace(/^\.\//, '').replace(/^\//, '');
+    return fs.existsSync(path.join(ROOT, rel)) ? candidate : url;
+}
+
 // ---------- 通用生成逻辑 ----------
 
 function buildIndex(dir, indexName) {
@@ -90,7 +102,7 @@ function buildIndex(dir, indexName) {
         ...(date ? { date } : {}),
         ...(Array.isArray(tags) && tags.length ? { tags } : { tags: [] }),
         ...(excerpt ? { excerpt } : {}),
-        ...(thumbnail ? { thumbnail } : {}),
+        ...(thumbnail ? { thumbnail: preferThumbnail(thumbnail) } : {}),
         ...(hero ? { hero } : {}),
         ...(fallbackIcon ? { fallbackIcon } : {}),
         ...(status ? { status } : {}),
@@ -250,7 +262,7 @@ function buildSearchIndex() {
                 tags: item.tags || [],
                 desc: item.excerpt || item.desc || '',
                 icon: item.fallbackIcon || cfg.navIcon || '📄',
-                cover: item.hero || item.thumbnail || '',
+                cover: item.thumbnail || item.hero || '',
                 url: 'SpecialPages/' + cfg.pageName + '/' + encodeURIComponent(item.slug) + '.html'
             });
         }

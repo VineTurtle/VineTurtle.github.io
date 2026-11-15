@@ -83,10 +83,19 @@
                         <span class="header-title">藤栖龟舍</span>
                     </a>
                 </div>
-                <button class="nav-toggle" id="navToggle" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="mainNav">☰</button>
-                <nav class="main-nav" id="mainNav" aria-label="主导航">
-                    ${isSpecialPage ? specialNav : homeNav}
-                </nav>
+                <div class="header-right">
+                    <nav class="main-nav" id="mainNav" aria-label="主导航">
+                        ${isSpecialPage ? specialNav : homeNav}
+                    </nav>
+                    <button class="palette-trigger" id="paletteTrigger" type="button" aria-label="打开站内搜索（Ctrl+K）" aria-haspopup="dialog" aria-expanded="false" title="站内搜索（Ctrl+K）">
+                        <span class="palette-trigger-icon" aria-hidden="true">🔍</span>
+                        <kbd class="palette-trigger-kbd">Ctrl K</kbd>
+                    </button>
+                    <button class="theme-toggle" id="themeToggle" type="button" aria-label="切换到深色模式" title="切换深色 / 浅色" aria-pressed="false">
+                        <span class="theme-icon" aria-hidden="true">🌙</span>
+                    </button>
+                    <button class="nav-toggle" id="navToggle" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="mainNav">☰</button>
+                </div>
             </div>
         </header>
     `;
@@ -130,9 +139,395 @@
 
         initBackToTop();
         initHeader();
+        initTheme();
+        initCommandPalette();
+        initImageZoom();
 
         if (!isSpecialPage) initSPA();
     });
+
+    // ---------- 主题：深色 / 浅色 ----------
+    const THEME_KEY = 'vts-theme';
+
+    function storedTheme() {
+        try { return localStorage.getItem(THEME_KEY); } catch (e) { return null; }
+    }
+
+    function applyTheme(theme, persist) {
+        const isDark = theme === 'dark';
+        document.documentElement.setAttribute('data-theme', theme);
+        document.documentElement.setAttribute('data-theme-mode', persist || storedTheme() ? 'manual' : 'auto');
+        document.documentElement.style.colorScheme = theme;
+        if (persist) {
+            try { localStorage.setItem(THEME_KEY, theme); } catch (e) { /* 隐私模式下忽略 */ }
+        }
+        const meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute('content', isDark ? '#0f1511' : '#2a5c3a');
+        const btn = document.getElementById('themeToggle');
+        if (btn) {
+            const icon = btn.querySelector('.theme-icon');
+            if (icon) icon.textContent = isDark ? '☀️' : '🌙';
+            btn.setAttribute('aria-label', isDark ? '切换到浅色模式' : '切换到深色模式');
+            btn.setAttribute('aria-pressed', String(isDark));
+        }
+    }
+
+    function initTheme() {
+        const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+        applyTheme(current, false);
+
+        const btn = document.getElementById('themeToggle');
+        if (btn) {
+            btn.addEventListener('click', function () {
+                const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+                applyTheme(next, true);
+            });
+        }
+
+        const mq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+        if (!mq) return;
+        const onChange = function (e) {
+            if (!storedTheme()) applyTheme(e.matches ? 'dark' : 'light', false);
+        };
+        if (mq.addEventListener) mq.addEventListener('change', onChange);
+        else if (mq.addListener) mq.addListener(onChange);
+    }
+
+    // ---------- 全站搜索弹层（Ctrl / ⌘ + K） ----------
+    const paletteState = { entries: null, loading: null, filtered: [], active: -1, lastFocus: null };
+
+    function escapeHtml(value) {
+        return String(value == null ? '' : value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function loadPaletteIndex() {
+        if (paletteState.entries) return Promise.resolve(paletteState.entries);
+        if (paletteState.loading) return paletteState.loading;
+        paletteState.loading = fetch(pathPrefix + 'data/search-index.json', { cache: 'no-cache' })
+            .then(function (res) {
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return res.json();
+            })
+            .then(function (data) {
+                paletteState.entries = Array.isArray(data) ? data : [];
+                paletteState.loading = null;
+                const count = document.getElementById('cmdCount');
+                if (count) count.textContent = String(paletteState.entries.length);
+                return paletteState.entries;
+            })
+            .catch(function (err) {
+                paletteState.loading = null;
+                throw err;
+            });
+        return paletteState.loading;
+    }
+
+    function paletteSearch(query) {
+        const entries = paletteState.entries || [];
+        const q = String(query == null ? '' : query).trim().toLowerCase();
+        if (!q) return entries.slice(0, 10);
+        const tokens = q.split(/\s+/).filter(Boolean);
+        return entries.map(function (item) {
+            const title = String(item.title || '').toLowerCase();
+            const desc = String(item.desc || '').toLowerCase();
+            const tags = (item.tags || []).join(' ').toLowerCase();
+            const kind = String(item.kindLabel || '').toLowerCase();
+            let score = 0;
+            let hit = true;
+            tokens.forEach(function (token) {
+                let found = false;
+                if (title.indexOf(token) !== -1) { score += 8; found = true; }
+                if (tags.indexOf(token) !== -1) { score += 4; found = true; }
+                if (kind.indexOf(token) !== -1) { score += 2; found = true; }
+                if (desc.indexOf(token) !== -1) { score += 1; found = true; }
+                if (!found) hit = false;
+            });
+            if (!hit) return null;
+            if (title.indexOf(q) !== -1) score += 6;
+            return { item: item, score: score };
+        }).filter(Boolean).sort(function (a, b) {
+            if (b.score !== a.score) return b.score - a.score;
+            return String(b.item.date || '').localeCompare(String(a.item.date || ''));
+        }).slice(0, 10).map(function (row) { return row.item; });
+    }
+
+    function paletteItemHtml(item) {
+        const tags = (item.tags || []).slice(0, 1).map(function (t) { return '#' + t; }).join('');
+        const meta = [item.kindLabel, item.date, tags].filter(Boolean).join(' · ');
+        const href = pathPrefix + item.url;
+        return '<a class="cmd-item" role="option" aria-selected="false" href="' + escapeHtml(href) + '">'
+            + '<span class="cmd-item-icon" aria-hidden="true">' + escapeHtml(item.icon || '📄') + '</span>'
+            + '<span class="cmd-item-main">'
+            + '<span class="cmd-item-title">' + escapeHtml(item.title || '') + '</span>'
+            + '<span class="cmd-item-meta">' + escapeHtml(meta) + '</span>'
+            + '</span>'
+            + '<span class="cmd-item-arrow" aria-hidden="true">↵</span>'
+            + '</a>';
+    }
+
+    function setPaletteActive(index) {
+        const results = document.getElementById('cmdResults');
+        if (!results) return;
+        const items = results.querySelectorAll('.cmd-item');
+        if (!items.length) return;
+        const next = Math.max(0, Math.min(items.length - 1, index));
+        paletteState.active = next;
+        items.forEach(function (item, i) {
+            const on = i === next;
+            item.classList.toggle('is-active', on);
+            item.setAttribute('aria-selected', String(on));
+            if (on && item.scrollIntoView) item.scrollIntoView({ block: 'nearest' });
+        });
+    }
+
+    function renderPalette(query) {
+        const results = document.getElementById('cmdResults');
+        if (!results) return;
+        const list = paletteSearch(query);
+        paletteState.filtered = list;
+        paletteState.active = list.length ? 0 : -1;
+        if (!list.length) {
+            const emptyText = String(query || '').trim()
+                ? '没有找到匹配内容，换个关键词试试。'
+                : '搜索索引为空。';
+            results.innerHTML = '<div class="cmd-empty"><span class="cmd-empty-icon">🌱</span><p>' + escapeHtml(emptyText) + '</p></div>';
+            return;
+        }
+        results.innerHTML = list.map(paletteItemHtml).join('');
+        setPaletteActive(0);
+    }
+
+    function openPalette() {
+        const overlay = document.getElementById('cmdPalette');
+        const input = document.getElementById('cmdInput');
+        const results = document.getElementById('cmdResults');
+        if (!overlay || !input) return;
+
+        paletteState.lastFocus = document.activeElement;
+        overlay.hidden = false;
+        document.body.style.overflow = 'hidden';
+        const trigger = document.getElementById('paletteTrigger');
+        if (trigger) trigger.setAttribute('aria-expanded', 'true');
+        input.value = '';
+        input.focus();
+
+        if (paletteState.entries) {
+            renderPalette('');
+            return;
+        }
+        if (results) results.innerHTML = '<div class="cmd-empty"><span class="cmd-empty-icon">⏳</span><p>正在加载搜索索引…</p></div>';
+        loadPaletteIndex().then(function () {
+            renderPalette('');
+        }).catch(function () {
+            if (results) results.innerHTML = '<div class="cmd-empty"><span class="cmd-empty-icon">⚠️</span><p>搜索索引加载失败，请稍后重试。</p></div>';
+        });
+    }
+
+    function closePalette() {
+        const overlay = document.getElementById('cmdPalette');
+        if (!overlay || overlay.hidden) return;
+        overlay.hidden = true;
+        document.body.style.overflow = '';
+        const trigger = document.getElementById('paletteTrigger');
+        if (trigger) trigger.setAttribute('aria-expanded', 'false');
+        if (paletteState.lastFocus && typeof paletteState.lastFocus.focus === 'function') {
+            paletteState.lastFocus.focus();
+        }
+    }
+
+    function initCommandPalette() {
+        if (document.getElementById('cmdPalette')) return;
+
+        const overlay = document.createElement('div');
+        overlay.className = 'cmd-overlay';
+        overlay.id = 'cmdPalette';
+        overlay.hidden = true;
+        overlay.innerHTML = `
+            <div class="cmd-dialog" role="dialog" aria-modal="true" aria-label="站内搜索">
+                <div class="cmd-input-row">
+                    <span class="cmd-search-icon" aria-hidden="true">🔍</span>
+                    <label class="visually-hidden" for="cmdInput">搜索站内内容</label>
+                    <input id="cmdInput" type="text" placeholder="搜索文章、项目或标签…" autocomplete="off" spellcheck="false" aria-controls="cmdResults" aria-autocomplete="list" />
+                    <kbd class="cmd-esc">Esc</kbd>
+                </div>
+                <div class="cmd-results" id="cmdResults" role="listbox" aria-label="搜索结果"></div>
+                <div class="cmd-footer">
+                    <span><kbd>↑</kbd><kbd>↓</kbd> 选择</span>
+                    <span><kbd>Enter</kbd> 打开</span>
+                    <span><kbd>Esc</kbd> 关闭</span>
+                    <span class="cmd-footer-note">共 <span id="cmdCount">0</span> 条内容</span>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+
+        const input = document.getElementById('cmdInput');
+        const results = document.getElementById('cmdResults');
+        const trigger = document.getElementById('paletteTrigger');
+        const pageSearch = document.getElementById('searchInput');
+
+        if (trigger && pageSearch) {
+            trigger.addEventListener('click', function (e) {
+                e.preventDefault();
+                pageSearch.focus();
+                pageSearch.select();
+            });
+            trigger.style.display = 'none';
+        } else if (trigger) {
+            trigger.addEventListener('click', function (e) {
+                e.preventDefault();
+                openPalette();
+            });
+        }
+
+        input.addEventListener('input', function () { renderPalette(input.value); });
+        input.addEventListener('keydown', function (e) {
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                setPaletteActive(paletteState.active + 1);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                setPaletteActive(paletteState.active - 1);
+            } else if (e.key === 'Enter') {
+                const active = results.querySelector('.cmd-item.is-active');
+                if (active) {
+                    e.preventDefault();
+                    window.location.href = active.href;
+                }
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                closePalette();
+            }
+        });
+
+        overlay.addEventListener('click', function (e) {
+            if (e.target === overlay) closePalette();
+        });
+
+        results.addEventListener('mousemove', function (e) {
+            const item = e.target.closest ? e.target.closest('.cmd-item') : null;
+            if (!item) return;
+            const items = Array.prototype.slice.call(results.querySelectorAll('.cmd-item'));
+            setPaletteActive(items.indexOf(item));
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if ((e.ctrlKey || e.metaKey) && String(e.key).toLowerCase() === 'k') {
+                e.preventDefault();
+                if (pageSearch) {
+                    pageSearch.focus();
+                    pageSearch.select();
+                } else {
+                    openPalette();
+                }
+            }
+        });
+
+        // 焦点保持在弹层内
+        overlay.addEventListener('keydown', function (e) {
+            if (e.key !== 'Tab') return;
+            const focusables = overlay.querySelectorAll('input, a[href], button');
+            if (!focusables.length) return;
+            const first = focusables[0];
+            const last = focusables[focusables.length - 1];
+            if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
+            }
+        });
+    }
+
+    // ---------- 正文图片点击放大 ----------
+    function initImageZoom() {
+        if (document.getElementById('imageZoom')) return;
+
+        const overlay = document.createElement('div');
+        overlay.className = 'image-zoom';
+        overlay.id = 'imageZoom';
+        overlay.hidden = true;
+        overlay.setAttribute('role', 'dialog');
+        overlay.setAttribute('aria-modal', 'true');
+        overlay.setAttribute('aria-label', '查看大图');
+        overlay.innerHTML = `
+            <button class="image-zoom-close" type="button" aria-label="关闭大图">×</button>
+            <figure class="image-zoom-figure">
+                <img id="imageZoomImg" alt="">
+                <figcaption class="image-zoom-caption" id="imageZoomCaption"></figcaption>
+            </figure>
+            <a class="image-zoom-open" id="imageZoomOpen" href="#" target="_blank" rel="noopener">在新标签页打开 ↗</a>
+        `;
+        document.body.appendChild(overlay);
+
+        const image = document.getElementById('imageZoomImg');
+        const caption = document.getElementById('imageZoomCaption');
+        const openLink = document.getElementById('imageZoomOpen');
+        const closeBtn = overlay.querySelector('.image-zoom-close');
+        let lastFocus = null;
+
+        function open(img) {
+            const src = img.currentSrc || img.src;
+            if (!src) return;
+            lastFocus = document.activeElement;
+            image.src = src;
+            image.alt = img.alt || '';
+            caption.textContent = img.alt || '';
+            caption.hidden = !img.alt;
+            openLink.href = src;
+            overlay.hidden = false;
+            document.body.style.overflow = 'hidden';
+            closeBtn.focus();
+        }
+
+        function close() {
+            overlay.hidden = true;
+            document.body.style.overflow = '';
+            image.removeAttribute('src');
+            if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
+        }
+
+        function markImages(scope) {
+            const root = scope && scope.querySelectorAll ? scope : document;
+            root.querySelectorAll('.post-body img, .detail-body img, .privacy-container img, .hero-img-wrap img').forEach(function (img) {
+                if (img.dataset.zoomBound) return;
+                img.dataset.zoomBound = '1';
+                if (img.closest('a')) return;
+                img.classList.add('zoomable-image');
+                img.tabIndex = 0;
+                img.setAttribute('role', 'button');
+                img.setAttribute('aria-label', '查看大图：' + (img.alt || '图片'));
+                img.addEventListener('click', function () { open(img); });
+                img.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        open(img);
+                    }
+                });
+            });
+        }
+
+        closeBtn.addEventListener('click', close);
+        overlay.addEventListener('click', function (e) {
+            if (e.target === overlay) close();
+        });
+        document.addEventListener('keydown', function (e) {
+            if (!overlay.hidden && e.key === 'Escape') close();
+        });
+
+        const main = document.querySelector('main') || document.body;
+        markImages(main);
+        if (window.MutationObserver) {
+            new MutationObserver(function () { markImages(main); })
+                .observe(main, { childList: true, subtree: true });
+        }
+    }
 
     // ---------- 头部：高度、紧凑、自动隐藏、移动抽屉 ----------
     function initHeader() {

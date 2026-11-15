@@ -7,6 +7,7 @@
     <meta name="robots" content="noindex">
     <title>页面走丢了 · 藤栖龟舍</title>
     <link rel="icon" href="/Resources/images/VineTurtleStudio.png" type="image/png">
+    <script src="/JS/theme-init.js"></script>
     <style>
         :root { --primary: #2a5c3a; --accent: #4a7c5b; --bg: #e4efe1; --text: #23382c; }
         * { box-sizing: border-box; }
@@ -50,6 +51,25 @@
         .links a.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
         .links a.primary:hover { background: var(--accent); }
         footer { margin-top: 18px; font-size: 0.78rem; opacity: 0.5; }
+
+        html[data-theme="dark"] {
+            --primary: #a6d8ad;
+            --accent: #8fc79b;
+            --bg: #0f1511;
+            --text: #dbe6dd;
+        }
+        html[data-theme="dark"] body {
+            background: radial-gradient(circle at 50% 0%, #1b2a20, var(--bg) 70%);
+        }
+        html[data-theme="dark"] .card {
+            background: rgba(30, 42, 34, 0.74);
+            border-color: rgba(190, 225, 200, 0.12);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.32);
+        }
+        html[data-theme="dark"] .logo { background: #e8f0e9; }
+        html[data-theme="dark"] .links a { border-color: rgba(166, 216, 173, 0.3); }
+        html[data-theme="dark"] .links a:hover { background: rgba(255, 255, 255, 0.07); }
+        html[data-theme="dark"] .links a.primary { background: var(--primary); color: #0b1a10; }
     </style>
 </head>
 <body>
@@ -64,6 +84,7 @@
             <a href="/SpecialPages/Project/index.html">项目</a>
             <a href="/SpecialPages/Blog/index.html">博客</a>
             <a href="/SpecialPages/Gallery/index.html">画廊</a>
+            <a href="/SpecialPages/Search/index.html">站内搜索</a>
         </div>
         <footer>© 2026 藤栖龟舍 VineTurtle Studio</footer>
     </div>

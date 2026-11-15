@@ -100,6 +100,96 @@ function readingMinutes(content) {
     return Math.max(1, Math.ceil(length / 420));
 }
 
+function detailHref(slug) {
+    return encodeURIComponent(String(slug)) + '.html';
+}
+
+// 上一篇 / 下一篇：按索引（日期倒序）顺序取相邻条目。
+function buildPager(item, items, cfg) {
+    const index = items.findIndex(function (entry) { return entry.slug === item.slug; });
+    if (index < 0) return '';
+    // 索引按日期倒序：上一篇取更早的内容，下一篇取更新的内容。
+    const prev = index < items.length - 1 ? items[index + 1] : null;
+    const next = index > 0 ? items[index - 1] : null;
+    if (!prev && !next) return '';
+
+    const isProject = cfg.pageName === 'Project';
+    const prevLabel = isProject ? '上一个项目' : '上一篇';
+    const nextLabel = isProject ? '下一个项目' : '下一篇';
+
+    function link(target, label, cls, arrowAfter) {
+        if (!target) return '<span class="pager-link is-empty" aria-hidden="true"></span>';
+        const text = arrowAfter ? escapeHtml(label) + ' ' + (cls === 'pager-next' ? '→' : '←') : '← ' + escapeHtml(label);
+        return '<a class="pager-link ' + cls + '" href="' + escapeHtml(detailHref(target.slug)) + '" rel="' + (cls === 'pager-prev' ? 'prev' : 'next') + '">'
+            + '<span class="pager-label">' + text + '</span>'
+            + '<span class="pager-title">' + escapeHtml(target.title) + '</span>'
+            + '</a>';
+    }
+
+    return '<nav class="content-pager" aria-label="内容翻页">'
+        + link(prev, prevLabel, 'pager-prev', false)
+        + link(next, nextLabel, 'pager-next', true)
+        + '</nav>';
+}
+
+// 相关推荐：优先共享标签，不足 3 条时用同分类的最近内容补齐。
+function buildRelated(item, items, cfg) {
+    const tags = new Set((item.tags || []).map(function (tag) { return String(tag).toLowerCase(); }));
+    const candidates = items.filter(function (entry) {
+        return entry.slug && entry.slug !== item.slug;
+    });
+
+    const scored = candidates.map(function (entry) {
+        const overlap = (entry.tags || []).filter(function (tag) {
+            return tags.has(String(tag).toLowerCase());
+        }).length;
+        return { item: entry, overlap: overlap };
+    }).filter(function (row) {
+        return row.overlap > 0;
+    }).sort(function (a, b) {
+        return b.overlap - a.overlap || String(b.item.date || '').localeCompare(String(a.item.date || ''));
+    });
+
+    const picked = [];
+    function push(entry) {
+        if (!entry || picked.length >= 3) return;
+        if (picked.some(function (x) { return x.slug === entry.slug; })) return;
+        picked.push(entry);
+    }
+    scored.forEach(function (row) { push(row.item); });
+
+    if (picked.length < 3) {
+        candidates.slice().sort(function (a, b) {
+            return String(b.date || '').localeCompare(String(a.date || ''));
+        }).forEach(push);
+    }
+    if (!picked.length) return '';
+
+    const isProject = cfg.pageName === 'Project';
+    return '<section class="related-content" aria-labelledby="relatedTitle">'
+        + '<h2 id="relatedTitle">🌿 ' + (isProject ? '相关项目' : '相关阅读') + '</h2>'
+        + '<div class="related-grid">'
+        + picked.map(function (entry) {
+            return '<a class="related-card" href="' + escapeHtml(detailHref(entry.slug)) + '">'
+                + '<span class="related-kind">' + (isProject ? '🚀 项目' : '📝 文章') + '</span>'
+                + '<span class="related-title">' + escapeHtml(entry.title) + '</span>'
+                + (entry.date ? '<span class="related-date">📅 ' + escapeHtml(entry.date) + '</span>' : '')
+                + '</a>';
+        }).join('')
+        + '</div></section>';
+}
+
+function buildBreadcrumb(item, cfg) {
+    const label = cfg.label || cfg.pageName;
+    return '<nav class="breadcrumb" aria-label="面包屑">'
+        + '<a href="../../index.html">首页</a>'
+        + '<span class="crumb-sep" aria-hidden="true">/</span>'
+        + '<a href="index.html">' + escapeHtml(label) + '</a>'
+        + '<span class="crumb-sep" aria-hidden="true">/</span>'
+        + '<span aria-current="page">' + escapeHtml(item.title) + '</span>'
+        + '</nav>';
+}
+
 function renderHero(item, style) {
     const icon = escapeHtml(item.fallbackIcon || '📄');
     if (!item.hero) return `<div class="fallback-hero">${icon}</div>`;
@@ -145,8 +235,9 @@ function buildJsonLd(item, cfg, style, pageUrl, description, imageUrl) {
     return '<script type="application/ld+json">\n' + safeJson([article, breadcrumb]) + '\n</script>';
 }
 
-function buildPage(item, cfg, content, style) {
+function buildPage(item, cfg, content, style, extra) {
     const slug = String(item.slug);
+    const additions = extra || {};
     const pageUrl = SITE.siteUrl + '/SpecialPages/' + cfg.pageName + '/' + encodeURIComponent(slug) + '.html';
     const description = truncate(item.excerpt || item.desc || stripTags(content) || ('藤栖龟舍 · ' + item.title), 150);
     const imageUrl = absoluteUrl(SITE, item.hero || item.thumbnail);
@@ -190,6 +281,7 @@ function buildPage(item, cfg, content, style) {
     ${item.date ? '<meta property="article:published_time" content="' + escapeHtml(item.date) + '" />' : ''}
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="../../Resources/images/VineTurtleStudio.png" type="image/png" />
+    <script src="../../JS/theme-init.js"></script>
 ${feedLink}    <link rel="stylesheet" href="../../CSS/layout.css" />
     <link rel="stylesheet" href="../../CSS/style.css" />
 ${cssLinks}
@@ -206,6 +298,7 @@ ${buildJsonLd(item, cfg, style, pageUrl, description, imageUrl)}
 <div id="header-placeholder"></div>
 <main class="${style.mainClass}">
     <div class="container ${style.containerClass}">
+        ${buildBreadcrumb(item, cfg)}
         <a href="index.html" class="back-link" id="backLink">← ${escapeHtml(style.backLabel)}</a>
         <article class="${style.articleClass}">
             ${hero}
@@ -220,6 +313,8 @@ ${tags}
 ${content || '<p>正文正在生长中……</p>'}
             </div>
         </article>
+        ${additions.pager || ''}
+        ${additions.related || ''}
         <section class="comments-section" id="commentsSection" hidden></section>
     </div>
 </main>
@@ -261,7 +356,11 @@ function main() {
 
             const full = { ...item, ...JSON.parse(fs.readFileSync(jsonFile, 'utf-8')) };
             const content = fs.readFileSync(htmlFile, 'utf-8');
-            const html = buildPage(full, cfg, content, style);
+            const extra = {
+                pager: buildPager(full, items, cfg),
+                related: buildRelated(full, items, cfg)
+            };
+            const html = buildPage(full, cfg, content, style, extra);
             fs.writeFileSync(path.join(outDir, item.slug + '.html'), html);
             total++;
         }

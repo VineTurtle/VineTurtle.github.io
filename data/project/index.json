@@ -27,7 +27,7 @@
       "项目管理",
       "局域网同步"
     ],
-    "thumbnail": "../../Resources/images/projects/hero/vinepalma-flow.jpg",
+    "thumbnail": "../../Resources/images/projects/thumbnails/vinepalma-flow.jpg",
     "hero": "../../Resources/images/projects/hero/vinepalma-flow.jpg",
     "status": "🚧 迭代中",
     "statusClass": "status-progress",
@@ -44,7 +44,7 @@
       "Linux",
       "Tauri"
     ],
-    "thumbnail": "../../Resources/images/projects/hero/vinepalma-uninstaller.jpg",
+    "thumbnail": "../../Resources/images/projects/thumbnails/vinepalma-uninstaller.jpg",
     "hero": "../../Resources/images/projects/hero/vinepalma-uninstaller.jpg",
     "status": "🚧 迭代中",
     "statusClass": "status-progress",
@@ -61,7 +61,7 @@
       "Tauri",
       "播放器"
     ],
-    "thumbnail": "../../Resources/images/projects/hero/vinepalma-player.jpg",
+    "thumbnail": "../../Resources/images/projects/thumbnails/vinepalma-player.jpg",
     "hero": "../../Resources/images/projects/hero/vinepalma-player.jpg",
     "status": "🚧 迭代中",
     "statusClass": "status-progress",
