@@ -23,6 +23,7 @@
    - 404 页:`<main>`(display:contents)+ 语言切换器包进 `<header>`,landmark 违规清零。
    - 页头 logo `alt=""`(layout.js;链接文本已含站名)。
 7. **C3 Lighthouse CI**:新增 `lighthouserc.json` + `build-check.yml` 独立 `lighthouse` job。阈值按本机 Chrome 校准(perf 0.83-0.93 / a11y 1.0 / bp 0.82 / seo 1.0)定为 perf 0.75 / a11y 0.95 / bp 0.80 / seo 0.95,CI 首跑后可收紧。**best-practices 0.82 的唯一扣分项是 `JS/i18n.js` 的同步 XHR——有意设计**(保证 `t()` 立即可用、避免首屏语言闪烁,见文件内注释),暂不重构;若要消除可评估构建期内联字典。
+8. **B1 giscus 评论上线**(2026-11-19 补充会话,commit `0650657`):`dynamic.json` 填入 repoId/categoryId(用户在 giscus.app 生成,Announcements 分类),四镜像配置构建期同步;`dynamic.js` 两处打磨——界面语言随 `<html lang>`(en/ja/zh-TW/zh-CN 一一对应,其余回落 zh-CN),`theme:"auto"` 跟随站点深浅色(初始取 `<html data-theme>`,切换时 MutationObserver + postMessage 实时换肤,iframe lazy 场景同步 script 属性兜底)。build/check:links/镜像 diff 全过。
 
 ### 核实为"早已存在、未动"的项
 - A3 代码块复制按钮(`special-detail.js` setupCopyButtons)、A4 阅读进度条(`static-detail.js` setupProgress)——候选清单过时,仅复核功能正常。
@@ -30,14 +31,14 @@
 
 ## 二、⚠️ 当前工作区状态(新会话第一件事)
 
-- **工作区干净**:两个 commit 已全部推送——`03661b9`(翻译落库)→ `6c48c8e`(A/B/C 组优化,207 文件)→ `docs` 交接文档更新(本文件,见最新 hash)。
+- **工作区干净**:全部已推送——`03661b9`(翻译落库)→ `6c48c8e`(A/B/C 组优化,207 文件)→ `1b06538`(docs 交接)→ `0650657`(B1 giscus 上线)→ `docs` 交接文档更新(本文件,见最新 hash)。
 - 验证基线:`build` 44 详情页 ✓ · `i18n:verify` 33/33 ✓ · `i18n:audit` 三语干净 ✓ · `check:links` 全可达 ✓ · axe 14 页零违规 ✓ · LHCI 本地断言全过 ✓。推送后 CI(build+lighthouse 两个 job)应全绿。
 - 推送后 GitHub Pages 自动部署(含新归档页)。
 
 ## 三、下一步候选(用户决策记录)
 
-- **B1 giscus 评论**:等用户操作——仓库启用 Discussions → 装 [giscus App](https://github.com/apps/giscus) → 在 [giscus.app](https://giscus.app/zh-CN) 取 `repoId`/`categoryId`(Category 建议 Announcements)→ 交给会话填 `data/meta/dynamic.json`(`giscus.enabled: true`)并 `npm run build`。
-- **B2 点赞/阅读量 worker**:等用户操作——`wrangler login` → `cd worker && wrangler d1 create` → `database_id` 填 `wrangler.toml` → `wrangler d1 execute DB --file=schema.sql --remote` → `wrangler deploy` → 把 Worker 域名填 `dynamic.json` 的 `stats.apiBase`(`stats.enabled: true`)。
+- **B1 giscus 评论**:✅ 已上线(`0650657`,2026-11-19)。评论存仓库 Discussions → Announcements 分类;界面语言随页面语言;深浅色联动。换分类/关评论只改 `dynamic.json`(`enabled:false` 即回纯静态)。
+- **B2 点赞/阅读量 worker**:用户拍板不做(2026-11-19)。`worker/` 代码与 `JS/dynamic.js` 的 stats 客户端保留;将来想启用,原清单仍有效——`wrangler login` → `wrangler d1 create` → `database_id` 填 `wrangler.toml` → `wrangler d1 execute DB --file=schema.sql --remote` → `wrangler deploy` → Worker 域名(`*.workers.dev` 即可,阿里云 DNS 无需改动)填 `stats.apiBase` 并 `stats.enabled: true`。
 - **B3 admin 多语言**:用户已拍板跳过(与"正文翻译暂停投入"决策一致)。
 - **B6 PWA 离线 / C1 构建期 minify**:用户未选,缓办。C1 有 pre/code 逐字节不变量风险(见下),minifier 需配置跳过 pre/code。
 - **srcset**:缓办——缩略图资产尺寸混杂(640×320 与 720×360),先统一资产再生双档 srcset,可单独立项。
@@ -47,7 +48,7 @@
 
 - 生成脚本:`scripts/generate-data.js`(索引/sitemap/feed/搜索)、`scripts/generate-pages.js`(详情页+四语镜像+STATIC_SEO+hero/img 属性注入)、`scripts/i18n-common.js`(构建期公共模块)、`scripts/check-links.js`(C2 死链)
 - 翻译工具链:`scripts/translate/`(npm `i18n:*`);`audit-mirrors.js` 含回落页豁免
-- 运行时:`JS/i18n.js`(t()/切换器,同步字典加载)、`JS/layout.js`(页头页脚/logo)、`JS/script.js`(月份徽章+**A2 预取**)、`JS/search.js`(搜索+B5)、`JS/special-list.js`、`JS/special-detail.js`、`JS/static-detail.js`、`JS/dynamic.js`(giscus/点赞客户端)
+- 运行时:`JS/i18n.js`(t()/切换器,同步字典加载)、`JS/layout.js`(页头页脚/logo)、`JS/script.js`(月份徽章+**A2 预取**)、`JS/search.js`(搜索+B5)、`JS/special-list.js`、`JS/special-detail.js`、`JS/static-detail.js`、`JS/dynamic.js`(giscus/点赞客户端;评论语言随页面 lang,深浅色 postMessage 联动)
 - 新页面:`SpecialPages/Blog/archive.{html,js}` + `CSS/special/archive.css`(四语镜像同名)
 - 字典:`i18n/<lang>.json`(含 archive.* 6 键);内容覆盖:`data/i18n/<lang>/`;正文单一来源:`data/<分类>/posts/`
 - CI:`.github/workflows/build-check.yml`(install → verify → build → audit → check:links → diff + 独立 lighthouse job);`lighthouserc.json`
