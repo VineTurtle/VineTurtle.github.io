@@ -12,6 +12,7 @@
     var config = null;
     var commentsLoaded = false;
     var statsLoaded = false;
+    var giscusThemeObserver = null;
 
     function fetchJson(url, options) {
         return fetch(url, options || { cache: 'no-store' }).then(function (res) {
@@ -22,6 +23,34 @@
 
     function contentKey() {
         return (document.body && document.body.dataset.contentKey) || '';
+    }
+
+    // 站点四语 → giscus 界面语言（giscus.app 支持的 locale 恰好一一对应，其余回落简中）
+    function giscusLang() {
+        var lang = (document.documentElement.getAttribute('lang') || 'zh-CN').toLowerCase();
+        if (lang.indexOf('hant') >= 0 || lang.indexOf('tw') >= 0 || lang.indexOf('hk') >= 0) return 'zh-TW';
+        if (lang.indexOf('en') === 0) return 'en';
+        if (lang.indexOf('ja') === 0) return 'ja';
+        return 'zh-CN';
+    }
+
+    // 站点当前主题（theme-init.js / layout.js 写在 <html data-theme> 上）
+    function siteTheme() {
+        return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    }
+
+    // 深浅色联动：切换主题时调用。iframe 尚未出现（giscus 是 lazy 加载）时只更新
+    // script 的 data-theme；已出现则 postMessage 让 giscus 立即换肤。
+    function pushGiscusTheme() {
+        var theme = siteTheme();
+        var script = document.querySelector('script[src*="giscus.app/client.js"]');
+        if (script) script.setAttribute('data-theme', theme);
+        var frame = document.querySelector('iframe.giscus-frame');
+        try {
+            if (frame && frame.contentWindow) {
+                frame.contentWindow.postMessage({ giscus: { setConfig: { theme: theme } } }, 'https://giscus.app');
+            }
+        } catch (e) { /* 跨域异常静默，下次切换主题会再试 */ }
     }
 
     function formatCount(n) {
@@ -183,13 +212,22 @@
         script.setAttribute('data-reactions-enabled', g.reactionsEnabled === false ? '0' : '1');
         script.setAttribute('data-emit-metadata', '0');
         script.setAttribute('data-input-position', 'top');
-        script.setAttribute('data-theme', g.theme || 'light');
-        script.setAttribute('data-lang', 'zh-CN');
+        // theme === 'auto'（默认）：跟随站点深浅色；配置了具体主题名则保持静态。
+        var themeAuto = !g.theme || g.theme === 'auto';
+        script.setAttribute('data-theme', themeAuto ? siteTheme() : g.theme);
+        script.setAttribute('data-lang', giscusLang());
         script.setAttribute('data-loading', 'lazy');
         script.onerror = function () {
             hint.textContent = t('comments.fail');
         };
         section.appendChild(script);
+
+        // 盯 <html data-theme>：手动切换深浅色时实时联动 giscus。
+        if (themeAuto && typeof MutationObserver === 'function') {
+            if (giscusThemeObserver) giscusThemeObserver.disconnect();
+            giscusThemeObserver = new MutationObserver(pushGiscusTheme);
+            giscusThemeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+        }
     }
 
     function refresh() {
