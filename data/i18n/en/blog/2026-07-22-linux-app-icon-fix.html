@@ -1,0 +1,117 @@
+<p>While developing the Linux build of <strong>VinePalma Player</strong>, I recently hit an icon problem that looked trivial yet bothered me for ages. After installation the app icon displays correctly, but the taskbar icon at runtime shows the default "blank" state. This post records the pitfalls I stepped on and the final fix.</p>
+
+<h2>📦 The problem</h2>
+<p>After packaging the Linux build (deb/AppImage) with <code>electron-builder</code>, the icon shows fine at install time — the launcher menu and the app list both look right. But <strong>the moment the app runs, the taskbar shows the system's default blank icon</strong></p>
+<p>At first I suspected the icon file itself, but inspection showed:</p>
+<ul>
+    <li>✅ the installed <code>.desktop</code> file has the correct <code>Icon</code> field</li>
+    <li>✅ the icon file exists in the install directory</li>
+    <li>✅ the launcher menu icon renders fine</li>
+    <li>❌ the taskbar icon at runtime is blank/default</li>
+</ul>
+
+<h2>🔍 Root cause</h2>
+<p>Linux desktop environments (GNOME, KDE, XFCE and so on) use the <strong>WM_CLASS</strong> property to associate running windows with <code>.desktop</code> files. If the window's <code>WM_CLASS</code> doesn't match the <code>.desktop</code> file's <code>StartupWMClass</code>, the desktop environment can't tell which app the window belongs to, and the taskbar icon falls back to the default.</p>
+<p>Electron's <code>WM_CLASS</code> is derived by default from the <code>package.json</code> <code>desktopName</code> field. A misconfigured value breaks the association.</p>
+
+<h2>🛠️ The fix</h2>
+<h3>1. Icon directory layout</h3>
+<p>On Linux the icon should <strong>point to a folder</strong>, not a single file. <code>electron-builder</code> handles the multi-size icons inside automatically:</p>
+<pre><code>assets/icons/linux/
+├── 16x16.png
+├── 32x32.png
+├── 48x48.png
+├── 128x128.png
+├── 256x256.png
+└── 512x512.png</code></pre>
+<p>Configure it like this in <code>package.json</code>:</p>
+<pre><code>"linux": {
+    "icon": "assets/icons/linux",  // ← 指向文件夹，不是文件！
+    "target": ["deb", "AppImage"],
+    "category": "AudioVideo",
+    "syncDesktopName": true
+}</code></pre>
+<h3>2. The right desktopName</h3>
+<p>This is the most crucial step. The <code>desktopName</code> value <strong>must not carry the <code>.desktop</code> suffix</strong>, or <code>WM_CLASS</code> resolution goes wrong:</p>
+<pre><code>// ❌ 错误
+"desktopName": "com.vinepalma.player.desktop"
+
+// ✅ 正确
+"desktopName": "com.vinepalma.player"</code></pre>
+<p>The key parts of the fixed <code>package.json</code>:</p>
+<pre><code>{
+  "name": "vinepalma-player",
+  "desktopName": "com.vinepalma.player",  // 去掉 .desktop 后缀
+  "build": {
+    "appId": "com.vinepalma.player",
+    "productName": "VinePalma",
+    "linux": {
+      "icon": "assets/icons/linux",
+      "target": ["deb", "AppImage"],
+      "category": "AudioVideo",
+      "syncDesktopName": true
+    }
+  }
+}</code></pre>
+<h3>3. Main process adjustments</h3>
+<p>In <code>src/main/index.js</code>, <strong>don't call <code>app.setDesktopName()</code> manually</strong> — let Electron read the configuration from <code>package.json</code> on its own. If you truly must set it, use the correct format:</p>
+<pre><code>// ❌ 不要这样写
+app.setName('VinePalma');
+app.setDesktopName('com.vinepalma.player.desktop');
+
+// ✅ 推荐：删除手动设置，让 electron-builder 自动处理
+// 或确保名称一致
+app.setName('com.vinepalma.player');</code></pre>
+<h3>4. Window icon</h3>
+<p>Although the taskbar icon is mainly decided by the <code>WM_CLASS</code> association, it's still wise to set a window icon when creating the <code>BrowserWindow</code>, for compatibility across desktop environments:</p>
+<pre><code>const path = require('path');
+
+function createWindow() {
+    const iconDir = path.resolve(__dirname, '../../assets/icons');
+    let windowIconPath;
+
+    if (process.platform === 'darwin') {
+        windowIconPath = path.join(iconDir, 'VinePalma.icns');
+    } else if (process.platform === 'win32') {
+        windowIconPath = path.join(iconDir, 'VinePalma.ico');
+    } else {
+        // Linux: 使用具体尺寸图片
+        windowIconPath = path.join(iconDir, 'linux/256x256.png');
+    }
+
+    const mainWindow = new BrowserWindow({
+        width: 500,
+        height: 520,
+        title: 'VinePalma',
+        icon: windowIconPath,  // 设置窗口图标
+        // ... 其他配置
+    });
+}</code></pre>
+<h3>5. Verify the .desktop file</h3>
+<p>After packaging and installing, check the generated <code>.desktop</code> file (at <code>/usr/share/applications/com.vinepalma.player.desktop</code>):</p>
+<pre><code>[Desktop Entry]
+Name=VinePalma
+Exec=/opt/VinePalma/vinepalma-player
+Icon=com.vinepalma.player
+StartupWMClass=com.vinepalma.player  // ← 必须与 WM_CLASS 一致
+Type=Application
+Categories=AudioVideo;</code></pre>
+<h3>6. Verify WM_CLASS</h3>
+<p>Run the app, then execute the following in a terminal:</p>
+<pre><code>xprop | grep WM_CLASS
+// 然后点击应用窗口，查看输出</code></pre>
+<p>Expected output:</p>
+<pre><code>WM_CLASS(STRING) = "com.vinepalma.player", "com.vinepalma.player"</code></pre>
+<p>If <code>StartupWMClass</code> matches <code>WM_CLASS</code>, the taskbar icon displays correctly.</p>
+
+<h2>📝 Takeaways</h2>
+<p>Electron Linux icon issues usually aren't about the icon file itself — they're about the <strong>window association mechanism</strong>. The essentials:</p>
+<ul>
+    <li>📁 point the Linux icon config at a <strong>folder</strong> containing multi-size PNGs</li>
+    <li>📝 <code>desktopName</code> <strong>must not carry the <code>.desktop</code> suffix</strong></li>
+    <li>🔗 make sure <code>StartupWMClass</code> and <code>WM_CLASS</code> match exactly</li>
+    <li>🖼️ set the <code>icon</code> property explicitly when creating the window</li>
+    <li>🚫 avoid manual <code>app.setDesktopName()</code> calls — let electron-builder handle it</li>
+</ul>
+<p>I hope this post helps fellow developers who hit the same problem skip the detours. In Electron cross-platform work, Linux desktop integration is truly the most overlooked — and most trouble-prone — part.</p>
+<p style="opacity:0.6; margin-top:2rem;">—— Written by the VineTurtle Studio tech team</p>

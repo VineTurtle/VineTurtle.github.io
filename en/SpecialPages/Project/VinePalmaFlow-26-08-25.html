@@ -50,37 +50,37 @@
             <div class="hero-img-wrap"><img src="../../Resources/images/projects/hero/vinepalma-flow.jpg" alt="VinePalmaFlow: local-first project management" class="detail-hero-img" data-fallback="📄"><div class="fallback-hero">📄</div></div>
             <header class="detail-header">
                 <h1>VinePalmaFlow: local-first project management</h1>
-                <div class="detail-meta"><span class="project-status status-progress">🚧 迭代中</span><span class="detail-year">📅 2026</span><div class="dynamic-stats" data-dynamic-stats></div></div>
+                <div class="detail-meta"><span class="project-status status-progress">🚧 In progress</span><span class="detail-year">📅 2026</span><div class="dynamic-stats" data-dynamic-stats></div></div>
 <div class="detail-tags-display"><span class="tag">#Tauri</span><span class="tag">#Rust</span><span class="tag">#Project management</span><span class="tag">#LAN sync</span></div>
                 <div class="content-actions" data-content-actions></div>
             </header>
             <nav class="post-toc" data-toc hidden aria-label="Table of contents"></nav>
-            <div class="detail-body" lang="zh-CN" data-content-lang="zh-CN">
-<h4>VinePalmaFlow 的口号是「永远不上云，但在局域网里像云一样协作」。它是一款本地优先（Local-first）的项目管理桌面应用，基于 Tauri 2 + React + Rust 构建：零账号、零上传，所有项目数据只留在你自己的设备上；当两台设备处在同一局域网时，又能通过加密配对实现增量同步——云的体验，没有云的隐私代价。</h4>
+            <div class="detail-body" lang="en" data-content-lang="en">
+<h4>VinePalmaFlow's slogan is "never touch the cloud, yet collaborate over LAN like the cloud". It's a local-first project management desktop app built on Tauri 2 + React + Rust: zero accounts, zero uploads, all project data stays on your own devices; when two devices share the same LAN, encrypted pairing enables incremental sync — the cloud experience, without the cloud's privacy price.</h4>
 
-<h2>设计哲学：Markdown 文件就是数据库</h2>
-<h4>大多数项目管理工具把你的数据锁进专有数据库，而 VinePalmaFlow 的唯一事实源是<b>人可读的 Markdown 文件</b>。每个项目是一个文件夹：project.md 用 YAML Front Matter 描述元数据（名称、状态、负责人、截止日、进度、标签、自定义字段……），正文就是普通 Markdown；tasks/ 目录下每个任务一个原子文件；附件、模板、备份、回收站各归其位。哪怕有一天你卸载了 VinePalmaFlow，这些文件依然可以用任何编辑器打开、用 Git 管理、用脚本批量处理。</h4>
-<h4>新手可以完全通过表单操作，不必知道 Front Matter 的存在；进阶用户则可以直接改文件，应用会忠实地解析回来。表单与文本两种心智模型，指向同一份数据。</h4>
+<h2>Design philosophy: Markdown files are the database</h2>
+<h4>Most project management tools lock your data inside a proprietary database; VinePalmaFlow's single source of truth is <b>human-readable Markdown files</b>. Each project is one folder: project.md describes metadata in YAML Front Matter (name, status, owner, deadline, progress, tags, custom fields...), and the body is plain Markdown; under tasks/, every task is one atomic file; attachments, templates, backups and the trash each sit where they belong. Even if you uninstall VinePalmaFlow one day, these files still open in any editor, live happily under Git, and can be batch-processed with scripts.</h4>
+<h4>Beginners can work entirely through forms without ever knowing Front Matter exists; power users edit the files directly and the app faithfully parses them back. Two mental models — form and text — pointing at the same data.</h4>
 
-<h2>局域网同步：mDNS 发现 + TLS 加密 + 6 位配对码</h2>
-<h4>同步是整个项目技术含量最高的部分。设备发现基于 mDNS（服务类型 _localflow._tcp.local.，默认端口 4485），传输层是 TLS 1.3 之上的 WebSocket。难点在于局域网里没有 CA、没有域名——我们用自签证书承载设备身份，真正的认证下沉到应用层：两台设备各自屏幕上显示一个 6 位配对码，互相输入对方屏幕上的码，双向核对通过后才把对方写入信任列表。此后每次连接，服务端都会从对方的 TLS 客户端证书里解析出设备 ID，凡是不在信任列表里的推送一律拒绝——伪造消息体里的身份是过不了关的。</h4>
-<h4>这中间踩过的 rustls 0.23 的坑（crypto provider 安装、IP 直连的 SNI 构造、证书有效期的时钟偏移），我们单独写成了博客《没有 CA 的局域网，怎么做双向 TLS》。</h4>
+<h2>LAN sync: mDNS discovery + TLS encryption + a 6-digit pairing code</h2>
+<h4>Sync is the most technically dense part of the project. Device discovery is mDNS-based (service type _localflow._tcp.local., default port 4485); the transport is WebSocket over TLS 1.3. The hard part is that a LAN has no CA and no domain names — we carry device identity on self-signed certificates and push real authentication down to the application layer. Each device displays a 6-digit pairing code on its screen; each side types in the code shown on the other's screen, and only after a two-way check does the peer enter the trust list. From then on, at every connection the server parses the device ID out of the peer's TLS client certificate, and any push whose ID is not in the trust list is rejected flatly — a forged identity inside the message body never gets past the gate.</h4>
+<h4>The rustls 0.23 pitfalls we hit along the way (crypto provider installation, SNI construction for direct IP connections, clock skew around certificate validity) are written up separately in the blog post "LAN TLS without a CA".</h4>
 
-<h2>增量同步与冲突合并</h2>
-<h4>全量互传太浪费，VinePalmaFlow 为每个项目计算内容指纹（project.md + 排序后的任务文件，手写 FNV-1a 哈希）。同步时先交换指纹表，相同的直接跳过，只传有差异的项目。合并采用三方合并：每个设备目录下保存着上次同步的基准镜像，本地版本、对方版本、基准版本三者对比——单边修改直接采纳；双边都改了同一个字段才判定冲突。</h4>
-<h4>更精细的一层是 project.md 的<b>字段级合并</b>：A 设备改了进度、B 设备改了正文，整文件对比会误判冲突，而按 YAML 字段逐个三方合并后，两处修改可以自动合并成一份。真正的冲突会进入 UI，由用户二选一，选择结果同时写回基准镜像——否则同一个冲突会在下次同步时无限复活。</h4>
+<h2>Incremental sync &amp; conflict merging</h2>
+<h4>Full mutual transfers are wasteful, so VinePalmaFlow computes a content fingerprint for each project (project.md plus the sorted task files, hashed with a hand-written FNV-1a). Sync first exchanges fingerprint tables: identical projects are skipped, and only the differing ones transfer. Merging is three-way: each device directory keeps the baseline mirror from the previous sync; local, remote and baseline are compared — one-sided changes are adopted outright, and a conflict is declared only when both sides edited the same field.</h4>
+<h4>A finer layer is <b>field-level merging</b> of project.md: if device A changed the progress while device B changed the body, a whole-file comparison would misjudge it as a conflict — but merging the YAML fields three-way one by one fuses both changes into one automatically. True conflicts enter the UI for the user to pick a side, and the choice is written back into the baseline mirror — otherwise the same conflict resurrects infinitely at the next sync.</h4>
 
-<h2>导出：Excel 不是终点，而是入口</h2>
-<h4>导出用 rust_xlsxwriter 实现，导入用 calamine 读回。我们不满足于"把任务表丢进 Excel"：概览页带条件格式（已完成绿、进行中黄、已延期红），进度列用百分比数字格式；更关键的是第 4 个 Sheet 嵌入了完整的 YAML Front Matter 与 Markdown 原文——导出再导入，信息零损失，真正意义上的无损往返。此外还支持 CSV、JSON，以及用 pulldown-cmark 渲染的 HTML（方便浏览器打印成 PDF）。</h4>
+<h2>Export: Excel is not the destination, it's the entrance</h2>
+<h4>Export is implemented with rust_xlsxwriter, and import reads back with calamine. We weren't satisfied with "dump the task table into Excel": the overview sheet carries conditional formatting (done green, in-progress yellow, overdue red) and the progress column uses a percentage number format; more crucially, the 4th sheet embeds the complete YAML Front Matter and the original Markdown — export, then import, and zero information is lost: a lossless round trip in the true sense. CSV and JSON are supported too, plus HTML rendered with pulldown-cmark (handy for printing to PDF from a browser).</h4>
 
-<h2>周边能力</h2>
-<h4>模板系统：内置软件开发、客户跟进漏斗等模板，模板定义的列表型字段存进 custom_fields，导出任务明细时自动提取；全文搜索：线性扫描 + 大小写折叠，单机几百个项目规模下足够快；变更日志：字段级 diff 追加存储，保留 30 天、上限 2000 条；每次保存自动生成旧版本快照，配合回收站，误删误改都有后悔药。</h4>
+<h2>Peripheral capabilities</h2>
+<h4>Templates: built-in templates such as software development and a customer-follow-up funnel; the list-type fields a template defines are stored in custom_fields and auto-extracted when exporting task details. Full-text search: linear scan + case folding — fast enough at the scale of a few hundred projects per machine. Change log: field-level diffs appended, kept for 30 days with a 2000-entry cap; every save auto-generates a snapshot of the previous version, and together with the trash, mistaken deletes and edits always have a way back.</h4>
 
-<h2>工程取舍</h2>
-<h4>PRD 里原本规划了 tokio 异步栈，实际落地时我们选择了 std::thread + 同步版 tungstenite——单条 JSON 请求-响应、设备数量个位数的场景，引入异步运行时的复杂度并不划算。类似的取舍贯穿全项目：不用 apt 库、不用 YAML 库做序列化（手写固定字段顺序的幂等输出）、不用异步 mDNS（零conf 库同步 API）。Rust 的好处就是这些"降级"都不牺牲类型安全。</h4>
+<h2>Engineering trade-offs</h2>
+<h4>The PRD originally planned a tokio async stack; when it came to actually shipping we chose std::thread + the synchronous tungstenite — for single JSON request-responses and a device count in the single digits, dragging in an async runtime just isn't worth the complexity. Similar trade-offs run through the whole project: no apt crate, no YAML crate for serialization (a hand-written idempotent output with fixed field order), no async mDNS (the zero-conf crate's blocking API). The beauty of Rust is that none of these "downgrades" sacrifice type safety.</h4>
 
-<h2>结语</h2>
-<h4>VinePalmaFlow 目前仍在快速迭代，蓝牙备用通道、更多模板还在路线图上。如果你受够了把任务清单交给别人的服务器，不妨试试这株只生长在自己设备上的藤蔓——数据在哪里，安全感就在哪里。</h4>
+<h2>Closing words</h2>
+<h4>VinePalmaFlow is still iterating fast; a Bluetooth fallback channel and more templates are on the roadmap. If you're fed up with handing your task lists to somebody else's server, give this vine — growing only on your own devices — a try: where your data lives, there your peace of mind lives too.</h4>
 
             </div>
         </article>

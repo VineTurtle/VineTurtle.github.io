@@ -33,94 +33,94 @@
     <link rel="alternate" hreflang="x-default" href="https://grapeleafi.top/privacy/privacy.html" />
 </head>
 <body>
-<noscript><div class="noscript-warn">本站需要启用 JavaScript 才能正常显示内容。</div></noscript>
+<noscript><div class="noscript-warn" data-i18n="common.noscript">このサイトはコンテンツを正しく表示するために JavaScript が必要です。</div></noscript>
 <!-- 头部（自动加载导航） -->
 <div id="header-placeholder"></div>
 
 <!-- 主内容 -->
-<main lang="zh-CN" class="main-content">
+<main class="main-content">
     <div class="container privacy-container">
         <h1 data-i18n="privacy.h1">📄 プライバシーポリシー</h1>
-        <p class="privacy-updated"><strong data-i18n="privacy.updatedPrefix">最終更新：</strong>2026 年 11 月 13 日</p>
+        <p class="privacy-updated"><strong data-i18n="privacy.updatedPrefix">最終更新：</strong><span data-i18n="privacy.updatedDate">2026 年 11 月 13 日</span></p>
 
         <nav class="privacy-toc" aria-label="目次" data-i18n-attrs="aria-label:a11y.toc">
-            <a href="#scope">适用范围</a>
-            <a href="#site">本站点</a>
-            <a href="#interaction">互动功能</a>
-            <a href="#storage">Cookie 与本地存储</a>
-            <a href="#links">外部链接</a>
-            <a href="#apps">桌面应用</a>
-            <a href="#children">儿童隐私</a>
-            <a href="#rights">你的权利</a>
-            <a href="#updates">政策更新</a>
+            <a href="#scope" data-i18n="privacy.toc.scope">適用範囲</a>
+            <a href="#site" data-i18n="privacy.toc.site">本サイト</a>
+            <a href="#interaction" data-i18n="privacy.toc.interaction">インタラクティブ機能</a>
+            <a href="#storage" data-i18n="privacy.toc.storage">Cookie とローカルストレージ</a>
+            <a href="#links" data-i18n="privacy.toc.links">外部リンク</a>
+            <a href="#apps" data-i18n="privacy.toc.apps">デスクトップアプリ</a>
+            <a href="#children" data-i18n="privacy.toc.children">児童のプライバシー</a>
+            <a href="#rights" data-i18n="privacy.toc.rights">あなたの権利</a>
+            <a href="#updates" data-i18n="privacy.toc.updates">ポリシーの更新</a>
         </nav>
 
-        <p>藤栖龟舍（VineTurtle Studio）希望你在浏览本站、使用我们的桌面应用时都能放心。这份策略说明我们处理哪些信息、不处理哪些信息，以及你可以怎么联系我们。</p>
+        <p data-i18n="privacy.intro">藤棲亀舎（VineTurtle Studio）は、本サイトの閲覧やデスクトップアプリのご利用を安心していただけるようにしたいと考えています。このポリシーでは、私たちが処理する情報と処理しない情報、そしてお問い合わせの方法を説明します。</p>
 
         <div class="privacy-note">
-            <p><strong>一句话版本：</strong>本站默认是纯静态站点，不设账号、不接统计与广告脚本；只有在你使用可选的评论或点赞功能时，才会与 GitHub 或 Cloudflare 发生必要的数据交互。桌面应用只在本机读写你自己的文件，不做任何上传。</p>
+            <p><strong data-i18n="privacy.oneLinerLabel">ひとことで言うと：</strong><span data-i18n="privacy.oneLinerBody">本サイトは既定で純静態サイトであり、アカウントも統計・広告スクリプトもありません。オプションのコメント機能やいいね機能を使うときにだけ、GitHub または Cloudflare との必要なデータのやり取りが発生します。デスクトップアプリはあなた自身のファイルをローカルで読み書きするだけで、一切アップロードしません。</span></p>
         </div>
 
-        <h2 id="scope">1. 适用范围</h2>
-        <p>本策略适用于：</p>
+        <h2 id="scope" data-i18n="privacy.h.scope">1. 適用範囲</h2>
+        <p data-i18n="privacy.scopeLead">このポリシーの適用対象：</p>
         <ul>
-            <li><strong>藤栖龟舍官网</strong>（grapeleafi.top）及其下的博客、项目、画廊等内容页面；</li>
-            <li>我们发布或计划发布的<strong>桌面应用</strong>，例如 VinePalma Player、VinePalmaFlow、VinePalmaToolbox、VinePalmaUninstaller 等。</li>
+            <li><strong data-i18n="privacy.scopeItem1">藤棲亀舎公式サイト</strong><span data-i18n="privacy.scopeItem1Body">（grapeleafi.top）とその配下のブログ・プロジェクト・ギャラリーなどのコンテンツページ。</span></li>
+            <li><span data-i18n="privacy.scopeItem2a">私たちが公開または公開を計画している </span><strong data-i18n="privacy.scopeItem2b">デスクトップアプリ</strong><span data-i18n="privacy.scopeItem2c">。たとえば VinePalma Player、VinePalmaFlow、VinePalmaToolbox、VinePalmaUninstaller など。</span></li>
         </ul>
-        <p>站点与桌面应用的数据处理方式不同，下文分别说明。</p>
+        <p data-i18n="privacy.scopeTail">サイトとデスクトップアプリではデータの取り扱いが異なるため、以下でそれぞれ説明します。</p>
 
-        <h2 id="site">2. 本站点收集哪些信息</h2>
+        <h2 id="site" data-i18n="privacy.h.site">2. 本サイトが収集する情報</h2>
         <ul>
-            <li><strong>默认不需要注册</strong>：本站主体是纯静态页面，浏览文章、项目和画廊不需要账号，也不要求提交个人信息。</li>
-            <li><strong>不使用统计脚本和广告</strong>：页面不植入第三方分析工具，不使用像素追踪，也不做用户画像。</li>
-            <li><strong>主体资源自托管</strong>：样式、脚本、图片都来自本站。只有在你使用评论功能时，页面才会加载 GitHub 提供的 giscus 评论组件。</li>
+            <li><strong data-i18n="privacy.siteItem1Label">登録は既定で不要</strong><span data-i18n="privacy.siteItem1Body">本サイトの本体は純静態ページで、記事・プロジェクト・ギャラリーの閲覧にアカウントは不要であり、個人情報の提出も求めません。</span></li>
+            <li><strong data-i18n="privacy.siteItem2Label">統計スクリプトと広告は不使用</strong><span data-i18n="privacy.siteItem2Body">ページにサードパーティの分析ツールを埋め込まず、ピクセル追跡もユーザープロファイリングも行いません。</span></li>
+            <li><strong data-i18n="privacy.siteItem3Label">主要リソースはセルフホスト</strong><span data-i18n="privacy.siteItem3Body">スタイル・スクリプト・画像はすべて本サイトから提供します。コメント機能を使うときにのみ、GitHub 提供の giscus コメントコンポーネントを読み込みます。</span></li>
         </ul>
         <div class="privacy-note">
-            <p><strong>托管方日志：</strong>本站托管在 GitHub Pages。作为托管服务商，GitHub 可能记录访问日志（如 IP 地址、浏览器标识、访问时间）用于安全防护和流量统计。这些日志由 GitHub 按自身策略处理，我们只能看到聚合后的访问数据，无法据此识别具体个人。<a href="https://docs.github.com/zh/site-policy/privacy-policies/github-privacy-statement" target="_blank" rel="noopener noreferrer">GitHub 隐私声明</a></p>
+            <p><strong data-i18n="privacy.hostLogLabel">ホスティング側のログ：</strong><span data-i18n="privacy.hostLogBody">本サイトは GitHub Pages でホストされています。ホスティング事業者として、GitHub はアクセスログ（IP アドレス、ブラウザ識別子、アクセス時刻など）をセキュリティ保護やトラフィック統計のために記録する場合があります。これらのログは GitHub 自身のポリシーで処理され、私たちに見えるのは集計後のアクセスデータのみで、特定の個人を識別することはできません。</span><a href="https://docs.github.com/zh/site-policy/privacy-policies/github-privacy-statement" target="_blank" rel="noopener noreferrer" data-i18n="privacy.githubStatement">GitHub プライバシー声明</a></p>
         </div>
 
-        <h2 id="interaction">3. 评论、点赞与阅读量（可选）</h2>
-        <p>本站默认不加载任何互动组件。只有在站点启用以下功能时，相关数据才会被处理：</p>
+        <h2 id="interaction" data-i18n="privacy.h.interaction">3. コメント・いいね・閲覧数（オプション）</h2>
+        <p data-i18n="privacy.interactionLead">本サイトは既定でインタラクティブなコンポーネントを一切読み込みません。以下の機能が有効になったときにのみ、関連データが処理されます：</p>
         <ul>
-            <li><strong>评论</strong>：使用 giscus，评论内容存放在本项目的 GitHub Discussions 中。发表评论需要登录 GitHub 账号，GitHub 会按其隐私声明处理账号信息；评论由我们审核，必要时可删除。</li>
-            <li><strong>点赞与阅读量</strong>：使用 Cloudflare Workers + D1 记录内容标识和计数。为防止刷量，服务端会短暂处理 IP 地址的哈希值，不保存原始 IP，也不与账号关联。</li>
-            <li><strong>本地去重</strong>：浏览器 <code>localStorage</code> 会记录「今天已阅读」「已点赞」等标记，仅用于避免重复计数；你可以随时在浏览器设置中清除。</li>
+            <li><strong data-i18n="privacy.commentLabel">コメント</strong><span data-i18n="privacy.commentBody">giscus を使用し、コメント内容は本プロジェクトの GitHub Discussions に保存されます。コメントの投稿には GitHub アカウントへのログインが必要で、GitHub がそのプライバシー声明に従ってアカウント情報を処理します。コメントは私たちが審査し、必要に応じて削除できます。</span></li>
+            <li><strong data-i18n="privacy.likeLabel">いいねと閲覧数</strong><span data-i18n="privacy.likeBody">Cloudflare Workers + D1 でコンテンツ識別子とカウントを記録します。不正な水増しを防ぐため、サーバーは IP アドレスのハッシュ値を短時間だけ処理し、元の IP は保存せず、アカウントとも紐付けません。</span></li>
+            <li><strong data-i18n="privacy.dedupLabel">ローカル重複排除</strong><span data-i18n="privacy.dedupBody1">ブラウザの </span><code>localStorage</code><span data-i18n="privacy.dedupBody2"> には「今日既読」「いいね済み」などのマークが記録され、重複カウントの回避だけに使われます。いつでもブラウザの設定から消去できます。</span></li>
         </ul>
         <div class="privacy-note">
-            <p><strong>第三方服务：</strong>启用评论时会连接 GitHub（giscus）；启用点赞/阅读量时会连接 Cloudflare。它们分别按各自的隐私策略处理必要的网络与账号信息。我们不会把互动数据出售或用于广告画像。</p>
+            <p><strong data-i18n="privacy.thirdPartyLabel">サードパーティサービス：</strong><span data-i18n="privacy.thirdPartyBody">コメント有効時は GitHub（giscus）に、いいね/閲覧数有効時は Cloudflare に接続します。それぞれが自社のプライバシーポリシーに従って必要なネットワーク・アカウント情報を処理します。私たちがインタラクションデータを販売したり広告プロファイリングに使ったりすることはありません。</span></p>
         </div>
 
-        <h2 id="storage">4. Cookie 与本地存储</h2>
+        <h2 id="storage" data-i18n="privacy.h.storage">4. Cookie とローカルストレージ</h2>
         <ul>
-            <li>本站主体<strong>不写入 Cookie</strong>。启用 giscus 评论后，评论组件运行在 GitHub 的 iframe 中，可能按 GitHub 的策略使用 Cookie 或本地存储，我们无法读取其中的内容。</li>
-            <li>点赞/阅读量功能使用 <code>localStorage</code> 记录去重标记，不包含个人身份信息。</li>
-            <li>本站的<strong>内容管理后台</strong>只在你自己的电脑上运行（本地服务，不对公网开放），使用浏览器 <code>localStorage</code> / <code>sessionStorage</code> 暂存编辑草稿和本次会话的临时令牌。这些数据留在你的浏览器里，不发送到任何服务器。</li>
-            <li>页面刷新或关闭浏览器后，会话令牌即失效；草稿可由你在后台手动清除。</li>
+            <li><span data-i18n="privacy.storageItem1a">本サイトの本体は </span><strong data-i18n="privacy.storageItem1b">Cookie を書き込みません</strong><span data-i18n="privacy.storageItem1c">。giscus コメントを有効にすると、コメントコンポーネントは GitHub の iframe 内で動作し、GitHub のポリシーに従って Cookie やローカルストレージを使う場合があります。その内容を私たちが読むことはできません。</span></li>
+            <li><span data-i18n="privacy.storageItem2a">いいね/閲覧数機能は </span><code>localStorage</code><span data-i18n="privacy.storageItem2b"> で重複排除マークを記録します。個人を識別する情報は含まれません。</span></li>
+            <li><span data-i18n="privacy.storageItem3a">本サイトの </span><strong data-i18n="privacy.storageItem3b">コンテンツ管理バックエンド</strong><span data-i18n="privacy.storageItem3c"> はあなた自身の PC でのみ動作し（ローカルサービス、公開ネットワークには非公開）、ブラウザの </span><code>localStorage</code><span data-i18n="privacy.storageItem3d"> / </span><code>sessionStorage</code><span data-i18n="privacy.storageItem3e"> を使って編集下書きと今回のセッションの一時トークンを退避します。これらのデータはブラウザの中にとどまり、どのサーバーにも送信されません。</span></li>
+            <li data-i18n="privacy.storageItem4">ページ再読み込みやブラウザ終了後、セッショントークンは失効します。下書きは管理画面から手動で消去できます。</li>
         </ul>
 
-        <h2 id="links">5. 外部链接</h2>
-        <p>站内可能出现指向 GitHub、软件下载页等第三方站点的链接。点击后你即离开本站，第三方站点会按其自己的隐私策略处理信息，我们无法控制，也不对其内容负责。建议你在提交任何信息前先阅读对方的隐私说明。</p>
+        <h2 id="links" data-i18n="privacy.h.links">5. 外部リンク</h2>
+        <p data-i18n="privacy.linksBody">サイト内には GitHub やソフトのダウンロードページなど、サードパーティサイトへのリンクが現れることがあります。クリックした時点で本サイトを離れ、そのサイトは独自のプライバシーポリシーで情報を処理します。私たちには制御できず、その内容にも責任を負いません。情報を送る前に、相手のプライバシー説明をお読みください。</p>
 
-        <h2 id="apps">6. 桌面应用（VinePalma Player 等）</h2>
+        <h2 id="apps" data-i18n="privacy.h.apps">6. デスクトップアプリ（VinePalma Player など）</h2>
         <ul>
-            <li><strong>本地文件访问</strong>：为了播放或处理你选择的文件，应用会请求读取本地存储的权限。该权限仅用于你主动选择的文件，不会扫描无关目录。</li>
-            <li><strong>不收集个人信息</strong>：应用不会以任何方式收集、存储或传输姓名、邮箱、电话、设备标识等个人身份信息。</li>
-            <li><strong>不做网络上传</strong>：播放器类应用不把音频、播放列表或使用记录上传到服务器；本地优先类应用（如 VinePalmaFlow）的数据默认只保存在你的设备上。</li>
-            <li><strong>数据留在本地</strong>：播放列表、偏好设置等由你创建的数据仅保存在本机，卸载应用后随之清除。</li>
-            <li><strong>不集成第三方 SDK</strong>：应用不包含第三方分析、广告或社交平台 SDK。</li>
+            <li><strong data-i18n="privacy.appsItem1Label">ローカルファイルアクセス</strong><span data-i18n="privacy.appsItem1Body">選択したファイルを再生・処理するため、アプリはローカルストレージの読み取り権限を要求します。この権限はあなたが能動的に選んだファイルだけに使われ、無関係なディレクトリを走査しません。</span></li>
+            <li><strong data-i18n="privacy.appsItem2Label">個人情報を収集しない</strong><span data-i18n="privacy.appsItem2Body">アプリは、氏名・メールアドレス・電話番号・デバイス識別子などの個人識別情報を、いかなる方法でも収集・保存・送信しません。</span></li>
+            <li><strong data-i18n="privacy.appsItem3Label">ネットワークへアップロードしない</strong><span data-i18n="privacy.appsItem3Body">プレーヤー系アプリは音声・プレイリスト・利用記録をサーバーにアップロードしません。ローカルファースト系アプリ（VinePalmaFlow など）のデータは既定であなたのデバイス上にのみ保存されます。</span></li>
+            <li><strong data-i18n="privacy.appsItem4Label">データはローカルに滞在</strong><span data-i18n="privacy.appsItem4Body">プレイリストや設定など、あなたが作ったデータは本機にのみ保存され、アプリをアンインストールすると一緒に消えます。</span></li>
+            <li><strong data-i18n="privacy.appsItem5Label">サードパーティ SDK を同梱しない</strong><span data-i18n="privacy.appsItem5Body">アプリにはサードパーティの分析・広告・SNS プラットフォーム SDK は含まれません。</span></li>
         </ul>
 
-        <h2 id="children">7. 儿童隐私</h2>
-        <p>本站与我们的应用不会有意收集任何年龄段用户的个人信息，内容也不包含成人主题，适合各年龄段浏览与使用。若你认为我们无意中持有了未成年人的信息，请通过下方邮箱联系我们，我们会尽快删除。</p>
+        <h2 id="children" data-i18n="privacy.h.children">7. 児童のプライバシー</h2>
+        <p data-i18n="privacy.childrenBody">本サイトと私たちのアプリは、年齢を問わずユーザーの個人情報を意図的に収集することはなく、コンテンツにも成人向けテーマは含まれず、どの年齢層の方でも安心して閲覧・利用できます。万一未成年者の情報を意図せず保有していた場合は、下記のメールアドレスからご連絡ください。速やかに削除します。</p>
 
-        <h2 id="rights">8. 你的权利与联系方式</h2>
-        <p>本站主体不收集可识别个人身份的信息。如果你使用过评论功能，评论内容保存在 GitHub Discussions，可在 GitHub 上编辑或删除；点赞/阅读量只保存计数，无法关联到具体个人。如果你对隐私处理有疑问，可以随时邮件联系：</p>
+        <h2 id="rights" data-i18n="privacy.h.rights">8. あなたの権利と連絡先</h2>
+        <p data-i18n="privacy.rightsBody">本サイトの本体は個人を識別できる情報を収集しません。コメント機能を使った場合、コメント内容は GitHub Discussions に保存され、GitHub 上で編集・削除できます。いいね/閲覧数はカウントのみを保存し、特定の個人には紐付けられません。プライバシー処理に疑問がある場合は、いつでもメールでご連絡ください：</p>
         <ul>
-            <li class="privacy-contact"><strong>邮箱：</strong> <a href="mailto:VineTurtleStudio@outlook.com">VineTurtleStudio@outlook.com</a></li>
+            <li class="privacy-contact"><strong data-i18n="privacy.emailLabel">メール：</strong> <a href="mailto:VineTurtleStudio@outlook.com">VineTurtleStudio@outlook.com</a></li>
         </ul>
 
-        <h2 id="updates">9. 政策更新</h2>
-        <p>我们可能会更新本策略，例如新增统计工具或上线新的应用功能时。任何实质性变更都会更新本页顶部的「最后更新」日期；如变更影响较大，我们会在站内显著位置提示。建议你定期回来查看。</p>
+        <h2 id="updates" data-i18n="privacy.h.updates">9. ポリシーの更新</h2>
+        <p data-i18n="privacy.updatesBody">統計ツールの追加やアプリの新機能の公開など、このポリシーを更新することがあります。実質的な変更があれば本ページ上部の「最終更新」の日付を更新し、影響の大きい変更ではサイト内の目立つ場所でお知らせします。定期的に戻ってご確認ください。</p>
 
         <div class="privacy-copyright" data-i18n="privacy.copyright">© 2026 藤棲亀舎 VineTurtle Studio · 無断転載を禁じます</div>
     </div>
@@ -130,6 +130,6 @@
 <div id="footer-placeholder"></div>
 
 <!-- 月份徽标（自动更新） -->
-<div class="month-badge" id="monthBadge">🌿 1月</div>
+<div class="month-badge" id="monthBadge">🌿</div>
 </body>
 </html>

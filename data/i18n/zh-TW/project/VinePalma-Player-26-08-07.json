@@ -5,5 +5,7 @@
     "Linux",
     "Tauri",
     "播放器"
-  ]
+  ],
+  "desc": "VinePalma Player 播放器設定，一個值得選擇的本機播放器。",
+  "status": "🚧 迭代中"
 }

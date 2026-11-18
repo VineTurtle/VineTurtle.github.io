@@ -1,0 +1,71 @@
+<p>VinePalmaFlow 的區域網路同步最初有個詭異現象：<strong>兩臺裝置明明什麼都沒改，每次同步卻總在互相傳輸全量資料</strong>。日誌裡顯示所有專案的內容指紋（hash）都對不上。排查下來，根因藏在 Rust 標準庫的一個「特性」裡。</p>
+
+<h2>🔍 根因：DefaultHasher 的隨機種子</h2>
+
+<p>第一版實現直接用了 <code>std::collections::hash_map::DefaultHasher</code> 對專案內容求雜湊。但 Rust 的 <code>RandomState</code> <strong>故意為每個行程隨機化種子</strong>（防雜湊碰撞 DoS 攻擊）。這意味著：</p>
+
+<pre><code>// 进程 A
+let mut h = std::collections::hash_map::DefaultHasher::new();
+"project.md 内容".hash(&amp;mut h);
+// h.finish() = 0x9e37...
+
+// 进程 B（同一份内容！）
+// h.finish() = 0x51f2...  ← 完全不同的值</code></pre>
+
+<p>增量同步的前提是「相同內容 → 相同指紋」，而跨行程比較恰恰是同步場景的常態。<code>DefaultHasher</code> 從設計上就做不到。</p>
+
+<h2>🛠️ 解法一：手寫 FNV-1a</h2>
+
+<p>我們需要一個<strong>跨行程確定性</strong>的雜湊。密碼學雜湊（SHA-256）當然可以，但對本地可信場景來說太重。FNV-1a 只有幾行，雪崩性足夠區分檔案內容：</p>
+
+<pre><code>struct Fnv1a(u64);
+
+impl Fnv1a {
+    fn new() -&gt; Self { Fnv1a(0xcbf29ce484222325) }
+    fn update(&amp;mut self, bytes: &amp;[u8]) {
+        for &amp;b in bytes {
+            self.0 ^= b as u64;
+            self.0 = self.0.wrapping_mul(0x100000001b3);
+        }
+    }
+}</code></pre>
+
+<p>計算範圍是 <code>project.md</code> 內容 + <strong>按檔名排序後</strong>的任務檔案（檔名 + 內容）逐個喂進去。排序很關鍵——檔案系統返回目錄項的順序不保證穩定，不排序的話同一目錄兩次列舉就會算出不同指紋。</p>
+
+<h2>🛠️ 解法二：序列化必須冪等</h2>
+
+<p>光有確定性雜湊還不夠。指紋的輸入是檔案內容，而 project.md 的 Front Matter 是我們<strong>自己序列化寫出去</strong>的。如果序列化不穩定——比如 <code>serde_yaml</code> 按列舉順序輸出欄位、空值時有時無——那麼使用者只是開啟又儲存，檔案位元組就變了，指紋跟著變，又一次假差異。</p>
+
+<p>所以 VinePalmaFlow 手寫了 Front Matter 的序列化：<strong>15 個欄位固定輸出順序、null/空串/空陣列一律剔除、未識別的自定義欄位排在末尾</strong>。同樣的後設資料，無論在哪臺裝置、哪個版本上序列化，輸出位元組級一致。這是「冪等序列化」：serialize(parse(x)) == x。</p>
+
+<h2>🧩 配套機制：基準映象與欄位級合併</h2>
+
+<p>指紋只解決「發現差異」，解決「合併差異」靠三方合併。每臺裝置在 <code>.localflow/sync/peers/{peer_id}/{project_id}/</code> 下儲存上次同步結果的<strong>基準映象</strong>（base），合併時三方對比：</p>
+
+<table>
+    <thead><tr><th>本地 vs base</th><th>對方 vs base</th><th>結果</th></tr></thead>
+    <tbody>
+        <tr><td>未改</td><td>改了</td><td>採納對方</td></tr>
+        <tr><td>改了</td><td>未改</td><td>保留本地</td></tr>
+        <tr><td>兩邊改得一樣</td><td></td><td>任意採納</td></tr>
+        <tr><td>兩邊改得不同</td><td></td><td><strong>衝突，交給使用者</strong></td></tr>
+    </tbody>
+</table>
+
+<p>對 project.md 我們再做一層<b>欄位級合併</b>：YAML Front Matter 按 key 逐個三方合併，正文單獨做文本三方合併。A 裝置改進度、B 裝置改正文，整檔案對比會誤判衝突，欄位級合併則能自動融合——只有「同一個欄位被雙方改成不同值」才算真衝突。</p>
+
+<h2>⚠️ 反直覺的細節：解決衝突後必須更新 base</h2>
+
+<p>使用者在衝突 UI 裡選了「採用對方」，如果只寫回目標檔案，<strong>base 映象還停留在舊版本</strong>——下次同步，對端視角下你的選擇又是一次「新改動」，同一個衝突無限復活。正確做法是把選擇結果同時寫入該 peer 的 base 目錄：</p>
+
+<pre><code>fn resolve_conflict(...) {
+    std::fs::write(target, content)?;
+    // 更新基准镜像，本次选择成为新的共同基线
+    write_base(&amp;peer_base_dir(ws, peer_id, project_id), &amp;file, content)?;
+}</code></pre>
+
+<p>這個 bug 上線前被我們自己的測試抓住了——「同一衝突不能復活」現在是一條固定的迴歸用例。</p>
+
+<h2>📝 小結</h2>
+
+<p>增量同步的三塊基石：<strong>確定性雜湊（FNV-1a）+ 冪等序列化（固定欄位順序）+ 三方合併（base 映象隨每次解決而前進）</strong>。三者缺一，都會以「假差異」「衝突復活」這類難以追蹤的方式反噬。現在 VinePalmaFlow 兩臺裝置空閒時同步，日誌安靜得像什麼都沒發生——這正是我們想要的。</p>

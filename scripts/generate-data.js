@@ -186,7 +186,7 @@ function buildLocalizedIndex(lang, key) {
         const meta = I18N.loadContentMeta(lang, sub, item.slug);
         if (!meta) return item;
         const patch = {};
-        ['title', 'excerpt', 'desc', 'tags'].forEach(function (field) {
+        ['title', 'excerpt', 'desc', 'status', 'tags'].forEach(function (field) {
             if (meta[field] != null) patch[field] = meta[field];
         });
         return Object.assign({}, item, patch);

@@ -1,0 +1,56 @@
+<p>VinePalmaFlow の LAN 同期には最初、奇妙な現象がありました：<strong>両デバイスは何も変えていないのに、同期のたびに全量データを相互転送している</strong>。ログには全プロジェクトの内容指紋（hash）が一致しないと表示されます。調べてみると、根因は Rust 標準ライブラリのある「仕様」に隠れていました。</p>
+
+<h2>🔍 根因：DefaultHasher のランダムシード</h2>
+<p>最初の実装は <code>std::collections::hash_map::DefaultHasher</code> でプロジェクト内容をハッシュしていました。しかし Rust の <code>RandomState</code> は<strong>プロセスごとに意図的にシードをランダム化</strong>しています（ハッシュ衝突 DoS 攻撃への防御）。つまり：</p>
+<pre><code>// 进程 A
+let mut h = std::collections::hash_map::DefaultHasher::new();
+"project.md 内容".hash(&amp;mut h);
+// h.finish() = 0x9e37...
+
+// 进程 B（同一份内容！）
+// h.finish() = 0x51f2...  ← 完全不同的值</code></pre>
+<p>増分同期の前提は「同じ内容 → 同じ指紋」であるのに、プロセスをまたぐ比較こそが同期シーンの常態です。<code>DefaultHasher</code> は設計上それが不可能です。</p>
+
+<h2>🛠️ 解決策 1：手書き FNV-1a</h2>
+<p><strong>プロセスをまたいで決定的</strong>なハッシュが必要です。暗号学的ハッシュ（SHA-256）でももちろん可能ですが、ローカルの信頼できる場面には重すぎます。FNV-1a は数行で書け、雪崩性もファイル内容の区別には十分です：</p>
+<pre><code>struct Fnv1a(u64);
+
+impl Fnv1a {
+    fn new() -&gt; Self { Fnv1a(0xcbf29ce484222325) }
+    fn update(&amp;mut self, bytes: &amp;[u8]) {
+        for &amp;b in bytes {
+            self.0 ^= b as u64;
+            self.0 = self.0.wrapping_mul(0x100000001b3);
+        }
+    }
+}</code></pre>
+<p>計算対象は <code>project.md</code> の内容 + <strong>ファイル名順にソートした</strong>タスクファイル（ファイル名 + 内容）を順に投入します。ソートが肝心です——ファイルシステムはディレクトリエントリの順序を保証しないため、ソートしなければ同じディレクトリでも 2 回の列挙で別の指紋が出てしまいます。</p>
+
+<h2>🛠️ 解決策 2：シリアライズは冪等でなければならない</h2>
+<p>決定的ハッシュだけではまだ足りません。指紋の入力はファイル内容であり、project.md の Front Matter は<strong>自分でシリアライズして書き出している</strong>ものです。シリアライズが不安定——たとえば <code>serde_yaml</code> が列挙順にフィールドを出力したり、null が出たり出なかったりすると——ユーザーが開いて保存しただけでファイルのバイト列が変わり、指紋も変わり、またしても偽差異です。</p>
+<p>そこで VinePalmaFlow は Front Matter のシリアライズを手書きしました：<strong>15 個のフィールドは固定順で出力、null/空文字列/空配列は一律除去、未識別のカスタムフィールドは末尾に配置</strong>。同じメタデータなら、どのデバイスのどのバージョンでシリアライズしてもバイト単位で一致します。これが「冪等シリアライズ」：serialize(parse(x)) == x。</p>
+
+<h2>🧩 付随機構：ベースラインミラーとフィールド単位マージ</h2>
+<p>指紋が解決するのは「差異の発見」で、「差異のマージ」はスリーウェイマージに頼ります。各デバイスは <code>.localflow/sync/peers/{peer_id}/{project_id}/</code> 配下に前回同期結果の<strong>ベースラインミラー</strong>（base）を保存しており、マージ時に三者比較します：</p>
+<table>
+    <thead><tr><th>ローカル vs base</th><th>相手 vs base</th><th>結果</th></tr></thead>
+    <tbody>
+        <tr><td>未変更</td><td>変更あり</td><td>相手を採用</td></tr>
+        <tr><td>変更あり</td><td>未変更</td><td>ローカルを保持</td></tr>
+        <tr><td>双方が同じ内容に変更</td><td></td><td>どちらでも採用</td></tr>
+        <tr><td>双方が別の内容に変更</td><td></td><td><strong>競合——ユーザーに委ねる</strong></td></tr>
+    </tbody>
+</table>
+<p>project.md にはさらに<b>フィールド単位マージ</b>を一枚重ねます：YAML Front Matter は key ごとにスリーウェイマージし、本文は別途テキストのスリーウェイマージを行います。A デバイスが進捗を、B デバイスが本文を変えた場合、ファイル全体の比較では誤って競合判定されますが、フィールド単位なら自動的に融合できます——「同じフィールドを双方が別の値に変えた」場合だけが真の競合です。</p>
+
+<h2>⚠️ 直感に反する細部：競合解決後は必ず base を更新</h2>
+<p>ユーザーが競合 UI で「相手を採用」を選んだとき、対象ファイルだけに書き戻すと、<strong>base ミラーは旧バージョンのまま</strong>——次の同期では、相手の視点であなたの選択はまた「新たな変更」になり、同じ競合が無限に復活します。正しいやり方は、選択結果をそのピアの base ディレクトリにも同時に書き込むことです：</p>
+<pre><code>fn resolve_conflict(...) {
+    std::fs::write(target, content)?;
+    // 更新基准镜像，本次选择成为新的共同基线
+    write_base(&amp;peer_base_dir(ws, peer_id, project_id), &amp;file, content)?;
+}</code></pre>
+<p>このバグは公開前に自分たちのテストに捕捉されました——「同じ競合は復活しない」は今や固定のリグレッションケースです。</p>
+
+<h2>📝 まとめ</h2>
+<p>増分同期の 3 つの基石：<strong>決定的ハッシュ（FNV-1a）+ 冪等シリアライズ（固定フィールド順）+ スリーウェイマージ（base ミラーは解決のたびに前進）</strong>。どれか一つでも欠ければ、「偽差異」「競合復活」といった追跡困難な形で反撃されます。今、VinePalmaFlow の 2 台のデバイスはアイドル時に同期し、ログは何も起きていないかのように静か——まさに望んでいた姿です。</p>

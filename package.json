@@ -8,8 +8,16 @@
     "admin": "node scripts/admin-server.js",
     "deploy": "node scripts/deploy.js",
     "set-domain": "node scripts/set-domain.js",
+    "i18n:extract": "node scripts/translate/extract.js",
+    "i18n:zh-tw": "node scripts/translate/zh-tw.js",
+    "i18n:verify": "node scripts/translate/verify.js",
+    "i18n:audit": "node scripts/translate/audit-mirrors.js",
+    "i18n:status": "node scripts/translate/status.js",
     "dev": "python3 -m http.server 8000",
     "serve": "python3 -m http.server 8000"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "opencc-js": "^1.4.2"
+  }
 }

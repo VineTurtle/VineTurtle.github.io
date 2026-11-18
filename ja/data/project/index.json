@@ -11,10 +11,10 @@
     ],
     "thumbnail": "../../Resources/images/projects/thumbnails/grapeleafi-site.jpg",
     "hero": "../../Resources/images/projects/hero/grapeleafi-site.jpg",
-    "status": "🚧 迭代中",
+    "status": "🚧 継続開発中",
     "statusClass": "status-progress",
     "year": "2024",
-    "desc": "为零基础用户维护的纯静态粉丝社区站：倒计时、生日提醒、看板娘一个不少",
+    "desc": "ゼロから始める人のための純静態ファンコミュニティサイト：カウントダウン、誕生日リマインダー、看板娘まで全部あり。",
     "excerpt": "まったくの初心者向けに運営している完全静的のファンコミュニティサイト。カウントダウン、誕生日リマインド、マスコットまで揃っている。"
   },
   {
@@ -30,10 +30,10 @@
     ],
     "thumbnail": "../../Resources/images/projects/thumbnails/vinepalma-flow.jpg",
     "hero": "../../Resources/images/projects/hero/vinepalma-flow.jpg",
-    "status": "🚧 迭代中",
+    "status": "🚧 継続開発中",
     "statusClass": "status-progress",
     "year": "2026",
-    "desc": "永远不上云的本地优先项目管理工具：Markdown 即数据库，局域网像云一样协作",
+    "desc": "クラウドに上げないローカルファーストのプロジェクト管理ツール：Markdown がそのままデータベース、LAN の中なら雲のような協働を。",
     "excerpt": "絶対にクラウドへ上げないローカル優先のプロジェクト管理ツール。Markdown がデータベースで、LAN がクラウドのように協働する。"
   },
   {
@@ -48,10 +48,10 @@
     ],
     "thumbnail": "../../Resources/images/projects/thumbnails/vinepalma-uninstaller.jpg",
     "hero": "../../Resources/images/projects/hero/vinepalma-uninstaller.jpg",
-    "status": "🚧 迭代中",
+    "status": "🚧 継続開発中",
     "statusClass": "status-progress",
     "year": "2026",
-    "desc": "APT / Flatpak / Snap / Docker / AppImage / APM 六大来源统一的 Linux 卸载器",
+    "desc": "APT / Flatpak / Snap / Docker / AppImage / APM の 6 大ソースを統一する Linux アンインストーラー。",
     "excerpt": "APT / Flatpak / Snap / Docker / AppImage / APM の 6 つの配布元を統合した Linux アンインストーラー。"
   },
   {
@@ -66,10 +66,10 @@
     ],
     "thumbnail": "../../Resources/images/projects/thumbnails/vinepalma-player.jpg",
     "hero": "../../Resources/images/projects/hero/vinepalma-player.jpg",
-    "status": "🚧 迭代中",
+    "status": "🚧 継続開発中",
     "statusClass": "status-progress",
     "year": "2026",
-    "desc": "VinePalma Player播放器设置，一个值得选择的本地播放器",
+    "desc": "VinePalma Player の設定ガイド。選んで損のないローカルプレーヤー。",
     "excerpt": "VinePalma Player の設定と、選ぶ価値のあるローカルプレーヤーである理由。"
   },
   {
@@ -84,10 +84,10 @@
     ],
     "thumbnail": "../../Resources/images/projects/thumbnails/vinepalma-toolbox.jpg",
     "hero": "../../Resources/images/projects/hero/vinepalma-toolbox.jpg",
-    "status": "🚧 迭代中",
+    "status": "🚧 継続開発中",
     "statusClass": "status-progress",
     "year": "2026",
-    "desc": "VinePalmaToolbox，一个值得你选择的工具箱",
+    "desc": "VinePalmaToolbox——選んで損はないツールボックス。",
     "excerpt": "VinePalmaToolbox、選んで損のないツールボックス。"
   }
 ]

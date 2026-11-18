@@ -420,12 +420,7 @@ function localizeStaticHtml(html, lang, rel, seo) {
         return '<script type="application/ld+json">\n' + safeJson(data) + '\n</script>';
     });
 
-    // 隐私策略正文暂为简中，按 HTML 规范在容器上标注实际语言，避免屏幕阅读器/SEO 误判（R14）
-    if (rel === 'privacy/privacy.html' && lang !== I18N.DEFAULT_LANG) {
-        out = out.replace(/<main([^>]*)>/i, function (m, attrs) {
-            return /lang=/i.test(attrs) ? m : '<main lang="zh-CN"' + attrs + '>';
-        });
-    }
+    // 隐私页正文已按语言字典化（privacy.*），<html lang> 已标注页面语言，无需容器级覆盖
 
     return out;
 }
@@ -457,7 +452,7 @@ function copySpecialPageScripts(dest) {
 
 function mirrorLanguages() {
     // 跳过预览大图、已本地化的索引与画廊数据，以及翻译覆盖源目录（R21/R4）
-    const skip = [/_preview/, /_crop/, /search-index\.json$/, /^data\/i18n($|\/)/, /(^|\/)index\.json$/, /^data\/gallery\.json$/];
+    const skip = [/_preview/, /_crop/, /search-index\.json$/, /^data\/i18n($|\/)/, /^data\/i18n-work($|\/)/, /(^|\/)index\.json$/, /^data\/gallery\.json$/];
     for (const lang of I18N.LANGS) {
         if (lang === I18N.DEFAULT_LANG) continue; // 简中根路径保持原样
         const dest = I18N.langRoot(lang);

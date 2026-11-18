@@ -51,17 +51,17 @@
             <div class="hero-img-wrap"><img src="../../Resources/images/blog/hero/uninstaller-safety.jpg" alt="Designing a safe uninstaller: three layers that keep Linux deletions honest" class="post-hero-img" data-fallback="🛡️"><div class="fallback-hero">🛡️</div></div>
             <header class="post-header">
                 <h1>Designing a safe uninstaller: three layers that keep Linux deletions honest</h1>
-                <div class="post-meta"><span>📅 Aug 25, 2026</span><span>⏱ ~5 min read</span><div class="dynamic-stats" data-dynamic-stats></div></div>
+                <div class="post-meta"><span>📅 Aug 25, 2026</span><span>⏱ ~11 min read</span><div class="dynamic-stats" data-dynamic-stats></div></div>
 <div class="post-tags-display"><span class="tag">#Rust</span><span class="tag">#Linux</span><span class="tag">#Safe design</span><span class="tag">#VinePalmaUninstaller</span></div>
                 <div class="content-actions" data-content-actions></div>
             </header>
             <nav class="post-toc" data-toc hidden aria-label="Table of contents"></nav>
-            <div class="post-body" lang="zh-CN" data-content-lang="zh-CN">
-<p>开发 <strong>VinePalmaUninstaller</strong>（我们的 Linux 图形化卸载器）时，最常被问的问题不是「能卸载什么」，而是「<strong>会不会删错</strong>」。一个以删除为核心能力的工具，安全性不是特性，是底线。这篇笔记拆解我们的三重防线设计，以及 pkexec 提权路上踩的输出解析坑。</p>
+            <div class="post-body" lang="en" data-content-lang="en">
+<p>While developing <strong>VinePalmaUninstaller</strong> (our graphical Linux uninstaller), the question we hear most isn't "what can it uninstall" but "<strong>will it delete the wrong thing</strong>". For a tool whose core ability is deletion, safety isn't a feature — it's the bottom line. This note dissects our three lines of defense, plus the output-parsing pitfalls along the pkexec escalation road.</p>
 
-<h2>防线一：计划即白名单</h2>
-<h4>点击「卸载」并不是直接执行命令。后端先生成一份<strong>完整的卸载计划</strong>：对 APT 包先以模拟模式运行 <code>apt-get -s purge</code>，解析出将被移除的包列表；对残留文件，逐条列出将删除的路径。前端展示这份计划，用户勾选后提交。</h4>
-<h4>关键在于：前端提交的勾选结果<strong>不被信任</strong>。执行时后端会重新生成一遍计划，把提交的路径与重新生成的计划<strong>求交集</strong>——交集之外的一个字节都不会动。就算有人绕过界面伪造请求提交 <code>/etc/passwd</code>，它也不在服务端生成的计划里，直接被丢弃：</h4>
+<h2>Defense one: the plan is the whitelist</h2>
+<h4>Clicking "uninstall" doesn't execute commands directly. The backend first generates a <strong>complete uninstall plan</strong>: for APT packages it runs <code>apt-get -s purge</code> in simulation mode and parses out the to-be-removed package list; for leftover files, it lists every path slated for deletion. The front end shows this plan; the user ticks items and submits.</h4>
+<h4>The crux: the ticks submitted by the front end are <strong>not trusted</strong>. At execution the backend regenerates the plan and <strong>intersects</strong> the submitted paths with the freshly regenerated one — not a byte outside the intersection gets touched. Even if someone forges a request past the interface submitting <code>/etc/passwd</code>, it isn't in the server-generated plan and gets dropped on the spot:</h4>
 <pre><code>// 执行时：以服务端重新生成的计划为准
 let plan = build_plan(pkg)?;               // 重新生成
 let allowed: HashSet&lt;_&gt; = plan.files.iter().collect();
@@ -70,14 +70,14 @@ for path in user_selected {
     trash_or_delete(path)?;
 }</code></pre>
 
-<h2>防线二：路径黑名单与危险组件拦截</h2>
-<h4>即便路径出现在计划里，还有一层静态黑名单兜底：<code>/</code>、<code>/home</code>、<code>/etc</code>、<code>/usr</code>、<code>/var</code> 等 14 个系统关键目录及其直系子目录一律拒绝；用户家目录下的 <code>.config</code>、<code>.cache</code>、<code>.local</code> 等「配置根目录本身」也拒绝删除（里面的具体软件目录可以删）；含 <code>..</code> 组件的路径直接判非法——正常路径不需要它，需要它的必然不怀好意。</h4>
+<h2>Defense two: path blacklist &amp; dangerous-component interception</h2>
+<h4>Even if a path appears in the plan, a static blacklist still stands guard: <code>/</code>, <code>/home</code>, <code>/etc</code>, <code>/usr</code>, <code>/var</code> and 14 critical system directories plus their immediate children are refused outright; the "config roots themselves" under the user's home — <code>.config</code>, <code>.cache</code>, <code>.local</code> and so on — are also refused (the specific app directories inside them may be deleted); paths containing a <code>..</code> component are ruled illegal on sight — a normal path never needs it, and whatever needs it is up to no good.</h4>
 
-<h2>防线三：保护开关与保守的默认勾选</h2>
-<h4>残留扫描通过「包名变体匹配」识别软件自己的目录（大小写不敏感、连字符/下划线等价），但匹配分两档：<strong>精确命中默认勾选</strong>，仅「包含」关系的模糊命中<strong>默认不勾选</strong>——宁可漏删，不可误删。界面上还有「保留用户配置」「保留系统配置」两个开关，勾选的路径若落在系统目录会被即时过滤。三道防线各司其职：白名单管「来源可信」，黑名单管「路径合法」，开关管「用户意图」。</h4>
+<h2>Defense three: protection switches &amp; conservative default ticks</h2>
+<h4>Residue scanning identifies an app's own directories via "package-name variant matching" (case-insensitive, hyphen/underscore equivalent), but matching comes in two grades: <strong>exact hits are ticked by default</strong>; fuzzy hits that merely "contain" the name are <strong>unticked by default</strong> — better to under-delete than to delete wrongly. The interface also carries "keep user config" and "keep system config" switches; ticked paths falling inside system directories are filtered out instantly. The three defenses each mind their own post: the whitelist governs "trusted origin", the blacklist governs "path legality", the switches govern "user intent".</h4>
 
-<h2>🧪 提权的玄学：pkexec 与 LC_ALL=C</h2>
-<h4>系统级卸载需要 root，我们用 <code>pkexec</code> 动态提权（弹出图形化密码框，比 sudo 友好）。这里有个隐蔽的坑：apt 的输出文案依赖 locale，中文环境下「正在移除」这样的前缀没法解析。解法是给所有外部命令强制 <code>LC_ALL=C</code>，然后同时兼容三种英文前缀：</h4>
+<h2>🧪 The finicky art of escalation: pkexec &amp; LC_ALL=C</h2>
+<h4>System-level uninstall needs root, and we escalate dynamically with <code>pkexec</code> (a graphical password prompt, friendlier than sudo). A hidden pitfall here: apt's output wording depends on the locale — under a Chinese locale the localized prefixes are unparsable. The fix: force <code>LC_ALL=C</code> on every external command, then support all three English prefixes at once:</h4>
 <pre><code>export LC_ALL=C
 apt-get purge -y pkg
 # 不同版本输出可能是：
@@ -88,13 +88,13 @@ fn extract_removed(line: &amp;str) -&gt; Option&lt;String&gt; {
     for prefix in ["Removing", "Purg", "Purging"] { /* ... */ }
     None
 }</code></pre>
-<h4>另一个细节：判断自身是否 root 不能调 <code>getuid()</code>——Tauri 进程的环境变量可能干扰 libc 结果，直接解析 <code>/proc/self/status</code> 的 <code>Uid:</code> 行更可靠。所有外部命令都套 tokio <code>timeout</code>，个别卡死的 dpkg 前端不能拖死整个界面。</h4>
+<h4>Another detail: to check whether we're root, don't call <code>getuid()</code> — the Tauri process's environment variables can skew the libc result; parsing <code>/proc/self/status</code>'s <code>Uid:</code> line directly is more reliable. Every external command is wrapped in a tokio <code>timeout</code>, so one stuck dpkg front end can't drag the whole interface down with it.</h4>
 
-<h2>📊 附赠：手撕 dpkg 数据库算风险</h2>
-<h4>风险等级（critical/high/medium/low）不靠猜包名，而是直接解析 <code>/var/lib/dpkg/status</code>：按空行分段、空格缩进续行，只认 <code>install ok installed</code> 状态，统计每个包被多少已安装包反向依赖，结合 <code>Essential</code> 与 <code>Priority: required</code> 字段判定核心组件——Essential 包直接标 critical，被 8 个以上包依赖标 high。真实数据胜过一切启发式规则。</h4>
+<h2>📊 Bonus: hand-parsing the dpkg database for risk</h2>
+<h4>Risk levels (critical/high/medium/low) aren't guessed from package names; we parse <code>/var/lib/dpkg/status</code> directly: split into paragraphs by blank lines, continuation lines indented by spaces, only the <code>install ok installed</code> state counts; then we tally how many installed packages reverse-depend on each package, combined with the <code>Essential</code> and <code>Priority: required</code> fields to identify core components — Essential packages are marked critical straight away, packages depended on by 8+ others are marked high. Real data beats any heuristic.</h4>
 
-<h2>📝 小结</h2>
-<h4>删除类工具的安全设计可以总结为一句话：<strong>前端不可信、计划即白名单、黑名单兜底、默认保守</strong>。用户把系统交给你，你递回去的每一把刀都必须有鞘。</h4>
+<h2>📝 Takeaways</h2>
+<h4>The safety design of deletion tools boils down to one sentence: <strong>the front end is untrusted, the plan is the whitelist, the blacklist is the safety net, defaults are conservative</strong>. When users hand their system to you, every knife you hand back must have a sheath.</h4>
 
             </div>
         </article>

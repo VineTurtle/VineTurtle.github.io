@@ -21,3 +21,6 @@ _crop*.png
 
 # 从 GitHub 打包下载的历史副本，避免误提交
 VineTurtle.github.io-main/
+
+# 正文翻译工作参考（不参与构建）
+data/i18n-work/

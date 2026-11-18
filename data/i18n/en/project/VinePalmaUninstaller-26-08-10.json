@@ -5,5 +5,7 @@
     "Software development",
     "Linux",
     "Tauri"
-  ]
+  ],
+  "desc": "A Linux uninstaller unifying six install sources: APT / Flatpak / Snap / Docker / AppImage / APM.",
+  "status": "🚧 In progress"
 }

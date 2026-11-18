@@ -51,39 +51,31 @@
             <div class="hero-img-wrap"><img src="../../Resources/images/blog/hero/electron_linux_icon.jpg" alt="Electron on Linux: the icon pitfalls, from packaging to the taskbar" class="post-hero-img" data-fallback="🐧"><div class="fallback-hero">🐧</div></div>
             <header class="post-header">
                 <h1>Electron on Linux: the icon pitfalls, from packaging to the taskbar</h1>
-                <div class="post-meta"><span>📅 Jul 22, 2026</span><span>⏱ ~8 min read</span><div class="dynamic-stats" data-dynamic-stats></div></div>
+                <div class="post-meta"><span>📅 Jul 22, 2026</span><span>⏱ ~12 min read</span><div class="dynamic-stats" data-dynamic-stats></div></div>
 <div class="post-tags-display"><span class="tag">#Tech notes</span><span class="tag">#Electron</span><span class="tag">#Linux</span></div>
                 <div class="content-actions" data-content-actions></div>
             </header>
             <nav class="post-toc" data-toc hidden aria-label="Table of contents"></nav>
-            <div class="post-body" lang="zh-CN" data-content-lang="zh-CN">
-<p>最近在开发 <strong>VinePalma Player</strong> 的 Linux 版本时，遇到了一个看似简单却折腾了我很久的图标问题。安装后的应用图标正常显示，但运行后任务栏上的图标却是默认的「空白」状态。这篇文章记录了我踩过的坑和最终的解决方案。</p>
+            <div class="post-body" lang="en" data-content-lang="en">
+<p>While developing the Linux build of <strong>VinePalma Player</strong>, I recently hit an icon problem that looked trivial yet bothered me for ages. After installation the app icon displays correctly, but the taskbar icon at runtime shows the default "blank" state. This post records the pitfalls I stepped on and the final fix.</p>
 
-<h2>📦 问题描述</h2>
-
-<p>使用 <code>electron-builder</code> 打包 Linux 版本（deb/AppImage）后，安装应用时图标显示正常——启动器菜单、应用列表里的图标都没问题。但<strong>一旦运行应用，任务栏上出现的却是系统默认的空白图标</strong></p>
-
-<p>最初以为是图标文件本身的问题，但检查后发现：</p>
-
+<h2>📦 The problem</h2>
+<p>After packaging the Linux build (deb/AppImage) with <code>electron-builder</code>, the icon shows fine at install time — the launcher menu and the app list both look right. But <strong>the moment the app runs, the taskbar shows the system's default blank icon</strong></p>
+<p>At first I suspected the icon file itself, but inspection showed:</p>
 <ul>
-    <li>✅ 安装后的 <code>.desktop</code> 文件中 <code>Icon</code> 字段正确</li>
-    <li>✅ 图标文件存在于安装目录</li>
-    <li>✅ 启动器菜单图标显示正常</li>
-    <li>❌ 运行后任务栏图标为空/默认</li>
+    <li>✅ the installed <code>.desktop</code> file has the correct <code>Icon</code> field</li>
+    <li>✅ the icon file exists in the install directory</li>
+    <li>✅ the launcher menu icon renders fine</li>
+    <li>❌ the taskbar icon at runtime is blank/default</li>
 </ul>
 
-<h2>🔍 原因分析</h2>
+<h2>🔍 Root cause</h2>
+<p>Linux desktop environments (GNOME, KDE, XFCE and so on) use the <strong>WM_CLASS</strong> property to associate running windows with <code>.desktop</code> files. If the window's <code>WM_CLASS</code> doesn't match the <code>.desktop</code> file's <code>StartupWMClass</code>, the desktop environment can't tell which app the window belongs to, and the taskbar icon falls back to the default.</p>
+<p>Electron's <code>WM_CLASS</code> is derived by default from the <code>package.json</code> <code>desktopName</code> field. A misconfigured value breaks the association.</p>
 
-<p>Linux 桌面环境（GNOME、KDE、XFCE 等）通过 <strong>WM_CLASS</strong> 属性来关联运行中的窗口和 <code>.desktop</code> 文件。如果窗口的 <code>WM_CLASS</code> 与 <code>.desktop</code> 文件中的 <code>StartupWMClass</code> 不匹配，桌面环境就无法正确识别窗口所属的应用，导致任务栏图标显示为默认状态。</p>
-
-<p>Electron 的 <code>WM_CLASS</code> 默认从 <code>package.json</code> 中的 <code>desktopName</code> 字段派生。如果配置不当，就会出现关联断裂。</p>
-
-<h2>🛠️ 解决方案</h2>
-
-<h3>1. 图标目录结构</h3>
-
-<p>Linux 图标最好<strong>指向一个文件夹</strong>，而不是单个文件。<code>electron-builder</code> 会自动处理文件夹内的多尺寸图标：</p>
-
+<h2>🛠️ The fix</h2>
+<h3>1. Icon directory layout</h3>
+<p>On Linux the icon should <strong>point to a folder</strong>, not a single file. <code>electron-builder</code> handles the multi-size icons inside automatically:</p>
 <pre><code>assets/icons/linux/
 ├── 16x16.png
 ├── 32x32.png
@@ -91,28 +83,21 @@
 ├── 128x128.png
 ├── 256x256.png
 └── 512x512.png</code></pre>
-
-<p>在 <code>package.json</code> 中这样配置：</p>
-
+<p>Configure it like this in <code>package.json</code>:</p>
 <pre><code>"linux": {
     "icon": "assets/icons/linux",  // ← 指向文件夹，不是文件！
     "target": ["deb", "AppImage"],
     "category": "AudioVideo",
     "syncDesktopName": true
 }</code></pre>
-
-<h3>2. 正确的 desktopName 配置</h3>
-
-<p>这是最关键的一步。<code>desktopName</code> 的值<strong>不能包含 <code>.desktop</code> 后缀</strong>，否则会导致 <code>WM_CLASS</code> 解析异常：</p>
-
+<h3>2. The right desktopName</h3>
+<p>This is the most crucial step. The <code>desktopName</code> value <strong>must not carry the <code>.desktop</code> suffix</strong>, or <code>WM_CLASS</code> resolution goes wrong:</p>
 <pre><code>// ❌ 错误
 "desktopName": "com.vinepalma.player.desktop"
 
 // ✅ 正确
 "desktopName": "com.vinepalma.player"</code></pre>
-
-<p>修改后的 <code>package.json</code> 关键配置：</p>
-
+<p>The key parts of the fixed <code>package.json</code>:</p>
 <pre><code>{
   "name": "vinepalma-player",
   "desktopName": "com.vinepalma.player",  // 去掉 .desktop 后缀
@@ -127,11 +112,8 @@
     }
   }
 }</code></pre>
-
-<h3>3. 主进程代码调整</h3>
-
-<p>在 <code>src/main/index.js</code> 中，<strong>不要手动调用 <code>app.setDesktopName()</code></strong>，让 Electron 自动从 <code>package.json</code> 读取配置。如果必须设置，使用正确的格式：</p>
-
+<h3>3. Main process adjustments</h3>
+<p>In <code>src/main/index.js</code>, <strong>don't call <code>app.setDesktopName()</code> manually</strong> — let Electron read the configuration from <code>package.json</code> on its own. If you truly must set it, use the correct format:</p>
 <pre><code>// ❌ 不要这样写
 app.setName('VinePalma');
 app.setDesktopName('com.vinepalma.player.desktop');
@@ -139,11 +121,8 @@ app.setDesktopName('com.vinepalma.player.desktop');
 // ✅ 推荐：删除手动设置，让 electron-builder 自动处理
 // 或确保名称一致
 app.setName('com.vinepalma.player');</code></pre>
-
-<h3>4. 窗口图标设置</h3>
-
-<p>虽然任务栏图标主要由 <code>WM_CLASS</code> 关联决定，但仍建议在创建 <code>BrowserWindow</code> 时设置窗口图标，确保各桌面环境兼容性：</p>
-
+<h3>4. Window icon</h3>
+<p>Although the taskbar icon is mainly decided by the <code>WM_CLASS</code> association, it's still wise to set a window icon when creating the <code>BrowserWindow</code>, for compatibility across desktop environments:</p>
 <pre><code>const path = require('path');
 
 function createWindow() {
@@ -167,11 +146,8 @@ function createWindow() {
         // ... 其他配置
     });
 }</code></pre>
-
-<h3>5. 验证 .desktop 文件</h3>
-
-<p>打包安装后，检查生成的 <code>.desktop</code> 文件（路径：<code>/usr/share/applications/com.vinepalma.player.desktop</code>）：</p>
-
+<h3>5. Verify the .desktop file</h3>
+<p>After packaging and installing, check the generated <code>.desktop</code> file (at <code>/usr/share/applications/com.vinepalma.player.desktop</code>):</p>
 <pre><code>[Desktop Entry]
 Name=VinePalma
 Exec=/opt/VinePalma/vinepalma-player
@@ -179,35 +155,26 @@ Icon=com.vinepalma.player
 StartupWMClass=com.vinepalma.player  // ← 必须与 WM_CLASS 一致
 Type=Application
 Categories=AudioVideo;</code></pre>
-
-<h3>6. 验证 WM_CLASS</h3>
-
-<p>运行应用后，在终端执行以下命令验证：</p>
-
+<h3>6. Verify WM_CLASS</h3>
+<p>Run the app, then execute the following in a terminal:</p>
 <pre><code>xprop | grep WM_CLASS
 // 然后点击应用窗口，查看输出</code></pre>
-
-<p>期望输出：</p>
-
+<p>Expected output:</p>
 <pre><code>WM_CLASS(STRING) = "com.vinepalma.player", "com.vinepalma.player"</code></pre>
+<p>If <code>StartupWMClass</code> matches <code>WM_CLASS</code>, the taskbar icon displays correctly.</p>
 
-<p>如果 <code>StartupWMClass</code> 与 <code>WM_CLASS</code> 匹配，任务栏图标就会正确显示。</p>
-
-<h2>📝 总结</h2>
-
-<p>Electron Linux 图标问题通常不是图标文件本身的问题，而是<strong>窗口关联机制</strong>的问题。核心要点：</p>
-
+<h2>📝 Takeaways</h2>
+<p>Electron Linux icon issues usually aren't about the icon file itself — they're about the <strong>window association mechanism</strong>. The essentials:</p>
 <ul>
-    <li>📁 Linux 图标配置指向<strong>文件夹</strong>，内含多尺寸 PNG</li>
-    <li>📝 <code>desktopName</code> <strong>不要带 <code>.desktop</code> 后缀</strong></li>
-    <li>🔗 确保 <code>StartupWMClass</code> 与 <code>WM_CLASS</code> 完全匹配</li>
-    <li>🖼️ 创建窗口时显式设置 <code>icon</code> 属性</li>
-    <li>🚫 避免手动调用 <code>app.setDesktopName()</code>，让 electron-builder 自动处理</li>
+    <li>📁 point the Linux icon config at a <strong>folder</strong> containing multi-size PNGs</li>
+    <li>📝 <code>desktopName</code> <strong>must not carry the <code>.desktop</code> suffix</strong></li>
+    <li>🔗 make sure <code>StartupWMClass</code> and <code>WM_CLASS</code> match exactly</li>
+    <li>🖼️ set the <code>icon</code> property explicitly when creating the window</li>
+    <li>🚫 avoid manual <code>app.setDesktopName()</code> calls — let electron-builder handle it</li>
 </ul>
+<p>I hope this post helps fellow developers who hit the same problem skip the detours. In Electron cross-platform work, Linux desktop integration is truly the most overlooked — and most trouble-prone — part.</p>
+<p style="opacity:0.6; margin-top:2rem;">—— Written by the VineTurtle Studio tech team</p>
 
-<p>希望这篇文章能帮助遇到同样问题的开发者少走弯路。Electron 跨平台开发中，Linux 的桌面集成确实是最容易被忽视但也最容易出问题的部分。</p>
-
-<p style="opacity:0.6; margin-top:2rem;">—— 本文由 VineTurtleStudio 技术团队撰写</p>
             </div>
         </article>
         <nav class="content-pager" aria-label="Content pagination"><span class="pager-link is-empty" aria-hidden="true"></span><a class="pager-link pager-next" href="2026-08-25-uninstaller-safety.html" rel="next"><span class="pager-label">Next →</span><span class="pager-title">Designing a safe uninstaller: three layers that keep Linux deletions honest</span></a></nav>

@@ -50,48 +50,48 @@
             <div class="hero-img-wrap"><img src="../../Resources/images/projects/hero/vinepalma-uninstaller.jpg" alt="VinePalmaUninstaller: development log" class="detail-hero-img" data-fallback="📄"><div class="fallback-hero">📄</div></div>
             <header class="detail-header">
                 <h1>VinePalmaUninstaller: development log</h1>
-                <div class="detail-meta"><span class="project-status status-progress">🚧 迭代中</span><span class="detail-year">📅 2026</span><div class="dynamic-stats" data-dynamic-stats></div></div>
+                <div class="detail-meta"><span class="project-status status-progress">🚧 In progress</span><span class="detail-year">📅 2026</span><div class="dynamic-stats" data-dynamic-stats></div></div>
 <div class="detail-tags-display"><span class="tag">#Software development</span><span class="tag">#Linux</span><span class="tag">#Tauri</span></div>
                 <div class="content-actions" data-content-actions></div>
             </header>
             <nav class="post-toc" data-toc hidden aria-label="Table of contents"></nav>
-            <div class="detail-body" lang="zh-CN" data-content-lang="zh-CN">
-<h4>在 Linux 系统上卸载软件，从来不是一件轻松的事：APT、Flatpak、Snap、Docker、AppImage……不同来源的软件要记不同的命令，而手动安装的软件更是根本不在包管理器的"户口本"里。更让人头疼的是，即便用 apt purge 卸载干净，~/.config、~/.cache、~/.local/share 里仍会残留一大堆配置文件，日积月累占满磁盘，却往往只换来一句"卸载失败"或"已卸载但残留未清除"。</h4>
-<h4>因此，我们 VineTurtleStudio 开发组设计并开发了这款 Linux 卸载器，使用 Tauri + Vue 进行开发，把 APT、Flatpak、Snap、Docker、AppImage 与 APM 六大来源的软件统一纳入一个图形界面，在"彻底卸载"与"绝不误删"之间找到平衡。</h4>
+            <div class="detail-body" lang="en" data-content-lang="en">
+<h4>Uninstalling software on Linux has never been a relaxing affair: APT, Flatpak, Snap, Docker, AppImage... every source demands its own set of commands to memorize, and manually installed software isn't even in the package manager's registry. Worse, even after a clean apt purge, leftovers pile up in ~/.config, ~/.cache and ~/.local/share, quietly filling the disk over time — and all you ever get is a curt "uninstall failed" or "uninstalled but residue remains".</h4>
+<h4>So our VineTurtle Studio dev team designed and built this Linux uninstaller with Tauri + Vue, bringing software from six sources — APT, Flatpak, Snap, Docker, AppImage and APM — under one graphical interface, balancing "uninstall thoroughly" against "never delete the wrong thing".</h4>
 
-<h2>项目背景与目标</h2>
-<h4>Linux 的软件生态百花齐放，却也带来了管理的碎片化：系统自带的应用商店只能管理一种来源；命令行又要求用户记住各不相同的卸载语法；而 Debian 系安装包卸载后遗留的 "rc 状态"（配置文件记录），类似 Windows 的注册表残留，普通用户几乎无从下手。我们希望打造一款面向普通用户的图形化卸载器：一次扫描，六大来源尽收眼底；点击卸载之前，先用模拟预览告诉你会影响什么；勾选残留文件，一并清理干净——全程无需命令行，也绝不乱删系统组件。</h4>
+<h2>Background and goals</h2>
+<h4>Linux's software ecosystem flourishes, but that brings fragmentation in management: the built-in app store only manages one source; the command line expects you to memorize a different uninstall syntax for each; and Debian-family packages leave an "rc state" record after removal — the Windows-registry-residue equivalent — which ordinary users have no way to tackle. We wanted a graphical uninstaller for ordinary people: one scan, all six sources at a glance; before you click uninstall, a simulated preview tells you what will be affected; tick the leftover files and clean them all in one go — no command line anywhere, and system components are never touched recklessly.</h4>
 
-<h2>技术架构</h2>
-<h4>VinePalmaUninstaller 采用 Tauri 2 作为应用框架，前端使用 Vue 3 + Vite，后端使用 Rust 提供原生能力。所有与系统交互的扫描、模拟与卸载逻辑都写在 Rust 侧：通过 dpkg-query、flatpak list、snap list、docker images 等命令聚合各来源的已安装软件，需要 root 权限的操作（如 apt purge）通过 pkexec 动态提权，普通用户也能在界面里完成系统级卸载。</h4>
-<h4>后台进程统一使用 tokio 异步执行，并带有超时保护，避免个别卡死的命令阻塞整个界面；涉及删除的操作会先走"服务端生成计划 → 前端勾选 → 服务端白名单校验"的流程，可删除的路径只来自服务端重新生成的计划，杜绝提交任意路径造成误删。</h4>
+<h2>Architecture</h2>
+<h4>VinePalmaUninstaller uses Tauri 2 as the app framework, with a Vue 3 + Vite front end and a Rust backend providing native capabilities. All scan, simulate and uninstall logic that touches the system lives on the Rust side: installed software from each source is aggregated through commands like dpkg-query, flatpak list, snap list and docker images; operations needing root (such as apt purge) escalate dynamically through pkexec, so even ordinary users can perform system-level uninstalls from the interface.</h4>
+<h4>Background processes run uniformly on tokio's async executor with timeout protection, so one stuck command never freezes the whole interface; deletion flows go through "server generates plan → front end ticks items → server whitelist re-validation" — the deletable paths only ever come from a freshly regenerated server-side plan, so submitting arbitrary paths can't cause accidental deletion.</h4>
 
-<h2>核心能力：六大来源统一扫描</h2>
-<h4>APT：通过 dpkg-query 读取全部已安装包及其大小、描述，并利用 /var/lib/dpkg/info 下 .list 文件的修改时间近似估算安装时间，默认隐藏系统库、内核与依赖；Flatpak 与 Snap：分别调用对应包管理器列出应用，安装时间与大小通过应用目录与 snap 文件的元数据解析；Docker：扫描本机镜像，可解析镜像大小与创建时间，卸载时还会自动先删除引用该镜像的容器；AppImage 与手动安装：这类软件没有包管理器登记，我们通过扫描 ~/Applications、/opt 等常见目录中的 AppImage 文件，并结合 .desktop 启动项中 Exec 指向手动安装路径的条目来识别；APM（Amber Package Manager）：从容器内的 dpkg 状态文件解析安装信息，再通过 /usr/local/share/applications 下 "apm run &lt;pkg&gt;" 形式的桌面入口把界面启动项与容器内数据一一对应起来。</h4>
+<h2>Core capability: unified scanning of six sources</h2>
+<h4>APT: reads all installed packages with sizes and descriptions via dpkg-query, approximating install time from the mtime of .list files under /var/lib/dpkg/info, and hides system libraries, kernels and dependencies by default. Flatpak and Snap: list apps through their respective package managers, parsing install time and size from the app directories and snap file metadata. Docker: scans local images with size and creation time parsed, and automatically removes containers referencing an image before uninstalling it. AppImage and manual installs: these never register with a package manager, so we scan for AppImage files in common directories like ~/Applications and /opt, and identify entries whose .desktop launcher Exec points at manually installed paths. APM (Amber Package Manager): parses install info from the dpkg status file inside the container, then matches UI launchers to container data one-to-one via desktop entries of the "apm run &lt;pkg&gt;" form under /usr/local/share/applications.</h4>
 
-<h2>风险等级与用户级过滤</h2>
-<h4>我们并非靠"猜包名"判断危险程度，而是直接解析 /var/lib/dpkg/status 与 extended_states 的真实数据：统计每个包被多少已安装包反向依赖、标记 Essential 与 required 优先级的系统生死攸关组件。基于这些数据，每个软件都被打上 low / medium / high / critical 四档风险标签：Essential 或 required 优先级的包即为核心（critical），被 8 个以上包依赖的为高风险，GUI 应用则默认低风险。界面默认的"简易模式"只显示用户级软件（有图形界面入口的包），系统库、内核、命令行工具一律隐藏；"高级模式"才展示全部软件并标注风险等级，卸载前还会有醒目的风险横幅与连带影响警告。</h4>
+<h2>Risk levels &amp; user-level filtering</h2>
+<h4>We don't guess danger from package names; we parse the real data of /var/lib/dpkg/status and extended_states: counting how many installed packages reverse-depend on each package, and flagging Essential and required-priority components as life-or-death system pieces. From this data, every app gets one of four risk labels — low / medium / high / critical: Essential or required priority means critical (core), being depended on by 8+ packages means high risk, and GUI apps default to low risk. The interface's default "simple mode" shows only user-level software (packages with a GUI entry); system libraries, kernels and CLI tools stay hidden. "Advanced mode" reveals everything with risk labels, plus a prominent risk banner and cascading-impact warning before any uninstall.</h4>
 
-<h2>卸载计划：先预览，再执行</h2>
-<h4>点击卸载并非直接执行命令，而是先由服务端生成一份完整的卸载计划：对 apt 包，先以模拟模式运行 apt-get purge，解析出会被移除的包列表——如果会连带移除其他相关组件，会在计划中明确警告"还会连带移除 N 个相关包"；执行时则带上 AutomaticRemove=0 选项，绝不让 apt 自动连带移除依赖，只动目标包本身。计划中还会列出每一条将执行的命令、是否需要授权，并把残留文件按配置 / 缓存 / 数据 / 系统分类展示，勾选才删除、不勾选保留，用户对每一步都有完全的掌控。</h4>
+<h2>The uninstall plan: preview first, execute second</h2>
+<h4>Clicking uninstall doesn't fire off commands directly — the server first generates a complete uninstall plan: for apt packages, apt-get purge runs in simulation mode and the to-be-removed package list is parsed out; if other components would be swept along, the plan warns explicitly "will also remove N related packages". Execution carries the AutomaticRemove=0 option — apt is never allowed to auto-remove dependencies; only the target package itself is touched. The plan lists every command that will run and whether it needs authorization, and groups leftover files by config / cache / data / system: ticked means deleted, unticked means kept — the user holds complete control over every step.</h4>
 
-<h2>残留清理与孤儿依赖</h2>
-<h4>针对"卸载不彻底"的痛点，我们做了两件事：一是识别 dpkg 中已卸载但留下配置记录的 "rc 状态" 包，一键 dpkg --purge 彻底清掉残留记录；二是为每个软件扫描常见的独立存放目录（~/.config、~/.cache、~/.local/share、~/.local/state、~/Applications、/opt），通过"包名变体匹配"识别出软件自己的配置目录——大小写不敏感、连字符/下划线等价，避免默认路径冲突导致的"换名存放"。精确命中的目录默认勾选，仅"包含"关系的模糊命中默认不勾选，绝不误删无关软件。此外还内置了孤儿依赖清理：先预览 autoremove 将移除的包，确认后再执行。</h4>
+<h2>Residue cleanup &amp; orphan dependencies</h2>
+<h4>For the pain of "incomplete uninstalls" we did two things. First, we identify "rc state" packages in dpkg — already uninstalled but leaving config records behind — and a single dpkg --purge wipes the residual records clean. Second, for every app we scan the common standalone directories (~/.config, ~/.cache, ~/.local/share, ~/.local/state, ~/Applications, /opt) and recognize the app's own config directories via "package-name variant matching" — case-insensitive, hyphen/underscore equivalent — so apps that "changed their name to hide" are still found. Exact-hit directories are ticked by default; fuzzy hits that merely "contain" the name stay unticked by default, and unrelated software is never touched. Orphan dependency cleanup is built in too: autoremove's removal list is previewed first and executed only after confirmation.</h4>
 
-<h2>安全设计：绝不误删</h2>
-<h4>作为一个会删除文件的工具，安全性是我们的底线。除了"计划即白名单"的机制外，后端还有多层防护：FORBIDDEN 路径表拦截 /、/home、/etc、/usr、/var 等系统关键目录及其直系子目录；禁止删除 home 下的 .config、.cache、.local 等受保护根目录；拒绝含 .. 等危险组件的路径；支持"保留用户配置"与"保留系统配置"两种保护开关，用户勾选的路径若落在系统目录可被即时过滤。每次卸载完成后还会重载 dpkg 数据库缓存，确保重装后的软件也能被正确识别，界面数据永不过期。</h4>
+<h2>Safe by design: never delete the wrong thing</h2>
+<h4>For a tool that deletes files, safety is the bottom line. Beyond the "plan is the whitelist" mechanism, the backend stacks more defenses: a FORBIDDEN path table blocks /, /home, /etc, /usr, /var and other critical system directories plus their immediate children; deleting protected roots like .config, .cache and .local under home is refused; paths containing dangerous components like .. are rejected; and two protection switches — "keep user config" and "keep system config" — instantly filter out ticked paths that fall inside system directories. After every uninstall the dpkg database cache reloads, so reinstalled software is recognized correctly and interface data never goes stale.</h4>
 
-<h2>体验细节</h2>
-<h4>界面采用深色主题：列表按名称 / 安装时间 / 占用大小 / 风险等级排序并可切换升降序，支持关键词搜索与按来源过滤；每个软件都尝试从 dpkg 文件清单、图标主题、Flatpak/Snap 导出目录乃至 APM 容器内图标树中解析出真实的应用图标；顶部展示当前发行版与架构，卸载残留页有独立的数量角标，操作完成后有 Toast 反馈并自动刷新列表。图标解析还做了多级缓存与批量化加载，扫描上千个包也不会卡顿。</h4>
+<h2>Experience details</h2>
+<h4>The interface is dark-themed: lists sort by name / install time / size used / risk level with ascending-descending toggles, plus keyword search and per-source filtering; every app gets its real icon resolved from dpkg file manifests, icon themes, Flatpak/Snap export directories, or even the icon tree inside APM containers; the top bar shows the current distro and architecture, the residue page carries its own count badge, and actions finish with Toast feedback and an automatic list refresh. Icon resolution also has multi-level caching and batched loading — scanning thousands of packages stays smooth.</h4>
 
-<h2>踩过的坑</h2>
-<h4>开发中踩了不少 Linux 生态的坑：apt-get 的模拟输出在不同版本间存在 "Removing" 与 "Purg" 两种前缀，需要同时兼容解析；purge 与 --no-install-recommends 组合会报 "not understood" 错误，必须调整参数顺序与选项；dpkg 输出中包描述里可能内嵌换行导致解析错乱；docker 镜像大小带 GB/MB 后缀、flatpak 的 size 带千位分隔符，都需要逐一编写解析器；图标模糊匹配要小心泛化目录名误命中，短于 3 个字符的图标名一律不参与匹配。这些坑我们都通过单元测试固化了下来，作为回归保障。</h4>
+<h2>Pitfalls we hit</h2>
+<h4>Development stepped on plenty of Linux ecosystem landmines: apt-get's simulation output uses two different prefixes across versions — "Removing" and "Purg" — and both must be parsed; combining purge with --no-install-recommends throws a "not understood" error unless the argument order and options are adjusted; dpkg output can embed newlines inside package descriptions and wreck the parsing; docker image sizes carry GB/MB suffixes and flatpak sizes carry thousand separators, each needing its own parser; icon fuzzy matching must beware generic directory names, and icon names shorter than 3 characters never participate in matching. All of these are pinned down by unit tests as regression guards.</h4>
 
-<h2>跨平台与打包</h2>
-<h4>项目基于 Tauri 2 构建，打包产物为 deb 与 AppImage，前者声明了 libwebkit2gtk-4.1 与 libgtk-3 的依赖，并提供了自定义的桌面入口模板；前端由 Vite 构建，Rust 后端编译为原生二进制，整个应用启动快、内存占用低，不依赖 Electron 之类的重型运行时。</h4>
+<h2>Cross-platform &amp; packaging</h2>
+<h4>The project builds on Tauri 2; the artifacts are deb and AppImage — the former declares libwebkit2gtk-4.1 and libgtk-3 dependencies and ships a custom desktop-entry template. The front end builds with Vite, the Rust backend compiles to a native binary; the whole app starts fast, uses little memory, and depends on no heavyweight runtime like Electron.</h4>
 
-<h2>结语</h2>
-<h4>VinePalmaUninstaller 目前处于 1.0.0 版本，作为 VineTurtleStudio 的开源项目，我们希望通过它证明：Linux 卸载软件也可以像移动端一样直观、安全、不留尾巴。后续计划继续扩展更多发行版与包管理器支持、完善残留识别的覆盖面，欢迎大家在 GitHub 上提出建议，一起把它做得更好。</h4>
+<h2>Closing words</h2>
+<h4>VinePalmaUninstaller is at 1.0.0. As an open-source VineTurtle Studio project, we hope it proves that uninstalling on Linux can be as intuitive as on mobile: safe, thorough, and leaving no loose ends. Support for more distros and package managers, and broader residue recognition, are on the way; suggestions on GitHub are always welcome — let's make it better together.</h4>
 
             </div>
         </article>

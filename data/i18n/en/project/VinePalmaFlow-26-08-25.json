@@ -6,5 +6,7 @@
     "Rust",
     "Project management",
     "LAN sync"
-  ]
+  ],
+  "desc": "Local-first project management that never touches the cloud: Markdown as the database, collaboration over LAN as if it were the cloud.",
+  "status": "🚧 In progress"
 }

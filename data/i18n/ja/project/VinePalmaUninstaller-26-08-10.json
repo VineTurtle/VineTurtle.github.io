@@ -5,5 +5,7 @@
     "ソフトウェア開発",
     "Linux",
     "Tauri"
-  ]
+  ],
+  "desc": "APT / Flatpak / Snap / Docker / AppImage / APM の 6 大ソースを統一する Linux アンインストーラー。",
+  "status": "🚧 継続開発中"
 }

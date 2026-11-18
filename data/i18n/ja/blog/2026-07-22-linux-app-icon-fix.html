@@ -1,0 +1,117 @@
+<p><strong>VinePalma Player</strong> の Linux 版を開発中、一見単純なのに長いこと悩まされたアイコン問題に遭遇しました。インストール後のアプリアイコンは正常に表示されるのに、実行後のタスクバーのアイコンだけは既定の「空白」状態。この記事は、踏んだ落とし穴と最終的な解決策の記録です。</p>
+
+<h2>📦 問題の内容</h2>
+<p><code>electron-builder</code> で Linux 版（deb/AppImage）をパッケージングすると、インストール時のアイコンは正常——ランチャーメニューもアプリ一覧も問題なし。しかし<strong>アプリを起動した途端、タスクバーにはシステム既定の空白アイコンが現れます</strong></p>
+<p>最初はアイコンファイル自体の問題かと思いましたが、確認すると：</p>
+<ul>
+    <li>✅ インストール後の <code>.desktop</code> ファイルの <code>Icon</code> フィールドは正しい</li>
+    <li>✅ アイコンファイルはインストールディレクトリに存在</li>
+    <li>✅ ランチャーメニューのアイコンは正常表示</li>
+    <li>❌ 実行後のタスクバーアイコンだけ空白/既定</li>
+</ul>
+
+<h2>🔍 原因分析</h2>
+<p>Linux デスクトップ環境（GNOME・KDE・XFCE など）は <strong>WM_CLASS</strong> プロパティで、実行中のウィンドウと <code>.desktop</code> ファイルを関連付けています。ウィンドウの <code>WM_CLASS</code> が <code>.desktop</code> 側の <code>StartupWMClass</code> と一致しないと、デスクトップ環境はウィンドウの所属アプリを正しく識別できず、タスクバーアイコンは既定表示に戻ってしまいます。</p>
+<p>Electron の <code>WM_CLASS</code> は既定で <code>package.json</code> の <code>desktopName</code> フィールドから導出されます。設定を誤ると、この関連付けが断裂します。</p>
+
+<h2>🛠️ 解決策</h2>
+<h3>1. アイコンのディレクトリ構成</h3>
+<p>Linux のアイコンは単一ファイルではなく<strong>フォルダを指す</strong>のが得策です。<code>electron-builder</code> はフォルダ内の複数サイズアイコンを自動処理します：</p>
+<pre><code>assets/icons/linux/
+├── 16x16.png
+├── 32x32.png
+├── 48x48.png
+├── 128x128.png
+├── 256x256.png
+└── 512x512.png</code></pre>
+<p><code>package.json</code> ではこう設定します：</p>
+<pre><code>"linux": {
+    "icon": "assets/icons/linux",  // ← 指向文件夹，不是文件！
+    "target": ["deb", "AppImage"],
+    "category": "AudioVideo",
+    "syncDesktopName": true
+}</code></pre>
+<h3>2. 正しい desktopName の設定</h3>
+<p>ここが最重要ステップです。<code>desktopName</code> の値には<strong><code>.desktop</code> 接尾辞を含めてはいけません</strong>。含めると <code>WM_CLASS</code> の解析が異常になります：</p>
+<pre><code>// ❌ 错误
+"desktopName": "com.vinepalma.player.desktop"
+
+// ✅ 正确
+"desktopName": "com.vinepalma.player"</code></pre>
+<p>修正後の <code>package.json</code> の要点：</p>
+<pre><code>{
+  "name": "vinepalma-player",
+  "desktopName": "com.vinepalma.player",  // 去掉 .desktop 后缀
+  "build": {
+    "appId": "com.vinepalma.player",
+    "productName": "VinePalma",
+    "linux": {
+      "icon": "assets/icons/linux",
+      "target": ["deb", "AppImage"],
+      "category": "AudioVideo",
+      "syncDesktopName": true
+    }
+  }
+}</code></pre>
+<h3>3. メインプロセスの調整</h3>
+<p><code>src/main/index.js</code> では<strong>手動で <code>app.setDesktopName()</code> を呼ばない</strong>こと。Electron が <code>package.json</code> から自動で読み取ります。どうしても設定が必要なら、正しい形式で：</p>
+<pre><code>// ❌ 不要这样写
+app.setName('VinePalma');
+app.setDesktopName('com.vinepalma.player.desktop');
+
+// ✅ 推荐：删除手动设置，让 electron-builder 自动处理
+// 或确保名称一致
+app.setName('com.vinepalma.player');</code></pre>
+<h3>4. ウィンドウアイコンの設定</h3>
+<p>タスクバーアイコンは主に <code>WM_CLASS</code> の関連付けで決まりますが、<code>BrowserWindow</code> 作成時にウィンドウアイコンを指定しておけば、各デスクトップ環境での互換性が担保されます：</p>
+<pre><code>const path = require('path');
+
+function createWindow() {
+    const iconDir = path.resolve(__dirname, '../../assets/icons');
+    let windowIconPath;
+
+    if (process.platform === 'darwin') {
+        windowIconPath = path.join(iconDir, 'VinePalma.icns');
+    } else if (process.platform === 'win32') {
+        windowIconPath = path.join(iconDir, 'VinePalma.ico');
+    } else {
+        // Linux: 使用具体尺寸图片
+        windowIconPath = path.join(iconDir, 'linux/256x256.png');
+    }
+
+    const mainWindow = new BrowserWindow({
+        width: 500,
+        height: 520,
+        title: 'VinePalma',
+        icon: windowIconPath,  // 设置窗口图标
+        // ... 其他配置
+    });
+}</code></pre>
+<h3>5. .desktop ファイルの検証</h3>
+<p>パッケージングしてインストールしたら、生成された <code>.desktop</code> ファイル（<code>/usr/share/applications/com.vinepalma.player.desktop</code>）を確認します：</p>
+<pre><code>[Desktop Entry]
+Name=VinePalma
+Exec=/opt/VinePalma/vinepalma-player
+Icon=com.vinepalma.player
+StartupWMClass=com.vinepalma.player  // ← 必须与 WM_CLASS 一致
+Type=Application
+Categories=AudioVideo;</code></pre>
+<h3>6. WM_CLASS の検証</h3>
+<p>アプリを起動した状態で、端末から次のコマンドを実行します：</p>
+<pre><code>xprop | grep WM_CLASS
+// 然后点击应用窗口，查看输出</code></pre>
+<p>期待される出力：</p>
+<pre><code>WM_CLASS(STRING) = "com.vinepalma.player", "com.vinepalma.player"</code></pre>
+<p><code>StartupWMClass</code> と <code>WM_CLASS</code> が一致していれば、タスクバーアイコンは正しく表示されます。</p>
+
+<h2>📝 まとめ</h2>
+<p>Electron の Linux アイコン問題は、アイコンファイル自体ではなく<strong>ウィンドウ関連付けの仕組み</strong>に起因するのが普通です。要点：</p>
+<ul>
+    <li>📁 Linux のアイコン設定は複数サイズ PNG を含む<strong>フォルダ</strong>を指す</li>
+    <li>📝 <code>desktopName</code> には<strong><code>.desktop</code> 接尾辞を付けない</strong></li>
+    <li>🔗 <code>StartupWMClass</code> と <code>WM_CLASS</code> を完全一致させる</li>
+    <li>🖼️ ウィンドウ作成時に <code>icon</code> プロパティを明示指定する</li>
+    <li>🚫 手動の <code>app.setDesktopName()</code> 呼び出しは避け、electron-builder に任せる</li>
+</ul>
+<p>同じ問題に直面した開発者の遠回りが少しでも減ればと思います。Electron のクロスプラットフォーム開発では、Linux のデスクトップ統合こそが、最も見落とされやすく、最も問題を起こしやすい部分です。</p>
+<p style="opacity:0.6; margin-top:2rem;">—— 本稿は VineTurtle Studio 技術チームによる執筆です</p>

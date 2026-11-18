@@ -76,6 +76,27 @@ npm run deploy       # 会先自动 build，再 rsync 或 commit + push
 - 固定页面的 `lastmod` 取所有内容里的最新日期，避免每次构建都产生无意义 diff。
 - 生成索引时会自动把 `thumbnail` 指向的 `hero/` 原图映射到同名 `Resources/images/<分类>/thumbnails/` 压缩图（存在才替换），`data/search-index.json` 的 `cover` 也优先使用缩略图。
 
+## 多语言（i18n）
+
+站点提供简体中文（根路径）+ 繁体中文 `/zh-TW/` + 英文 `/en/` + 日文 `/ja/` 四语镜像，由 `npm run build` 全量生成：
+
+- **界面文案**：`i18n/<lang>.json` 字典，运行时 `JS/i18n.js` 的 `t()` 按 `VTS.lang` 取值，缺 key 回退简中；静态页由构建期把 `data-i18n` 文案写死进 HTML（无首屏闪烁、利 SEO）。
+- **内容元数据**：`data/i18n/<lang>/<分类>/<slug>.json` 覆盖 title/excerpt/tags，项目额外支持 desc/status；缺译回退简中。
+- **正文**：`data/i18n/<lang>/<分类>/<slug>.html` 整篇覆盖，缺译时详情页回退简中正文并正确标注 `lang`。
+- **隐私页**：正文按段落拆进字典（`privacy.*` 键），与其他界面文案同机制。
+
+正文翻译工具链（`scripts/translate/`，依赖 devDependencies 的 opencc-js）：
+
+| 命令 | 用途 |
+| --- | --- |
+| `npm run i18n:extract` | 生成正文分段参考到 `data/i18n-work/`（gitignore，标记 keep/drop/translate） |
+| `npm run i18n:zh-tw` | OpenCC（cn→twp）把简中正文转成繁中覆盖文件，代码块逐字节不动 |
+| `npm run i18n:verify` | 校验覆盖文件：块级结构同构、代码块/行内代码/链接逐字节一致、en 零汉字、ja/zh-TW 无简体字形 |
+| `npm run i18n:audit` | 构建后审计镜像可见文本语言（构建完跑一次，CI 同款标准） |
+| `npm run i18n:status` | 打印每篇内容 × 每种语言的正文/元数据覆盖矩阵 |
+
+新增内容的翻译流程：写完简中后 `npm run i18n:extract` → 翻译产出 `data/i18n/<lang>/...`（en/ja 人工或 AI，zh-TW 跑脚本 + 校对术语）→ `npm run i18n:verify` → `npm run build` → `npm run i18n:audit`。注意构建依赖 opencc-js（CI 已加 `npm install` 步骤），代码块与行内代码一律不翻译。
+
 ## 管理后台（推荐方式）
 
 `npm run admin` 启动一个仅监听 `127.0.0.1` 的本地服务器：

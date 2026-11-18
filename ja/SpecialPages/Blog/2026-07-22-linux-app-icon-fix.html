@@ -23,7 +23,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="../../Resources/images/VineTurtleStudio.png" type="image/png" />
     <script src="../../JS/theme-init.js"></script>
-    <link rel="alternate" type="application/rss+xml" title="藤栖ブログ · VineTurtle Studio" href="https://grapeleafi.top/ja/feed.xml">
+    <link rel="alternate" type="application/rss+xml" title="藤棲ブログ · VineTurtle Studio" href="https://grapeleafi.top/ja/feed.xml">
     <link rel="stylesheet" href="../../CSS/layout.css" />
     <link rel="stylesheet" href="../../CSS/i18n.css">
     <link rel="stylesheet" href="../../CSS/style.css" />
@@ -51,39 +51,31 @@
             <div class="hero-img-wrap"><img src="../../Resources/images/blog/hero/electron_linux_icon.jpg" alt="Electron Linux アイコン踏み抜き記：パッケージからタスクバーまでの完全ガイド" class="post-hero-img" data-fallback="🐧"><div class="fallback-hero">🐧</div></div>
             <header class="post-header">
                 <h1>Electron Linux アイコン踏み抜き記：パッケージからタスクバーまでの完全ガイド</h1>
-                <div class="post-meta"><span>📅 2026年7月22日</span><span>🕐 約 8 分</span><div class="dynamic-stats" data-dynamic-stats></div></div>
+                <div class="post-meta"><span>📅 2026年7月22日</span><span>🕐 約 9 分</span><div class="dynamic-stats" data-dynamic-stats></div></div>
 <div class="post-tags-display"><span class="tag">#技術メモ</span><span class="tag">#Electron</span><span class="tag">#Linux</span></div>
                 <div class="content-actions" data-content-actions></div>
             </header>
             <nav class="post-toc" data-toc hidden aria-label="目次"></nav>
-            <div class="post-body" lang="zh-CN" data-content-lang="zh-CN">
-<p>最近在开发 <strong>VinePalma Player</strong> 的 Linux 版本时，遇到了一个看似简单却折腾了我很久的图标问题。安装后的应用图标正常显示，但运行后任务栏上的图标却是默认的「空白」状态。这篇文章记录了我踩过的坑和最终的解决方案。</p>
+            <div class="post-body" lang="ja" data-content-lang="ja">
+<p><strong>VinePalma Player</strong> の Linux 版を開発中、一見単純なのに長いこと悩まされたアイコン問題に遭遇しました。インストール後のアプリアイコンは正常に表示されるのに、実行後のタスクバーのアイコンだけは既定の「空白」状態。この記事は、踏んだ落とし穴と最終的な解決策の記録です。</p>
 
-<h2>📦 问题描述</h2>
-
-<p>使用 <code>electron-builder</code> 打包 Linux 版本（deb/AppImage）后，安装应用时图标显示正常——启动器菜单、应用列表里的图标都没问题。但<strong>一旦运行应用，任务栏上出现的却是系统默认的空白图标</strong></p>
-
-<p>最初以为是图标文件本身的问题，但检查后发现：</p>
-
+<h2>📦 問題の内容</h2>
+<p><code>electron-builder</code> で Linux 版（deb/AppImage）をパッケージングすると、インストール時のアイコンは正常——ランチャーメニューもアプリ一覧も問題なし。しかし<strong>アプリを起動した途端、タスクバーにはシステム既定の空白アイコンが現れます</strong></p>
+<p>最初はアイコンファイル自体の問題かと思いましたが、確認すると：</p>
 <ul>
-    <li>✅ 安装后的 <code>.desktop</code> 文件中 <code>Icon</code> 字段正确</li>
-    <li>✅ 图标文件存在于安装目录</li>
-    <li>✅ 启动器菜单图标显示正常</li>
-    <li>❌ 运行后任务栏图标为空/默认</li>
+    <li>✅ インストール後の <code>.desktop</code> ファイルの <code>Icon</code> フィールドは正しい</li>
+    <li>✅ アイコンファイルはインストールディレクトリに存在</li>
+    <li>✅ ランチャーメニューのアイコンは正常表示</li>
+    <li>❌ 実行後のタスクバーアイコンだけ空白/既定</li>
 </ul>
 
 <h2>🔍 原因分析</h2>
+<p>Linux デスクトップ環境（GNOME・KDE・XFCE など）は <strong>WM_CLASS</strong> プロパティで、実行中のウィンドウと <code>.desktop</code> ファイルを関連付けています。ウィンドウの <code>WM_CLASS</code> が <code>.desktop</code> 側の <code>StartupWMClass</code> と一致しないと、デスクトップ環境はウィンドウの所属アプリを正しく識別できず、タスクバーアイコンは既定表示に戻ってしまいます。</p>
+<p>Electron の <code>WM_CLASS</code> は既定で <code>package.json</code> の <code>desktopName</code> フィールドから導出されます。設定を誤ると、この関連付けが断裂します。</p>
 
-<p>Linux 桌面环境（GNOME、KDE、XFCE 等）通过 <strong>WM_CLASS</strong> 属性来关联运行中的窗口和 <code>.desktop</code> 文件。如果窗口的 <code>WM_CLASS</code> 与 <code>.desktop</code> 文件中的 <code>StartupWMClass</code> 不匹配，桌面环境就无法正确识别窗口所属的应用，导致任务栏图标显示为默认状态。</p>
-
-<p>Electron 的 <code>WM_CLASS</code> 默认从 <code>package.json</code> 中的 <code>desktopName</code> 字段派生。如果配置不当，就会出现关联断裂。</p>
-
-<h2>🛠️ 解决方案</h2>
-
-<h3>1. 图标目录结构</h3>
-
-<p>Linux 图标最好<strong>指向一个文件夹</strong>，而不是单个文件。<code>electron-builder</code> 会自动处理文件夹内的多尺寸图标：</p>
-
+<h2>🛠️ 解決策</h2>
+<h3>1. アイコンのディレクトリ構成</h3>
+<p>Linux のアイコンは単一ファイルではなく<strong>フォルダを指す</strong>のが得策です。<code>electron-builder</code> はフォルダ内の複数サイズアイコンを自動処理します：</p>
 <pre><code>assets/icons/linux/
 ├── 16x16.png
 ├── 32x32.png
@@ -91,28 +83,21 @@
 ├── 128x128.png
 ├── 256x256.png
 └── 512x512.png</code></pre>
-
-<p>在 <code>package.json</code> 中这样配置：</p>
-
+<p><code>package.json</code> ではこう設定します：</p>
 <pre><code>"linux": {
     "icon": "assets/icons/linux",  // ← 指向文件夹，不是文件！
     "target": ["deb", "AppImage"],
     "category": "AudioVideo",
     "syncDesktopName": true
 }</code></pre>
-
-<h3>2. 正确的 desktopName 配置</h3>
-
-<p>这是最关键的一步。<code>desktopName</code> 的值<strong>不能包含 <code>.desktop</code> 后缀</strong>，否则会导致 <code>WM_CLASS</code> 解析异常：</p>
-
+<h3>2. 正しい desktopName の設定</h3>
+<p>ここが最重要ステップです。<code>desktopName</code> の値には<strong><code>.desktop</code> 接尾辞を含めてはいけません</strong>。含めると <code>WM_CLASS</code> の解析が異常になります：</p>
 <pre><code>// ❌ 错误
 "desktopName": "com.vinepalma.player.desktop"
 
 // ✅ 正确
 "desktopName": "com.vinepalma.player"</code></pre>
-
-<p>修改后的 <code>package.json</code> 关键配置：</p>
-
+<p>修正後の <code>package.json</code> の要点：</p>
 <pre><code>{
   "name": "vinepalma-player",
   "desktopName": "com.vinepalma.player",  // 去掉 .desktop 后缀
@@ -127,11 +112,8 @@
     }
   }
 }</code></pre>
-
-<h3>3. 主进程代码调整</h3>
-
-<p>在 <code>src/main/index.js</code> 中，<strong>不要手动调用 <code>app.setDesktopName()</code></strong>，让 Electron 自动从 <code>package.json</code> 读取配置。如果必须设置，使用正确的格式：</p>
-
+<h3>3. メインプロセスの調整</h3>
+<p><code>src/main/index.js</code> では<strong>手動で <code>app.setDesktopName()</code> を呼ばない</strong>こと。Electron が <code>package.json</code> から自動で読み取ります。どうしても設定が必要なら、正しい形式で：</p>
 <pre><code>// ❌ 不要这样写
 app.setName('VinePalma');
 app.setDesktopName('com.vinepalma.player.desktop');
@@ -139,11 +121,8 @@ app.setDesktopName('com.vinepalma.player.desktop');
 // ✅ 推荐：删除手动设置，让 electron-builder 自动处理
 // 或确保名称一致
 app.setName('com.vinepalma.player');</code></pre>
-
-<h3>4. 窗口图标设置</h3>
-
-<p>虽然任务栏图标主要由 <code>WM_CLASS</code> 关联决定，但仍建议在创建 <code>BrowserWindow</code> 时设置窗口图标，确保各桌面环境兼容性：</p>
-
+<h3>4. ウィンドウアイコンの設定</h3>
+<p>タスクバーアイコンは主に <code>WM_CLASS</code> の関連付けで決まりますが、<code>BrowserWindow</code> 作成時にウィンドウアイコンを指定しておけば、各デスクトップ環境での互換性が担保されます：</p>
 <pre><code>const path = require('path');
 
 function createWindow() {
@@ -167,11 +146,8 @@ function createWindow() {
         // ... 其他配置
     });
 }</code></pre>
-
-<h3>5. 验证 .desktop 文件</h3>
-
-<p>打包安装后，检查生成的 <code>.desktop</code> 文件（路径：<code>/usr/share/applications/com.vinepalma.player.desktop</code>）：</p>
-
+<h3>5. .desktop ファイルの検証</h3>
+<p>パッケージングしてインストールしたら、生成された <code>.desktop</code> ファイル（<code>/usr/share/applications/com.vinepalma.player.desktop</code>）を確認します：</p>
 <pre><code>[Desktop Entry]
 Name=VinePalma
 Exec=/opt/VinePalma/vinepalma-player
@@ -179,35 +155,26 @@ Icon=com.vinepalma.player
 StartupWMClass=com.vinepalma.player  // ← 必须与 WM_CLASS 一致
 Type=Application
 Categories=AudioVideo;</code></pre>
-
-<h3>6. 验证 WM_CLASS</h3>
-
-<p>运行应用后，在终端执行以下命令验证：</p>
-
+<h3>6. WM_CLASS の検証</h3>
+<p>アプリを起動した状態で、端末から次のコマンドを実行します：</p>
 <pre><code>xprop | grep WM_CLASS
 // 然后点击应用窗口，查看输出</code></pre>
-
-<p>期望输出：</p>
-
+<p>期待される出力：</p>
 <pre><code>WM_CLASS(STRING) = "com.vinepalma.player", "com.vinepalma.player"</code></pre>
+<p><code>StartupWMClass</code> と <code>WM_CLASS</code> が一致していれば、タスクバーアイコンは正しく表示されます。</p>
 
-<p>如果 <code>StartupWMClass</code> 与 <code>WM_CLASS</code> 匹配，任务栏图标就会正确显示。</p>
-
-<h2>📝 总结</h2>
-
-<p>Electron Linux 图标问题通常不是图标文件本身的问题，而是<strong>窗口关联机制</strong>的问题。核心要点：</p>
-
+<h2>📝 まとめ</h2>
+<p>Electron の Linux アイコン問題は、アイコンファイル自体ではなく<strong>ウィンドウ関連付けの仕組み</strong>に起因するのが普通です。要点：</p>
 <ul>
-    <li>📁 Linux 图标配置指向<strong>文件夹</strong>，内含多尺寸 PNG</li>
-    <li>📝 <code>desktopName</code> <strong>不要带 <code>.desktop</code> 后缀</strong></li>
-    <li>🔗 确保 <code>StartupWMClass</code> 与 <code>WM_CLASS</code> 完全匹配</li>
-    <li>🖼️ 创建窗口时显式设置 <code>icon</code> 属性</li>
-    <li>🚫 避免手动调用 <code>app.setDesktopName()</code>，让 electron-builder 自动处理</li>
+    <li>📁 Linux のアイコン設定は複数サイズ PNG を含む<strong>フォルダ</strong>を指す</li>
+    <li>📝 <code>desktopName</code> には<strong><code>.desktop</code> 接尾辞を付けない</strong></li>
+    <li>🔗 <code>StartupWMClass</code> と <code>WM_CLASS</code> を完全一致させる</li>
+    <li>🖼️ ウィンドウ作成時に <code>icon</code> プロパティを明示指定する</li>
+    <li>🚫 手動の <code>app.setDesktopName()</code> 呼び出しは避け、electron-builder に任せる</li>
 </ul>
+<p>同じ問題に直面した開発者の遠回りが少しでも減ればと思います。Electron のクロスプラットフォーム開発では、Linux のデスクトップ統合こそが、最も見落とされやすく、最も問題を起こしやすい部分です。</p>
+<p style="opacity:0.6; margin-top:2rem;">—— 本稿は VineTurtle Studio 技術チームによる執筆です</p>
 
-<p>希望这篇文章能帮助遇到同样问题的开发者少走弯路。Electron 跨平台开发中，Linux 的桌面集成确实是最容易被忽视但也最容易出问题的部分。</p>
-
-<p style="opacity:0.6; margin-top:2rem;">—— 本文由 VineTurtleStudio 技术团队撰写</p>
             </div>
         </article>
         <nav class="content-pager" aria-label="コンテンツのページ移動"><span class="pager-link is-empty" aria-hidden="true"></span><a class="pager-link pager-next" href="2026-08-25-uninstaller-safety.html" rel="next"><span class="pager-label">次の記事 →</span><span class="pager-title">アンインストーラーの安全設計：Linux で絶対に誤削除しない三重の防御</span></a></nav>

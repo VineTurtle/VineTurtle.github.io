@@ -23,7 +23,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="../../Resources/images/VineTurtleStudio.png" type="image/png" />
     <script src="../../JS/theme-init.js"></script>
-    <link rel="alternate" type="application/rss+xml" title="藤栖ブログ · VineTurtle Studio" href="https://grapeleafi.top/ja/feed.xml">
+    <link rel="alternate" type="application/rss+xml" title="藤棲ブログ · VineTurtle Studio" href="https://grapeleafi.top/ja/feed.xml">
     <link rel="stylesheet" href="../../CSS/layout.css" />
     <link rel="stylesheet" href="../../CSS/i18n.css">
     <link rel="stylesheet" href="../../CSS/style.css" />
@@ -51,16 +51,16 @@
             <div class="hero-img-wrap"><img src="../../Resources/images/blog/hero/toolbox-binary.jpg" alt="ブラウザで手書きするバイナリエンコーダー：ICO / CUR / ICNS を組み立てる" class="post-hero-img" data-fallback="🛠️"><div class="fallback-hero">🛠️</div></div>
             <header class="post-header">
                 <h1>ブラウザで手書きするバイナリエンコーダー：ICO / CUR / ICNS を組み立てる</h1>
-                <div class="post-meta"><span>📅 2026年8月25日</span><span>🕐 約 4 分</span><div class="dynamic-stats" data-dynamic-stats></div></div>
+                <div class="post-meta"><span>📅 2026年8月25日</span><span>🕐 約 5 分</span><div class="dynamic-stats" data-dynamic-stats></div></div>
 <div class="post-tags-display"><span class="tag">#フロントエンド</span><span class="tag">#バイナリ形式</span><span class="tag">#VinePalmaToolbox</span><span class="tag">#落とし穴</span></div>
                 <div class="content-actions" data-content-actions></div>
             </header>
             <nav class="post-toc" data-toc hidden aria-label="目次"></nav>
-            <div class="post-body" lang="zh-CN" data-content-lang="zh-CN">
-<p>给 <strong>VinePalmaToolbox</strong> 做「图片格式转换」工具时遇到了一个尴尬：浏览器 Canvas 的 <code>toBlob()</code> 只支持 PNG / JPEG / WebP，而用户偏偏最常要求「把这张图转成 ICO 图标」。找遍 npm，好用的 ICO 编码库寥寥无几，ICNS（macOS 图标）更是没有维护良好的纯前端实现。最后我们决定：照着格式规范，用 <code>DataView</code> 一个字节一个字节自己拼。</p>
+            <div class="post-body" lang="ja" data-content-lang="ja">
+<p><strong>VinePalmaToolbox</strong> の「画像形式変換」ツールを作っていて、気まずい事態に遭遇しました：ブラウザ Canvas の <code>toBlob()</code> が対応しているのは PNG / JPEG / WebP だけなのに、ユーザーが最もよく求めるのは「この画像を ICO アイコンに変換して」。npm を漁っても使える ICO エンコーダはほとんどなく、ICNS（macOS のアイコン形式）に至っては、保守された純フロント実装が皆無でした。最終的な決断：フォーマット仕様に沿って、<code>DataView</code> で 1 バイトずつ自力で組み上げる、でした。</p>
 
-<h2>🧱 ICO：最「简单」的容器格式</h2>
-<h4>ICO 本质是一个「PNG 打包器」：文件头 + 目录 + 图片数据。Vista 之后允许直接内嵌 PNG 数据，这大大简化了实现——用 Canvas 把原图缩放到各尺寸导出 PNG，再拼装即可：</h4>
+<h2>🧱 ICO：最も「単純」なコンテナ形式</h2>
+<h4>ICO の本質は「PNG パッケージャ」です：ヘッダ + ディレクトリ + 画像データ。Vista 以降は PNG データの直接埋め込みが許され、実装は大きく簡素化されました——Canvas で元画像を各サイズに縮小して PNG を書き出し、あとは組み立てるだけ：</h4>
 <pre><code>// 文件头：6 字节，小端
 writeU16(0);        // 保留字段，必须为 0
 writeU16(1);        // 1 = ICO，2 = CUR
@@ -75,10 +75,10 @@ writeU16(1);         // 色彩平面（ICO）
 writeU16(32);        // 色深
 writeU32(png.length);// 数据长度
 writeU32(offset);    // 数据偏移</code></pre>
-<h4>三个容易翻车的细节：<strong>① 256px 的宽高要写 0 而不是 256</strong>（一个字节装不下，规范约定 0 表示 256）；② 偏移量必须累加计算，目录区之后第一个数据块的偏移是 6 + 16×count；③ ICO 与 CUR 的区别除了类型字段，CUR 还要把「色彩平面/色深」字段改写为热点坐标（hotspot x/y）——鼠标指针的点击位置就存在这两个字段里。</h4>
+<h4>転びやすい 3 つの細部：<strong>① 256px の幅と高さは 256 ではなく 0 を書く</strong>（1 バイトには収まらないため、仕様は 0 を 256 と約束）；② オフセットは累積計算で、ディレクトリ領域の直後にある最初のデータブロックのオフセットは 6 + 16×count；③ ICO と CUR の違いはタイプフィールドだけではなく、CUR はさらに「カラープレーン/色深度」フィールドをホットスポット座標（hotspot x/y）に書き換えます——マウスカーソルのクリック位置はまさにこの 2 フィールドに格納されるのです。</h4>
 
-<h2>🍎 ICNS：大端序的另一套世界</h2>
-<h4>ICNS 是 macOS 的图标格式，与 ICO 最大的不同是<strong>大端序</strong>，以及用 4 字节 ASCII 类型码标识尺寸：</h4>
+<h2>🍎 ICNS：ビッグエンディアンの別世界</h2>
+<h4>ICNS は macOS のアイコン形式で、ICO との最大の違いは<strong>ビッグエンディアン</strong>であること、そして 4 バイトの ASCII タイプコードでサイズを識別すること：</h4>
 <pre><code>writeU32(0x69636e73);  // 'icns' 魔数（大端）
 writeU32(totalLength); // 整个文件长度
 // 每个尺寸一个块：
@@ -86,13 +86,13 @@ writeU32(totalLength); // 整个文件长度
 writeType('icp4');   // 16x16
 writeType('ic07');   // 128x128
 writeType('ic10');   // 512x512（或 1024@2x）</code></pre>
-<h4>调试时最费时间的是「文件长度」字段：必须等于所有块长之和加 8 字节头，写错一个字节 macOS 直接拒绝加载，而且不报错。</h4>
+<h4>デバッグで最も時間を食ったのは「ファイル長」フィールドです：全ブロック長の合計 + 8 バイトヘッダと等しくなければならず、1 バイトでも間違えると macOS は読み込みを拒否します——しかもエラーを一切出しません。</h4>
 
-<h2>🔍 通用经验：用十六进制编辑器验收</h2>
-<h4>二进制代码的正确性没法 console.log 出来看。我们的验收流程是：生成文件 → <code>xxd</code> 查看头十六个字节 → 对照 spec 逐字段核对 → 再用系统工具（<code>file</code> 命令、macOS 预览、Windows 资源管理器）交叉验证。<code>file x.ico</code> 输出 "MS Windows icon resource - 5 images" 的那一刻，比任何单元测试都踏实。</h4>
+<h2>🔍 通用の経験：十六進エディタで受け入れ検証</h2>
+<h4>バイナリコードの正しさは console.log では見えません。私たちの受け入れフローは：ファイル生成 → <code>xxd</code> で先頭 16 バイトを確認 → spec の各フィールドと突き合わせ → システムツール（<code>file</code> コマンド、macOS プレビュー、Windows エクスプローラー）でクロス検証。<code>file x.ico</code> が "MS Windows icon resource - 5 images" と出力したあの瞬間は、どんなユニットテストよりも安心できます。</h4>
 
-<h2>📝 小结</h2>
-<h4>这轮手搓的收获：二进制格式没有想象中神秘——ICO 是「数组 + 偏移」，ICNS 是「TLV 列表」，真正的工作量在于<strong>边界约定</strong>（256 写 0、长度含头不含头、大端小端）。这些约定在 spec 里往往只有半句话，却是全部的坑所在。VinePalmaToolbox 的图片转换工具现在支持 PNG/JPEG/WebP/BMP/ICO/CUR/ICNS/DDS 互转，全部核心编码逻辑不超过 400 行 TypeScript。</h4>
+<h2>📝 まとめ</h2>
+<h4>この手作りで得たもの：バイナリ形式は想像ほど神秘ではありません——ICO は「配列 + オフセット」、ICNS は「TLV リスト」で、本当の作業量は<strong>境界の約束事</strong>（256 は 0 と書く、長さにヘッダを含むか否か、ビッグ/リトルエンディアン）にあります。こうした約束事は spec の中でたいてい半文程度しかないのに、落とし穴は全部そこに宿っています。VinePalmaToolbox の画像変換ツールは現在 PNG/JPEG/WebP/BMP/ICO/CUR/ICNS/DDS の相互変換に対応し、コアのエンコードロジックは全部で 400 行の TypeScript に収まっています。</h4>
 
             </div>
         </article>

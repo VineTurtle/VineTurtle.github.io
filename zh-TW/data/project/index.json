@@ -14,7 +14,7 @@
     "status": "🚧 迭代中",
     "statusClass": "status-progress",
     "year": "2024",
-    "desc": "为零基础用户维护的纯静态粉丝社区站：倒计时、生日提醒、看板娘一个不少",
+    "desc": "為零基礎使用者維護的純靜態粉絲社群站：倒數計時、生日提醒、看板娘一個不少。",
     "excerpt": "為零基礎使用者維護的純靜態粉絲社群站：倒數計時、生日提醒、看板娘一個不少"
   },
   {
@@ -33,7 +33,7 @@
     "status": "🚧 迭代中",
     "statusClass": "status-progress",
     "year": "2026",
-    "desc": "永远不上云的本地优先项目管理工具：Markdown 即数据库，局域网像云一样协作",
+    "desc": "永不上雲的本地優先專案管理工具：Markdown 即資料庫，區域網路像雲一樣協作。",
     "excerpt": "永遠不上雲的本機優先專案管理工具：Markdown 即資料庫，區域網路像雲一樣協作"
   },
   {
@@ -51,7 +51,7 @@
     "status": "🚧 迭代中",
     "statusClass": "status-progress",
     "year": "2026",
-    "desc": "APT / Flatpak / Snap / Docker / AppImage / APM 六大来源统一的 Linux 卸载器",
+    "desc": "APT / Flatpak / Snap / Docker / AppImage / APM 六大來源統一的 Linux 解除安裝器。",
     "excerpt": "APT / Flatpak / Snap / Docker / AppImage / APM 六大來源統一的 Linux 解除安裝器"
   },
   {
@@ -69,7 +69,7 @@
     "status": "🚧 迭代中",
     "statusClass": "status-progress",
     "year": "2026",
-    "desc": "VinePalma Player播放器设置，一个值得选择的本地播放器",
+    "desc": "VinePalma Player 播放器設定，一個值得選擇的本機播放器。",
     "excerpt": "VinePalma Player 播放器設定，一個值得選擇的本機播放器"
   },
   {
@@ -87,7 +87,7 @@
     "status": "🚧 迭代中",
     "statusClass": "status-progress",
     "year": "2026",
-    "desc": "VinePalmaToolbox，一个值得你选择的工具箱",
+    "desc": "VinePalmaToolbox，一個值得你選擇的工具箱。",
     "excerpt": "VinePalmaToolbox，一個值得你選擇的工具箱"
   }
 ]

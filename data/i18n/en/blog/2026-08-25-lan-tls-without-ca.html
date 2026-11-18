@@ -1,0 +1,56 @@
+<p>While building the LAN sync feature of <strong>VinePalmaFlow</strong> (our local-first project management tool), we ran into a problem the textbooks rarely mention: <strong>two LAN devices need an encrypted connection, yet there is no CA-issued certificate, no domain name — not even a trustworthy clock on the other side</strong>. The Web PKI trust model fails completely here. This note records three pitfalls on rustls 0.23 and the application-layer authentication design we settled on.</p>
+
+<h2>📦 Background</h2>
+<p>VinePalmaFlow's sync architecture: mDNS discovers devices → a TLS 1.3 encrypted channel → WebSocket exchanging JSON messages. The security goal is "only devices that have been paired with each other may sync data". Simple in principle, but every premise breaks down on a LAN:</p>
+<ul>
+    <li>❌ no CA: it's impossible to issue trusted certificates to LAN devices</li>
+    <li>❌ no domain: SNI's <code>ServerName</code> can't be built from a string</li>
+    <li>❌ untrustworthy clocks: a freshly assembled machine's BIOS clock may be stuck years back</li>
+    <li>✅ the one trustworthy thing: the user, watching both screens, typing in the pairing codes</li>
+</ul>
+
+<h2>Pitfall one: rustls 0.23 requires explicitly installing a crypto provider</h2>
+<p>rustls 0.23 split its crypto backends into pluggable providers — <strong>without installing one, it panics outright</strong>. The first wall you hit after upgrading:</p>
+<pre><code>// 程序入口处，只装一次
+rustls::crypto::ring::default_provider()
+    .install_default()
+    .expect("failed to install rustls crypto provider");</code></pre>
+
+<h2>Pitfall two: building a ServerName for direct IP connections</h2>
+<p>Web textbooks always write <code>ServerName::try_from("example.com")</code>, but on a LAN all we have is an IP. A string-form IP gets rejected at handshake; you must use the dedicated variant:</p>
+<pre><code>use rustls::pki_types::ServerName;
+
+// ❌ ServerName::try_from("192.168.1.5")? —— 当作域名处理，校验失败
+// ✅
+let server_name = ServerName::IpAddress(ip.into());</code></pre>
+<p>Also, for empty addresses and <code>0.0.0.0</code>, fall back to <code>127.0.0.1</code> — otherwise the first sync attempt fired before mDNS resolution completes errors out immediately.</p>
+
+<h2>Pitfall three: certificate validity vs. clock skew</h2>
+<p>Self-signed certificates default <code>not_before</code> to the generation moment. Picture device A with a correct clock and device B a day slow: B generates its certificate → A rejects it as "not yet valid" → handshake fails. Worse, this problem <strong>only appears between particular pairs of devices</strong> and is extremely hard to reproduce. The fix is blunt — stretch the validity window to the max:</p>
+<pre><code>let mut params = rcgen::CertificateParams::new(vec![])?;
+params.not_before = rcgen::date_time_ymd(2020, 1, 1);
+params.not_after  = rcgen::date_time_ymd(2099, 12, 31);
+// 证书与私钥以 DER 落盘，设备生命周期内复用，不再重签</code></pre>
+
+<h2>🔑 The trust model: push authentication down to the application layer</h2>
+<p>After giving up certificate-chain validation, each side hangs a custom verifier (rustls's <code>danger</code> trait): the client "accepts any server certificate", the server "demands a client certificate". <strong>TLS only encrypts; identity authentication belongs entirely to the layer above</strong>:</p>
+<ul>
+    <li>each device generates a self-signed certificate on first launch, <strong>writing the device ID into the CN field</strong></li>
+    <li>after the handshake, the server parses the CN out of the peer's client-certificate DER and treats it as "the authenticated device identity"</li>
+    <li>every sync message must carry an ID present in the trust list <code>devices.json</code>; an id claimed inside the message body <strong>doesn't count</strong></li>
+</ul>
+<pre><code>// 服务端：从客户端证书提取真实身份
+fn cert_common_name(cert_der: &[u8]) -&gt; Option&lt;String&gt; { /* 解析 CN */ }
+
+// 消息处理时以证书 CN 为准，而非消息体里的 id
+if !is_trusted(&amp;cert_peer_id) {
+    return reject("device not paired");
+}</code></pre>
+<p>Pairing itself relies on a <strong>two-way 6-digit pairing code</strong>: each device shows a code on screen, the user types the other's code in, and only after a two-way check is the peer written into the trust list. Essentially it's TOFU (Trust On First Use) combined with human out-of-band verification — security equivalent to Bluetooth pairing.</p>
+<p>One extra hardening along the way: <code>verify_tls12_signature</code> returns an error outright, <strong>disabling TLS 1.2</strong> and allowing only 1.3 handshakes — one fewer downgrade-attack surface.</p>
+
+<h2>✅ Lock the security model with tests</h2>
+<p>A design like "custom verifier + application-layer auth" is easy to quietly break during refactoring, so we wrote dedicated regression tests for it: pushes with a forged certificate CN (not in the trust list) must be rejected; <code>sync_push</code> from unpaired devices must error; the TLS loopback handshake must succeed. Once the security logic is written, let the tests stand guard for you.</p>
+
+<h2>📝 Takeaways</h2>
+<p>The right posture for LAN peer-to-peer encryption: <strong>self-signed certificates carry identity, TLS only encrypts, authentication lives in the application layer, pairing codes complete the TOFU, and a maxed-out validity window tolerates clock drift</strong>. The whole design is about 300 lines of Rust in VinePalmaFlow, introduces no CA infrastructure whatsoever, yet delivers transport security comparable to a cloud service.</p>

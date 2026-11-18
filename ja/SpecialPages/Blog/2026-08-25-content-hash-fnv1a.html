@@ -23,7 +23,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="../../Resources/images/VineTurtleStudio.png" type="image/png" />
     <script src="../../JS/theme-init.js"></script>
-    <link rel="alternate" type="application/rss+xml" title="藤栖ブログ · VineTurtle Studio" href="https://grapeleafi.top/ja/feed.xml">
+    <link rel="alternate" type="application/rss+xml" title="藤棲ブログ · VineTurtle Studio" href="https://grapeleafi.top/ja/feed.xml">
     <link rel="stylesheet" href="../../CSS/layout.css" />
     <link rel="stylesheet" href="../../CSS/i18n.css">
     <link rel="stylesheet" href="../../CSS/style.css" />
@@ -51,16 +51,16 @@
             <div class="hero-img-wrap"><img src="../../Resources/images/blog/hero/content-hash.jpg" alt="コンテンツ指紋と差分同期：なぜ FNV-1a を自作したのか" class="post-hero-img" data-fallback="#️⃣"><div class="fallback-hero">#️⃣</div></div>
             <header class="post-header">
                 <h1>コンテンツ指紋と差分同期：なぜ FNV-1a を自作したのか</h1>
-                <div class="post-meta"><span>📅 2026年8月25日</span><span>🕐 約 5 分</span><div class="dynamic-stats" data-dynamic-stats></div></div>
+                <div class="post-meta"><span>📅 2026年8月25日</span><span>🕐 約 7 分</span><div class="dynamic-stats" data-dynamic-stats></div></div>
 <div class="post-tags-display"><span class="tag">#Rust</span><span class="tag">#アルゴリズム</span><span class="tag">#落とし穴</span><span class="tag">#同期</span></div>
                 <div class="content-actions" data-content-actions></div>
             </header>
             <nav class="post-toc" data-toc hidden aria-label="目次"></nav>
-            <div class="post-body" lang="zh-CN" data-content-lang="zh-CN">
-<p>VinePalmaFlow 的局域网同步最初有个诡异现象：<strong>两台设备明明什么都没改，每次同步却总在互相传输全量数据</strong>。日志里显示所有项目的内容指纹（hash）都对不上。排查下来，根因藏在 Rust 标准库的一个「特性」里。</p>
+            <div class="post-body" lang="ja" data-content-lang="ja">
+<p>VinePalmaFlow の LAN 同期には最初、奇妙な現象がありました：<strong>両デバイスは何も変えていないのに、同期のたびに全量データを相互転送している</strong>。ログには全プロジェクトの内容指紋（hash）が一致しないと表示されます。調べてみると、根因は Rust 標準ライブラリのある「仕様」に隠れていました。</p>
 
-<h2>🔍 根因：DefaultHasher 的随机种子</h2>
-<p>第一版实现直接用了 <code>std::collections::hash_map::DefaultHasher</code> 对项目内容求哈希。但 Rust 的 <code>RandomState</code> <strong>故意为每个进程随机化种子</strong>（防哈希碰撞 DoS 攻击）。这意味着：</p>
+<h2>🔍 根因：DefaultHasher のランダムシード</h2>
+<p>最初の実装は <code>std::collections::hash_map::DefaultHasher</code> でプロジェクト内容をハッシュしていました。しかし Rust の <code>RandomState</code> は<strong>プロセスごとに意図的にシードをランダム化</strong>しています（ハッシュ衝突 DoS 攻撃への防御）。つまり：</p>
 <pre><code>// 进程 A
 let mut h = std::collections::hash_map::DefaultHasher::new();
 "project.md 内容".hash(&amp;mut h);
@@ -68,10 +68,10 @@ let mut h = std::collections::hash_map::DefaultHasher::new();
 
 // 进程 B（同一份内容！）
 // h.finish() = 0x51f2...  ← 完全不同的值</code></pre>
-<p>增量同步的前提是「相同内容 → 相同指纹」，而跨进程比较恰恰是同步场景的常态。<code>DefaultHasher</code> 从设计上就做不到。</p>
+<p>増分同期の前提は「同じ内容 → 同じ指紋」であるのに、プロセスをまたぐ比較こそが同期シーンの常態です。<code>DefaultHasher</code> は設計上それが不可能です。</p>
 
-<h2>🛠️ 解法一：手写 FNV-1a</h2>
-<p>我们需要一个<strong>跨进程确定性</strong>的哈希。密码学哈希（SHA-256）当然可以，但对本地可信场景来说太重。FNV-1a 只有几行，雪崩性足够区分文件内容：</p>
+<h2>🛠️ 解決策 1：手書き FNV-1a</h2>
+<p><strong>プロセスをまたいで決定的</strong>なハッシュが必要です。暗号学的ハッシュ（SHA-256）でももちろん可能ですが、ローカルの信頼できる場面には重すぎます。FNV-1a は数行で書け、雪崩性もファイル内容の区別には十分です：</p>
 <pre><code>struct Fnv1a(u64);
 
 impl Fnv1a {
@@ -83,36 +83,36 @@ impl Fnv1a {
         }
     }
 }</code></pre>
-<p>计算范围是 <code>project.md</code> 内容 + <strong>按文件名排序后</strong>的任务文件（文件名 + 内容）逐个喂进去。排序很关键——文件系统返回目录项的顺序不保证稳定，不排序的话同一目录两次枚举就会算出不同指纹。</p>
+<p>計算対象は <code>project.md</code> の内容 + <strong>ファイル名順にソートした</strong>タスクファイル（ファイル名 + 内容）を順に投入します。ソートが肝心です——ファイルシステムはディレクトリエントリの順序を保証しないため、ソートしなければ同じディレクトリでも 2 回の列挙で別の指紋が出てしまいます。</p>
 
-<h2>🛠️ 解法二：序列化必须幂等</h2>
-<p>光有确定性哈希还不够。指纹的输入是文件内容，而 project.md 的 Front Matter 是我们<strong>自己序列化写出去</strong>的。如果序列化不稳定——比如 <code>serde_yaml</code> 按枚举顺序输出字段、空值时有时无——那么用户只是打开又保存，文件字节就变了，指纹跟着变，又一次假差异。</p>
-<p>所以 VinePalmaFlow 手写了 Front Matter 的序列化：<strong>15 个字段固定输出顺序、null/空串/空数组一律剔除、未识别的自定义字段排在末尾</strong>。同样的元数据，无论在哪台设备、哪个版本上序列化，输出字节级一致。这是「幂等序列化」：serialize(parse(x)) == x。</p>
+<h2>🛠️ 解決策 2：シリアライズは冪等でなければならない</h2>
+<p>決定的ハッシュだけではまだ足りません。指紋の入力はファイル内容であり、project.md の Front Matter は<strong>自分でシリアライズして書き出している</strong>ものです。シリアライズが不安定——たとえば <code>serde_yaml</code> が列挙順にフィールドを出力したり、null が出たり出なかったりすると——ユーザーが開いて保存しただけでファイルのバイト列が変わり、指紋も変わり、またしても偽差異です。</p>
+<p>そこで VinePalmaFlow は Front Matter のシリアライズを手書きしました：<strong>15 個のフィールドは固定順で出力、null/空文字列/空配列は一律除去、未識別のカスタムフィールドは末尾に配置</strong>。同じメタデータなら、どのデバイスのどのバージョンでシリアライズしてもバイト単位で一致します。これが「冪等シリアライズ」：serialize(parse(x)) == x。</p>
 
-<h2>🧩 配套机制：基准镜像与字段级合并</h2>
-<p>指纹只解决「发现差异」，解决「合并差异」靠三方合并。每台设备在 <code>.localflow/sync/peers/{peer_id}/{project_id}/</code> 下保存上次同步结果的<strong>基准镜像</strong>（base），合并时三方对比：</p>
+<h2>🧩 付随機構：ベースラインミラーとフィールド単位マージ</h2>
+<p>指紋が解決するのは「差異の発見」で、「差異のマージ」はスリーウェイマージに頼ります。各デバイスは <code>.localflow/sync/peers/{peer_id}/{project_id}/</code> 配下に前回同期結果の<strong>ベースラインミラー</strong>（base）を保存しており、マージ時に三者比較します：</p>
 <table>
-    <thead><tr><th>本地 vs base</th><th>对方 vs base</th><th>结果</th></tr></thead>
+    <thead><tr><th>ローカル vs base</th><th>相手 vs base</th><th>結果</th></tr></thead>
     <tbody>
-        <tr><td>未改</td><td>改了</td><td>采纳对方</td></tr>
-        <tr><td>改了</td><td>未改</td><td>保留本地</td></tr>
-        <tr><td>两边改得一样</td><td></td><td>任意采纳</td></tr>
-        <tr><td>两边改得不同</td><td></td><td><strong>冲突，交给用户</strong></td></tr>
+        <tr><td>未変更</td><td>変更あり</td><td>相手を採用</td></tr>
+        <tr><td>変更あり</td><td>未変更</td><td>ローカルを保持</td></tr>
+        <tr><td>双方が同じ内容に変更</td><td></td><td>どちらでも採用</td></tr>
+        <tr><td>双方が別の内容に変更</td><td></td><td><strong>競合——ユーザーに委ねる</strong></td></tr>
     </tbody>
 </table>
-<p>对 project.md 我们再做一层<b>字段级合并</b>：YAML Front Matter 按 key 逐个三方合并，正文单独做文本三方合并。A 设备改进度、B 设备改正文，整文件对比会误判冲突，字段级合并则能自动融合——只有「同一个字段被双方改成不同值」才算真冲突。</p>
+<p>project.md にはさらに<b>フィールド単位マージ</b>を一枚重ねます：YAML Front Matter は key ごとにスリーウェイマージし、本文は別途テキストのスリーウェイマージを行います。A デバイスが進捗を、B デバイスが本文を変えた場合、ファイル全体の比較では誤って競合判定されますが、フィールド単位なら自動的に融合できます——「同じフィールドを双方が別の値に変えた」場合だけが真の競合です。</p>
 
-<h2>⚠️ 反直觉的细节：解决冲突后必须更新 base</h2>
-<p>用户在冲突 UI 里选了「采用对方」，如果只写回目标文件，<strong>base 镜像还停留在旧版本</strong>——下次同步，对端视角下你的选择又是一次「新改动」，同一个冲突无限复活。正确做法是把选择结果同时写入该 peer 的 base 目录：</p>
+<h2>⚠️ 直感に反する細部：競合解決後は必ず base を更新</h2>
+<p>ユーザーが競合 UI で「相手を採用」を選んだとき、対象ファイルだけに書き戻すと、<strong>base ミラーは旧バージョンのまま</strong>——次の同期では、相手の視点であなたの選択はまた「新たな変更」になり、同じ競合が無限に復活します。正しいやり方は、選択結果をそのピアの base ディレクトリにも同時に書き込むことです：</p>
 <pre><code>fn resolve_conflict(...) {
     std::fs::write(target, content)?;
     // 更新基准镜像，本次选择成为新的共同基线
     write_base(&amp;peer_base_dir(ws, peer_id, project_id), &amp;file, content)?;
 }</code></pre>
-<p>这个 bug 上线前被我们自己的测试抓住了——「同一冲突不能复活」现在是一条固定的回归用例。</p>
+<p>このバグは公開前に自分たちのテストに捕捉されました——「同じ競合は復活しない」は今や固定のリグレッションケースです。</p>
 
-<h2>📝 小结</h2>
-<p>增量同步的三块基石：<strong>确定性哈希（FNV-1a）+ 幂等序列化（固定字段顺序）+ 三方合并（base 镜像随每次解决而前进）</strong>。三者缺一，都会以「假差异」「冲突复活」这类难以追踪的方式反噬。现在 VinePalmaFlow 两台设备空闲时同步，日志安静得像什么都没发生——这正是我们想要的。</p>
+<h2>📝 まとめ</h2>
+<p>増分同期の 3 つの基石：<strong>決定的ハッシュ（FNV-1a）+ 冪等シリアライズ（固定フィールド順）+ スリーウェイマージ（base ミラーは解決のたびに前進）</strong>。どれか一つでも欠ければ、「偽差異」「競合復活」といった追跡困難な形で反撃されます。今、VinePalmaFlow の 2 台のデバイスはアイドル時に同期し、ログは何も起きていないかのように静か——まさに望んでいた姿です。</p>
 
             </div>
         </article>

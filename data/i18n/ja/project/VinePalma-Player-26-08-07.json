@@ -5,5 +5,7 @@
     "Linux",
     "Tauri",
     "プレーヤー"
-  ]
+  ],
+  "desc": "VinePalma Player の設定ガイド。選んで損のないローカルプレーヤー。",
+  "status": "🚧 継続開発中"
 }

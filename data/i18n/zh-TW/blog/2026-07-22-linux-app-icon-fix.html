@@ -1,0 +1,151 @@
+<p>最近在開發 <strong>VinePalma Player</strong> 的 Linux 版本時，遇到了一個看似簡單卻折騰了我很久的圖示問題。安裝後的應用圖示正常顯示，但執行後任務欄上的圖示卻是預設的「空白」狀態。這篇文章記錄了我踩過的坑和最終的解決方案。</p>
+
+<h2>📦 問題描述</h2>
+
+<p>使用 <code>electron-builder</code> 打包 Linux 版本（deb/AppImage）後，安裝應用時圖示顯示正常——啟動器選單、應用列表裡的圖示都沒問題。但<strong>一旦執行應用，工作列上出現的卻是系統預設的空白圖示</strong></p>
+
+<p>最初以為是圖示檔案本身的問題，但檢查後發現：</p>
+
+<ul>
+    <li>✅ 安裝後的 <code>.desktop</code> 檔案中 <code>Icon</code> 欄位正確</li>
+    <li>✅ 圖示檔案存在於安裝目錄</li>
+    <li>✅ 啟動器選單圖示顯示正常</li>
+    <li>❌ 執行後任務欄圖示為空/預設</li>
+</ul>
+
+<h2>🔍 原因分析</h2>
+
+<p>Linux 桌面環境（GNOME、KDE、XFCE 等）通過 <strong>WM_CLASS</strong> 屬性來關聯執行中的視窗和 <code>.desktop</code> 檔案。如果視窗的 <code>WM_CLASS</code> 與 <code>.desktop</code> 檔案中的 <code>StartupWMClass</code> 不匹配，桌面環境就無法正確識別視窗所屬的應用，導致工作列圖示顯示為預設狀態。</p>
+
+<p>Electron 的 <code>WM_CLASS</code> 預設從 <code>package.json</code> 中的 <code>desktopName</code> 欄位派生。如果配置不當，就會出現關聯斷裂。</p>
+
+<h2>🛠️ 解決方案</h2>
+
+<h3>1. 圖示目錄結構</h3>
+
+<p>Linux 圖示最好<strong>指向一個資料夾</strong>，而不是單個檔案。<code>electron-builder</code> 會自動處理資料夾內的多尺寸圖示：</p>
+
+<pre><code>assets/icons/linux/
+├── 16x16.png
+├── 32x32.png
+├── 48x48.png
+├── 128x128.png
+├── 256x256.png
+└── 512x512.png</code></pre>
+
+<p>在 <code>package.json</code> 中這樣配置：</p>
+
+<pre><code>"linux": {
+    "icon": "assets/icons/linux",  // ← 指向文件夹，不是文件！
+    "target": ["deb", "AppImage"],
+    "category": "AudioVideo",
+    "syncDesktopName": true
+}</code></pre>
+
+<h3>2. 正確的 desktopName 配置</h3>
+
+<p>這是最關鍵的一步。<code>desktopName</code> 的值<strong>不能包含 <code>.desktop</code> 字尾</strong>，否則會導致 <code>WM_CLASS</code> 解析異常：</p>
+
+<pre><code>// ❌ 错误
+"desktopName": "com.vinepalma.player.desktop"
+
+// ✅ 正确
+"desktopName": "com.vinepalma.player"</code></pre>
+
+<p>修改後的 <code>package.json</code> 關鍵配置：</p>
+
+<pre><code>{
+  "name": "vinepalma-player",
+  "desktopName": "com.vinepalma.player",  // 去掉 .desktop 后缀
+  "build": {
+    "appId": "com.vinepalma.player",
+    "productName": "VinePalma",
+    "linux": {
+      "icon": "assets/icons/linux",
+      "target": ["deb", "AppImage"],
+      "category": "AudioVideo",
+      "syncDesktopName": true
+    }
+  }
+}</code></pre>
+
+<h3>3. 主程式碼調整</h3>
+
+<p>在 <code>src/main/index.js</code> 中，<strong>不要手動呼叫 <code>app.setDesktopName()</code></strong>，讓 Electron 自動從 <code>package.json</code> 讀取配置。如果必須設定，使用正確的格式：</p>
+
+<pre><code>// ❌ 不要这样写
+app.setName('VinePalma');
+app.setDesktopName('com.vinepalma.player.desktop');
+
+// ✅ 推荐：删除手动设置，让 electron-builder 自动处理
+// 或确保名称一致
+app.setName('com.vinepalma.player');</code></pre>
+
+<h3>4. 視窗圖示設定</h3>
+
+<p>雖然工作列圖示主要由 <code>WM_CLASS</code> 關聯決定，但仍建議在建立 <code>BrowserWindow</code> 時設定視窗圖示，確保各桌面環境相容性：</p>
+
+<pre><code>const path = require('path');
+
+function createWindow() {
+    const iconDir = path.resolve(__dirname, '../../assets/icons');
+    let windowIconPath;
+
+    if (process.platform === 'darwin') {
+        windowIconPath = path.join(iconDir, 'VinePalma.icns');
+    } else if (process.platform === 'win32') {
+        windowIconPath = path.join(iconDir, 'VinePalma.ico');
+    } else {
+        // Linux: 使用具体尺寸图片
+        windowIconPath = path.join(iconDir, 'linux/256x256.png');
+    }
+
+    const mainWindow = new BrowserWindow({
+        width: 500,
+        height: 520,
+        title: 'VinePalma',
+        icon: windowIconPath,  // 设置窗口图标
+        // ... 其他配置
+    });
+}</code></pre>
+
+<h3>5. 驗證 .desktop 檔案</h3>
+
+<p>打包安裝後，檢查生成的 <code>.desktop</code> 檔案（路徑：<code>/usr/share/applications/com.vinepalma.player.desktop</code>）：</p>
+
+<pre><code>[Desktop Entry]
+Name=VinePalma
+Exec=/opt/VinePalma/vinepalma-player
+Icon=com.vinepalma.player
+StartupWMClass=com.vinepalma.player  // ← 必须与 WM_CLASS 一致
+Type=Application
+Categories=AudioVideo;</code></pre>
+
+<h3>6. 驗證 WM_CLASS</h3>
+
+<p>執行應用後，在終端執行以下命令驗證：</p>
+
+<pre><code>xprop | grep WM_CLASS
+// 然后点击应用窗口，查看输出</code></pre>
+
+<p>期望輸出：</p>
+
+<pre><code>WM_CLASS(STRING) = "com.vinepalma.player", "com.vinepalma.player"</code></pre>
+
+<p>如果 <code>StartupWMClass</code> 與 <code>WM_CLASS</code> 匹配，工作列圖示就會正確顯示。</p>
+
+<h2>📝 總結</h2>
+
+<p>Electron Linux 圖示問題通常不是圖示檔案本身的問題，而是<strong>視窗關聯機制</strong>的問題。核心要點：</p>
+
+<ul>
+    <li>📁 Linux 圖示配置指向<strong>資料夾</strong>，內含多尺寸 PNG</li>
+    <li>📝 <code>desktopName</code> <strong>不要帶 <code>.desktop</code> 字尾</strong></li>
+    <li>🔗 確保 <code>StartupWMClass</code> 與 <code>WM_CLASS</code> 完全匹配</li>
+    <li>🖼️ 建立視窗時顯式設定 <code>icon</code> 屬性</li>
+    <li>🚫 避免手動呼叫 <code>app.setDesktopName()</code>，讓 electron-builder 自動處理</li>
+</ul>
+
+<p>希望這篇文章能幫助遇到同樣問題的開發者少走彎路。Electron 跨平臺開發中，Linux 的桌面整合確實是最容易被忽視但也最容易出問題的部分。</p>
+
+<p style="opacity:0.6; margin-top:2rem;">—— 本文由 VineTurtleStudio 技術團隊撰寫</p>

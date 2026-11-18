@@ -51,16 +51,16 @@
             <div class="hero-img-wrap"><img src="../../Resources/images/blog/hero/content-hash.jpg" alt="Content fingerprints and incremental sync: why hand-write FNV-1a" class="post-hero-img" data-fallback="#️⃣"><div class="fallback-hero">#️⃣</div></div>
             <header class="post-header">
                 <h1>Content fingerprints and incremental sync: why hand-write FNV-1a</h1>
-                <div class="post-meta"><span>📅 Aug 25, 2026</span><span>⏱ ~5 min read</span><div class="dynamic-stats" data-dynamic-stats></div></div>
+                <div class="post-meta"><span>📅 Aug 25, 2026</span><span>⏱ ~11 min read</span><div class="dynamic-stats" data-dynamic-stats></div></div>
 <div class="post-tags-display"><span class="tag">#Rust</span><span class="tag">#Algorithms</span><span class="tag">#Pitfalls</span><span class="tag">#Sync</span></div>
                 <div class="content-actions" data-content-actions></div>
             </header>
             <nav class="post-toc" data-toc hidden aria-label="Table of contents"></nav>
-            <div class="post-body" lang="zh-CN" data-content-lang="zh-CN">
-<p>VinePalmaFlow 的局域网同步最初有个诡异现象：<strong>两台设备明明什么都没改，每次同步却总在互相传输全量数据</strong>。日志里显示所有项目的内容指纹（hash）都对不上。排查下来，根因藏在 Rust 标准库的一个「特性」里。</p>
+            <div class="post-body" lang="en" data-content-lang="en">
+<p>VinePalmaFlow's LAN sync started out with a strange phenomenon: <strong>two devices, having changed nothing, still transferred full data to each other on every sync</strong>. The logs showed every project's content fingerprint (hash) mismatching. Digging in, the root cause was hiding in a "feature" of the Rust standard library.</p>
 
-<h2>🔍 根因：DefaultHasher 的随机种子</h2>
-<p>第一版实现直接用了 <code>std::collections::hash_map::DefaultHasher</code> 对项目内容求哈希。但 Rust 的 <code>RandomState</code> <strong>故意为每个进程随机化种子</strong>（防哈希碰撞 DoS 攻击）。这意味着：</p>
+<h2>🔍 Root cause: DefaultHasher's random seed</h2>
+<p>The first implementation hashed project content directly with <code>std::collections::hash_map::DefaultHasher</code>. But Rust's <code>RandomState</code> <strong>deliberately randomizes its seed per process</strong> (a defense against hash-collision DoS). Which means:</p>
 <pre><code>// 进程 A
 let mut h = std::collections::hash_map::DefaultHasher::new();
 "project.md 内容".hash(&amp;mut h);
@@ -68,10 +68,10 @@ let mut h = std::collections::hash_map::DefaultHasher::new();
 
 // 进程 B（同一份内容！）
 // h.finish() = 0x51f2...  ← 完全不同的值</code></pre>
-<p>增量同步的前提是「相同内容 → 相同指纹」，而跨进程比较恰恰是同步场景的常态。<code>DefaultHasher</code> 从设计上就做不到。</p>
+<p>Incremental sync rests on the premise "same content → same fingerprint", and cross-process comparison is precisely the normal case in sync scenarios. <code>DefaultHasher</code> can't do that by design.</p>
 
-<h2>🛠️ 解法一：手写 FNV-1a</h2>
-<p>我们需要一个<strong>跨进程确定性</strong>的哈希。密码学哈希（SHA-256）当然可以，但对本地可信场景来说太重。FNV-1a 只有几行，雪崩性足够区分文件内容：</p>
+<h2>🛠️ Fix one: hand-write FNV-1a</h2>
+<p>We needed a hash that is <strong>deterministic across processes</strong>. A cryptographic hash (SHA-256) would do, but it's overkill for a local, trusted setting. FNV-1a is a few lines, and its avalanche behavior is plenty to tell file contents apart:</p>
 <pre><code>struct Fnv1a(u64);
 
 impl Fnv1a {
@@ -83,36 +83,36 @@ impl Fnv1a {
         }
     }
 }</code></pre>
-<p>计算范围是 <code>project.md</code> 内容 + <strong>按文件名排序后</strong>的任务文件（文件名 + 内容）逐个喂进去。排序很关键——文件系统返回目录项的顺序不保证稳定，不排序的话同一目录两次枚举就会算出不同指纹。</p>
+<p>The computed range is the <code>project.md</code> content plus the task files <strong>sorted by filename</strong> (filename + content), fed in one by one. Sorting is crucial — the filesystem guarantees nothing about directory-entry order; without sorting, two enumerations of the same directory already produce different fingerprints.</p>
 
-<h2>🛠️ 解法二：序列化必须幂等</h2>
-<p>光有确定性哈希还不够。指纹的输入是文件内容，而 project.md 的 Front Matter 是我们<strong>自己序列化写出去</strong>的。如果序列化不稳定——比如 <code>serde_yaml</code> 按枚举顺序输出字段、空值时有时无——那么用户只是打开又保存，文件字节就变了，指纹跟着变，又一次假差异。</p>
-<p>所以 VinePalmaFlow 手写了 Front Matter 的序列化：<strong>15 个字段固定输出顺序、null/空串/空数组一律剔除、未识别的自定义字段排在末尾</strong>。同样的元数据，无论在哪台设备、哪个版本上序列化，输出字节级一致。这是「幂等序列化」：serialize(parse(x)) == x。</p>
+<h2>🛠️ Fix two: serialization must be idempotent</h2>
+<p>A deterministic hash alone isn't enough. The fingerprint's input is file content, and project.md's Front Matter is <strong>serialized out by ourselves</strong>. If serialization is unstable — say <code>serde_yaml</code> emits fields in enum order, or nulls appear and vanish — then the user merely opening and saving changes the file's bytes, the fingerprint follows, and we get yet another phantom diff.</p>
+<p>So VinePalmaFlow hand-writes the Front Matter serialization: <strong>15 fields in a fixed output order, null/empty-string/empty-array always stripped, unrecognized custom fields sorted last</strong>. The same metadata serializes byte-identically no matter the device or version. That's "idempotent serialization": serialize(parse(x)) == x.</p>
 
-<h2>🧩 配套机制：基准镜像与字段级合并</h2>
-<p>指纹只解决「发现差异」，解决「合并差异」靠三方合并。每台设备在 <code>.localflow/sync/peers/{peer_id}/{project_id}/</code> 下保存上次同步结果的<strong>基准镜像</strong>（base），合并时三方对比：</p>
+<h2>🧩 Supporting machinery: baseline mirror &amp; field-level merging</h2>
+<p>Fingerprints only solve "detecting differences"; "merging differences" relies on three-way merging. Under <code>.localflow/sync/peers/{peer_id}/{project_id}/</code>, every device keeps the <strong>baseline mirror</strong> (base) of the last sync result; merging compares the three sides:</p>
 <table>
-    <thead><tr><th>本地 vs base</th><th>对方 vs base</th><th>结果</th></tr></thead>
+    <thead><tr><th>Local vs base</th><th>Peer vs base</th><th>Result</th></tr></thead>
     <tbody>
-        <tr><td>未改</td><td>改了</td><td>采纳对方</td></tr>
-        <tr><td>改了</td><td>未改</td><td>保留本地</td></tr>
-        <tr><td>两边改得一样</td><td></td><td>任意采纳</td></tr>
-        <tr><td>两边改得不同</td><td></td><td><strong>冲突，交给用户</strong></td></tr>
+        <tr><td>Unchanged</td><td>Changed</td><td>Accept the peer's</td></tr>
+        <tr><td>Changed</td><td>Unchanged</td><td>Keep local</td></tr>
+        <tr><td>Both changed identically</td><td></td><td>Take either</td></tr>
+        <tr><td>Both changed, differently</td><td></td><td><strong>Conflict — hand it to the user</strong></td></tr>
     </tbody>
 </table>
-<p>对 project.md 我们再做一层<b>字段级合并</b>：YAML Front Matter 按 key 逐个三方合并，正文单独做文本三方合并。A 设备改进度、B 设备改正文，整文件对比会误判冲突，字段级合并则能自动融合——只有「同一个字段被双方改成不同值」才算真冲突。</p>
+<p>For project.md we add one more layer, <b>field-level merging</b>: the YAML Front Matter is merged three-way key by key, and the body gets its own textual three-way merge. If device A changes progress and device B changes the body, whole-file comparison would misjudge a conflict — field-level merging fuses them automatically. Only "the same field changed to different values by both sides" counts as a true conflict.</p>
 
-<h2>⚠️ 反直觉的细节：解决冲突后必须更新 base</h2>
-<p>用户在冲突 UI 里选了「采用对方」，如果只写回目标文件，<strong>base 镜像还停留在旧版本</strong>——下次同步，对端视角下你的选择又是一次「新改动」，同一个冲突无限复活。正确做法是把选择结果同时写入该 peer 的 base 目录：</p>
+<h2>⚠️ A counter-intuitive detail: after resolving a conflict, update the base</h2>
+<p>The user picks "take theirs" in the conflict UI; if you only write back the target file, <strong>the base mirror still sits at the old version</strong> — at the next sync, from the peer's point of view your choice is yet another "new change", and the same conflict resurrects endlessly. The right move is to write the resolution into that peer's base directory at the same time:</p>
 <pre><code>fn resolve_conflict(...) {
     std::fs::write(target, content)?;
     // 更新基准镜像，本次选择成为新的共同基线
     write_base(&amp;peer_base_dir(ws, peer_id, project_id), &amp;file, content)?;
 }</code></pre>
-<p>这个 bug 上线前被我们自己的测试抓住了——「同一冲突不能复活」现在是一条固定的回归用例。</p>
+<p>This bug was caught by our own tests before release — "the same conflict must not resurrect" is now a permanent regression case.</p>
 
-<h2>📝 小结</h2>
-<p>增量同步的三块基石：<strong>确定性哈希（FNV-1a）+ 幂等序列化（固定字段顺序）+ 三方合并（base 镜像随每次解决而前进）</strong>。三者缺一，都会以「假差异」「冲突复活」这类难以追踪的方式反噬。现在 VinePalmaFlow 两台设备空闲时同步，日志安静得像什么都没发生——这正是我们想要的。</p>
+<h2>📝 Takeaways</h2>
+<p>The three cornerstones of incremental sync: <strong>deterministic hashing (FNV-1a) + idempotent serialization (fixed field order) + three-way merging (the base mirror advances with every resolution)</strong>. Missing any one, they bite back as "phantom diffs" or "resurrecting conflicts" — the kind of failure that is maddening to trace. Now, when VinePalmaFlow's two devices sync at idle, the log is as quiet as if nothing had happened — exactly what we wanted.</p>
 
             </div>
         </article>

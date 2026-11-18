@@ -23,7 +23,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="../../Resources/images/VineTurtleStudio.png" type="image/png" />
     <script src="../../JS/theme-init.js"></script>
-    <link rel="alternate" type="application/rss+xml" title="藤栖ブログ · VineTurtle Studio" href="https://grapeleafi.top/ja/feed.xml">
+    <link rel="alternate" type="application/rss+xml" title="藤棲ブログ · VineTurtle Studio" href="https://grapeleafi.top/ja/feed.xml">
     <link rel="stylesheet" href="../../CSS/layout.css" />
     <link rel="stylesheet" href="../../CSS/i18n.css">
     <link rel="stylesheet" href="../../CSS/style.css" />
@@ -51,45 +51,45 @@
             <div class="hero-img-wrap"><img src="../../Resources/images/blog/hero/static-site-pitfalls.jpg" alt="完全静的サイトの 4 つの定番の落とし穴" class="post-hero-img" data-fallback="⚠️"><div class="fallback-hero">⚠️</div></div>
             <header class="post-header">
                 <h1>完全静的サイトの 4 つの定番の落とし穴</h1>
-                <div class="post-meta"><span>📅 2026年8月25日</span><span>🕐 約 5 分</span><div class="dynamic-stats" data-dynamic-stats></div></div>
+                <div class="post-meta"><span>📅 2026年8月25日</span><span>🕐 約 6 分</span><div class="dynamic-stats" data-dynamic-stats></div></div>
 <div class="post-tags-display"><span class="tag">#JavaScript</span><span class="tag">#CSS</span><span class="tag">#GitHub Pages</span><span class="tag">#落とし穴</span></div>
                 <div class="content-actions" data-content-actions></div>
             </header>
             <nav class="post-toc" data-toc hidden aria-label="目次"></nav>
-            <div class="post-body" lang="zh-CN" data-content-lang="zh-CN">
-<p><a href="../Project/detail.html?slug=GrapeLeafi-26-08-25">葡叶酱的温暖小窝</a>（GrapeLeafi）是我们维护时间最长的项目：一个没有框架、没有构建、没有后端的纯静态粉丝站。正因为它「谁都能改」，几年间积累了一堆静态站的典型 bug。这四个坑每一个都简单到不值一提，却又每一个都真实地在线上存活了很久。</p>
+            <div class="post-body" lang="ja" data-content-lang="ja">
+<p><a href="../Project/detail.html?slug=GrapeLeafi-26-08-25">ぶどう葉ちゃんのあたたかなおうち</a>（GrapeLeafi）は私たちが最も長く維持しているプロジェクト：フレームワークもビルドもバックエンドもない純静態ファンサイトです。「誰でも編集できる」がゆえに、数年で静的サイトの典型的なバグが山ほど溜まりました。この 4 つの落とし穴は、どれも語るまでもなく単純でありながら、どれも本番で長く生き延びていた実物です。</p>
 
-<h2>坑一：永不触发的「今天过生日」</h2>
-<h4>站点有个角色生日提醒功能，代码里明确写着庆祝分支：</h4>
+<h2>落とし穴 1：一度も発火しない「今日が誕生日」</h2>
+<h4>サイトにはキャラクターの誕生日リマインダー機能があり、コードには祝賀分岐がはっきり書かれています：</h4>
 <pre><code>if (diffDays === 0) {
     // 🎉 今天生日！撒花
 }</code></pre>
-<h4>但这个分支<strong>从未被执行过</strong>。根因在上游的日期比较：</h4>
+<h4>しかし、この分岐は<strong>一度も実行されたことがありません</strong>。根因は上流の日付比較にあります：</h4>
 <pre><code>birthdayDate.setFullYear(today.getFullYear());
 if (birthdayDate &lt; today) {      // ← 问题在这
     birthdayDate.setFullYear(today.getFullYear() + 1);
 }
 const diffDays = Math.ceil((birthdayDate - today) / 86400000);</code></pre>
-<h4><code>today</code> 是 <code>new Date()</code>——<strong>带当前时刻</strong>（比如 14:30），而 <code>birthdayDate</code> 被设置为生日的<strong>零点</strong>。生日当天零点必然早于 14:30，于是日期被推到明年，<code>diffDays</code> 变成 364——「今天」永远显示成「还有 364 天」。这是「时刻」与「日期」比较的经典混淆。解法是把两边都归零到当天零点，再判断是否同一天：</h4>
+<h4><code>today</code> は <code>new Date()</code>——<strong>現在時刻を含んでいます</strong>（たとえば 14:30）。一方 <code>birthdayDate</code> は誕生日の<strong>零時</strong>に設定。誕生日当日の零時は必ず 14:30 より早いので、日付は翌年に送られ、<code>diffDays</code> は 364 になります——「今日」は永遠に「あと 364 日」と表示されるわけです。これは「時刻」と「日付」を比較する古典的な混同です。解法は、両辺を当日の零時に合わせてから同一日かを判定すること：</h4>
 <pre><code>const startOfToday = new Date();
 startOfToday.setHours(0, 0, 0, 0);
 const isToday = birthdayDate.getTime() === startOfToday.getTime();</code></pre>
 
-<h2>坑二：手机上永远弹不出的二维码</h2>
-<h4>QQ 群二维码用的是纯 CSS 方案：</h4>
+<h2>落とし穴 2：スマホで永遠に開かない QR コード</h2>
+<h4>QQ グループの QR コードは純 CSS 方案でした：</h4>
 <pre><code>.qrLinkContainer:hover #qrCodeContainer { display: block; }</code></pre>
-<h4>桌面端体验完美，但触屏设备没有 hover——手机用户点按钮毫无反应，加群入口直接消失。这是纯 CSS 交互的天然盲区。解法是补一个 click/touch 切换 class 的兜底，或者用原生 <code>&lt;details&gt;</code> 元素实现「点开显示」，零 JS 也能在触屏正常工作。</h4>
+<h4>デスクトップでは完璧な体験ですが、タッチデバイスには hover がありません——スマホユーザーがボタンを押しても無反応で、参加入口はそのまま消えます。純 CSS インタラクションの宿命的な盲点です。解法は、click/touch で class を切り替えるフォールバックを補うか、ネイティブの <code>&lt;details&gt;</code> 要素で「押して表示」を実装すること。ゼロ JS のままタッチスクリーンでも正常に動きます。</h4>
 
-<h2>坑三：GitHub Pages 的大小写与特殊字符 404</h2>
-<h4>资源目录里混着历史遗留命名：<code>tuan-zi/团子 (1).ico</code>——中文、空格、括号三件套，favicon 引用不得不写成 <code>团子%20(1).ico</code>。Windows 本地预览一切正常（NTFS 大小写不敏感），一推到 GitHub Pages（Linux 服务器，<strong>大小写敏感</strong>），任何一次「顺手改个路径大小写」都会批量 404。教训是：静态站资源文件名一律小写 ASCII、连字符分隔，中文素材名在入库时统一重命名。另外目录里 <code>tuan-zi/</code> 与 <code>tuanzi/</code> 并存这种「历史改名残留」，也该趁早清理。</h4>
+<h2>落とし穴 3：GitHub Pages の大小文字と特殊文字 404</h2>
+<h4>リソースディレクトリには歴史遺留の命名が混ざっています：<code>tuan-zi/团子 (1).ico</code>——中国語・空白・括弧の三拍子そろいで、favicon の参照は <code>团子%20(1).ico</code> と書くしかありません。Windows のローカルプレビューでは万事正常（NTFS は大小文字を区別しない）ですが、GitHub Pages に push した瞬間（Linux サーバーは<strong>大小文字を区別</strong>する）、パスの大小文字を「ちょっと直した」だけで大量 404 が発生します。教訓：静的サイトのリソースファイル名は一律小文字 ASCII・ハイフン区切りにし、中国語の素材名は取り込み時にリネームして統一します。また、<code>tuan-zi/</code> と <code>tuanzi/</code> が併存するような「改名の取り残し」も、早めに掃除すべきです。</h4>
 
-<h2>坑四：CDN @latest 是定时炸弹</h2>
-<h4>Live2D 看板娘是这样引入的：</h4>
+<h2>落とし穴 4：CDN の @latest は時限爆弾</h2>
+<h4>Live2D 看板娘はこうやって読み込んでいました：</h4>
 <pre><code>&lt;script src="https://fastly.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js" defer&gt;&lt;/script&gt;</code></pre>
-<h4><code>@latest</code> 意味着上游每次提交，你的站点都在「抽奖」：上游改了接口，全站看板娘原地消失，而你可能毫不知情。静态站引用第三方 CDN 资源必须<strong>锁定版本号甚至 commit hash</strong>。顺带一提，站点的倒计时用 <code>setInterval(update, 86400000)</code> 每天刷新一次——如果页面跨午夜一直开着，倒计时会显示过期数据；改成每分钟刷新或监听 <code>visibilitychange</code>（页面重新可见时更新）更稳妥。</h4>
+<h4><code>@latest</code> は、上流がコミットするたびにあなたのサイトが「ガチャ」を引くという意味です：上流がインターフェースを変えれば、全サイトの看板娘がその場で消え、しかもあなたは気づかないかもしれません。静的サイトがサードパーティ CDN リソースを参照するなら、<strong>バージョン番号、さらには commit hash を固定</strong>しなければなりません。ちなみに、サイトのカウントダウンは <code>setInterval(update, 86400000)</code> で 1 日 1 回更新していました——ページが真夜中をまたいで開き続けると、期限切れのデータを表示し続けます。毎分更新に変えるか、<code>visibilitychange</code>（ページが再び見えるときに更新）を購読する方が安定です。</h4>
 
-<h2>📝 写在最后</h2>
-<h4>这四个坑的共性：<strong>在开发者的设备上永远复现不了</strong>。生日 bug 只在生日当天出现、hover 问题只在触屏出现、大小写 404 只在 Linux 服务器出现、@latest 只在上游更新时爆炸。静态站虽小，测试矩阵却横跨时间、设备与操作系统。维护老站点的正确姿势，就是把这些「低级」坑一个个记录下来——它们是最便宜的老师。</h4>
+<h2>📝 最後に</h2>
+<h4>この 4 つの落とし穴の共通点：<strong>開発者のデバイスでは永遠に再現できない</strong>ことです。誕生日バグは誕生日当日だけに出る、hover 問題はタッチデバイスだけ、大小文字 404 は Linux サーバーだけ、@latest は上流更新時にだけ爆発する。静的サイトは小さくても、テストマトリクスは時間・デバイス・OS を横断します。古いサイトを維持する正しい姿勢とは、こうした「初歩的な」落とし穴を一つずつ記録していくこと——それらは最も安価な先生です。</h4>
 
             </div>
         </article>

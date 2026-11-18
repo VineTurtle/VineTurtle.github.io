@@ -56,33 +56,33 @@
                 <div class="content-actions" data-content-actions></div>
             </header>
             <nav class="post-toc" data-toc hidden aria-label="目錄"></nav>
-            <div class="post-body" lang="zh-CN" data-content-lang="zh-CN">
-<p>最近在开发 <strong>VinePalma Player</strong> 的 Linux 版本时，遇到了一个看似简单却折腾了我很久的图标问题。安装后的应用图标正常显示，但运行后任务栏上的图标却是默认的「空白」状态。这篇文章记录了我踩过的坑和最终的解决方案。</p>
+            <div class="post-body" lang="zh-TW" data-content-lang="zh-TW">
+<p>最近在開發 <strong>VinePalma Player</strong> 的 Linux 版本時，遇到了一個看似簡單卻折騰了我很久的圖示問題。安裝後的應用圖示正常顯示，但執行後任務欄上的圖示卻是預設的「空白」狀態。這篇文章記錄了我踩過的坑和最終的解決方案。</p>
 
-<h2>📦 问题描述</h2>
+<h2>📦 問題描述</h2>
 
-<p>使用 <code>electron-builder</code> 打包 Linux 版本（deb/AppImage）后，安装应用时图标显示正常——启动器菜单、应用列表里的图标都没问题。但<strong>一旦运行应用，任务栏上出现的却是系统默认的空白图标</strong></p>
+<p>使用 <code>electron-builder</code> 打包 Linux 版本（deb/AppImage）後，安裝應用時圖示顯示正常——啟動器選單、應用列表裡的圖示都沒問題。但<strong>一旦執行應用，工作列上出現的卻是系統預設的空白圖示</strong></p>
 
-<p>最初以为是图标文件本身的问题，但检查后发现：</p>
+<p>最初以為是圖示檔案本身的問題，但檢查後發現：</p>
 
 <ul>
-    <li>✅ 安装后的 <code>.desktop</code> 文件中 <code>Icon</code> 字段正确</li>
-    <li>✅ 图标文件存在于安装目录</li>
-    <li>✅ 启动器菜单图标显示正常</li>
-    <li>❌ 运行后任务栏图标为空/默认</li>
+    <li>✅ 安裝後的 <code>.desktop</code> 檔案中 <code>Icon</code> 欄位正確</li>
+    <li>✅ 圖示檔案存在於安裝目錄</li>
+    <li>✅ 啟動器選單圖示顯示正常</li>
+    <li>❌ 執行後任務欄圖示為空/預設</li>
 </ul>
 
 <h2>🔍 原因分析</h2>
 
-<p>Linux 桌面环境（GNOME、KDE、XFCE 等）通过 <strong>WM_CLASS</strong> 属性来关联运行中的窗口和 <code>.desktop</code> 文件。如果窗口的 <code>WM_CLASS</code> 与 <code>.desktop</code> 文件中的 <code>StartupWMClass</code> 不匹配，桌面环境就无法正确识别窗口所属的应用，导致任务栏图标显示为默认状态。</p>
+<p>Linux 桌面環境（GNOME、KDE、XFCE 等）通過 <strong>WM_CLASS</strong> 屬性來關聯執行中的視窗和 <code>.desktop</code> 檔案。如果視窗的 <code>WM_CLASS</code> 與 <code>.desktop</code> 檔案中的 <code>StartupWMClass</code> 不匹配，桌面環境就無法正確識別視窗所屬的應用，導致工作列圖示顯示為預設狀態。</p>
 
-<p>Electron 的 <code>WM_CLASS</code> 默认从 <code>package.json</code> 中的 <code>desktopName</code> 字段派生。如果配置不当，就会出现关联断裂。</p>
+<p>Electron 的 <code>WM_CLASS</code> 預設從 <code>package.json</code> 中的 <code>desktopName</code> 欄位派生。如果配置不當，就會出現關聯斷裂。</p>
 
-<h2>🛠️ 解决方案</h2>
+<h2>🛠️ 解決方案</h2>
 
-<h3>1. 图标目录结构</h3>
+<h3>1. 圖示目錄結構</h3>
 
-<p>Linux 图标最好<strong>指向一个文件夹</strong>，而不是单个文件。<code>electron-builder</code> 会自动处理文件夹内的多尺寸图标：</p>
+<p>Linux 圖示最好<strong>指向一個資料夾</strong>，而不是單個檔案。<code>electron-builder</code> 會自動處理資料夾內的多尺寸圖示：</p>
 
 <pre><code>assets/icons/linux/
 ├── 16x16.png
@@ -92,7 +92,7 @@
 ├── 256x256.png
 └── 512x512.png</code></pre>
 
-<p>在 <code>package.json</code> 中这样配置：</p>
+<p>在 <code>package.json</code> 中這樣配置：</p>
 
 <pre><code>"linux": {
     "icon": "assets/icons/linux",  // ← 指向文件夹，不是文件！
@@ -101,9 +101,9 @@
     "syncDesktopName": true
 }</code></pre>
 
-<h3>2. 正确的 desktopName 配置</h3>
+<h3>2. 正確的 desktopName 配置</h3>
 
-<p>这是最关键的一步。<code>desktopName</code> 的值<strong>不能包含 <code>.desktop</code> 后缀</strong>，否则会导致 <code>WM_CLASS</code> 解析异常：</p>
+<p>這是最關鍵的一步。<code>desktopName</code> 的值<strong>不能包含 <code>.desktop</code> 字尾</strong>，否則會導致 <code>WM_CLASS</code> 解析異常：</p>
 
 <pre><code>// ❌ 错误
 "desktopName": "com.vinepalma.player.desktop"
@@ -111,7 +111,7 @@
 // ✅ 正确
 "desktopName": "com.vinepalma.player"</code></pre>
 
-<p>修改后的 <code>package.json</code> 关键配置：</p>
+<p>修改後的 <code>package.json</code> 關鍵配置：</p>
 
 <pre><code>{
   "name": "vinepalma-player",
@@ -128,9 +128,9 @@
   }
 }</code></pre>
 
-<h3>3. 主进程代码调整</h3>
+<h3>3. 主程式碼調整</h3>
 
-<p>在 <code>src/main/index.js</code> 中，<strong>不要手动调用 <code>app.setDesktopName()</code></strong>，让 Electron 自动从 <code>package.json</code> 读取配置。如果必须设置，使用正确的格式：</p>
+<p>在 <code>src/main/index.js</code> 中，<strong>不要手動呼叫 <code>app.setDesktopName()</code></strong>，讓 Electron 自動從 <code>package.json</code> 讀取配置。如果必須設定，使用正確的格式：</p>
 
 <pre><code>// ❌ 不要这样写
 app.setName('VinePalma');
@@ -140,9 +140,9 @@ app.setDesktopName('com.vinepalma.player.desktop');
 // 或确保名称一致
 app.setName('com.vinepalma.player');</code></pre>
 
-<h3>4. 窗口图标设置</h3>
+<h3>4. 視窗圖示設定</h3>
 
-<p>虽然任务栏图标主要由 <code>WM_CLASS</code> 关联决定，但仍建议在创建 <code>BrowserWindow</code> 时设置窗口图标，确保各桌面环境兼容性：</p>
+<p>雖然工作列圖示主要由 <code>WM_CLASS</code> 關聯決定，但仍建議在建立 <code>BrowserWindow</code> 時設定視窗圖示，確保各桌面環境相容性：</p>
 
 <pre><code>const path = require('path');
 
@@ -168,9 +168,9 @@ function createWindow() {
     });
 }</code></pre>
 
-<h3>5. 验证 .desktop 文件</h3>
+<h3>5. 驗證 .desktop 檔案</h3>
 
-<p>打包安装后，检查生成的 <code>.desktop</code> 文件（路径：<code>/usr/share/applications/com.vinepalma.player.desktop</code>）：</p>
+<p>打包安裝後，檢查生成的 <code>.desktop</code> 檔案（路徑：<code>/usr/share/applications/com.vinepalma.player.desktop</code>）：</p>
 
 <pre><code>[Desktop Entry]
 Name=VinePalma
@@ -180,34 +180,35 @@ StartupWMClass=com.vinepalma.player  // ← 必须与 WM_CLASS 一致
 Type=Application
 Categories=AudioVideo;</code></pre>
 
-<h3>6. 验证 WM_CLASS</h3>
+<h3>6. 驗證 WM_CLASS</h3>
 
-<p>运行应用后，在终端执行以下命令验证：</p>
+<p>執行應用後，在終端執行以下命令驗證：</p>
 
 <pre><code>xprop | grep WM_CLASS
 // 然后点击应用窗口，查看输出</code></pre>
 
-<p>期望输出：</p>
+<p>期望輸出：</p>
 
 <pre><code>WM_CLASS(STRING) = "com.vinepalma.player", "com.vinepalma.player"</code></pre>
 
-<p>如果 <code>StartupWMClass</code> 与 <code>WM_CLASS</code> 匹配，任务栏图标就会正确显示。</p>
+<p>如果 <code>StartupWMClass</code> 與 <code>WM_CLASS</code> 匹配，工作列圖示就會正確顯示。</p>
 
-<h2>📝 总结</h2>
+<h2>📝 總結</h2>
 
-<p>Electron Linux 图标问题通常不是图标文件本身的问题，而是<strong>窗口关联机制</strong>的问题。核心要点：</p>
+<p>Electron Linux 圖示問題通常不是圖示檔案本身的問題，而是<strong>視窗關聯機制</strong>的問題。核心要點：</p>
 
 <ul>
-    <li>📁 Linux 图标配置指向<strong>文件夹</strong>，内含多尺寸 PNG</li>
-    <li>📝 <code>desktopName</code> <strong>不要带 <code>.desktop</code> 后缀</strong></li>
-    <li>🔗 确保 <code>StartupWMClass</code> 与 <code>WM_CLASS</code> 完全匹配</li>
-    <li>🖼️ 创建窗口时显式设置 <code>icon</code> 属性</li>
-    <li>🚫 避免手动调用 <code>app.setDesktopName()</code>，让 electron-builder 自动处理</li>
+    <li>📁 Linux 圖示配置指向<strong>資料夾</strong>，內含多尺寸 PNG</li>
+    <li>📝 <code>desktopName</code> <strong>不要帶 <code>.desktop</code> 字尾</strong></li>
+    <li>🔗 確保 <code>StartupWMClass</code> 與 <code>WM_CLASS</code> 完全匹配</li>
+    <li>🖼️ 建立視窗時顯式設定 <code>icon</code> 屬性</li>
+    <li>🚫 避免手動呼叫 <code>app.setDesktopName()</code>，讓 electron-builder 自動處理</li>
 </ul>
 
-<p>希望这篇文章能帮助遇到同样问题的开发者少走弯路。Electron 跨平台开发中，Linux 的桌面集成确实是最容易被忽视但也最容易出问题的部分。</p>
+<p>希望這篇文章能幫助遇到同樣問題的開發者少走彎路。Electron 跨平臺開發中，Linux 的桌面整合確實是最容易被忽視但也最容易出問題的部分。</p>
 
-<p style="opacity:0.6; margin-top:2rem;">—— 本文由 VineTurtleStudio 技术团队撰写</p>
+<p style="opacity:0.6; margin-top:2rem;">—— 本文由 VineTurtleStudio 技術團隊撰寫</p>
+
             </div>
         </article>
         <nav class="content-pager" aria-label="內容翻頁"><span class="pager-link is-empty" aria-hidden="true"></span><a class="pager-link pager-next" href="2026-08-25-uninstaller-safety.html" rel="next"><span class="pager-label">下一篇 →</span><span class="pager-title">解除安裝器的安全設計：Linux 上絕不誤刪的三重防線</span></a></nav>

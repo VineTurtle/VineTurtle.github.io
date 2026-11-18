@@ -1,0 +1,56 @@
+<p>VinePalmaFlow's LAN sync started out with a strange phenomenon: <strong>two devices, having changed nothing, still transferred full data to each other on every sync</strong>. The logs showed every project's content fingerprint (hash) mismatching. Digging in, the root cause was hiding in a "feature" of the Rust standard library.</p>
+
+<h2>🔍 Root cause: DefaultHasher's random seed</h2>
+<p>The first implementation hashed project content directly with <code>std::collections::hash_map::DefaultHasher</code>. But Rust's <code>RandomState</code> <strong>deliberately randomizes its seed per process</strong> (a defense against hash-collision DoS). Which means:</p>
+<pre><code>// 进程 A
+let mut h = std::collections::hash_map::DefaultHasher::new();
+"project.md 内容".hash(&amp;mut h);
+// h.finish() = 0x9e37...
+
+// 进程 B（同一份内容！）
+// h.finish() = 0x51f2...  ← 完全不同的值</code></pre>
+<p>Incremental sync rests on the premise "same content → same fingerprint", and cross-process comparison is precisely the normal case in sync scenarios. <code>DefaultHasher</code> can't do that by design.</p>
+
+<h2>🛠️ Fix one: hand-write FNV-1a</h2>
+<p>We needed a hash that is <strong>deterministic across processes</strong>. A cryptographic hash (SHA-256) would do, but it's overkill for a local, trusted setting. FNV-1a is a few lines, and its avalanche behavior is plenty to tell file contents apart:</p>
+<pre><code>struct Fnv1a(u64);
+
+impl Fnv1a {
+    fn new() -&gt; Self { Fnv1a(0xcbf29ce484222325) }
+    fn update(&amp;mut self, bytes: &amp;[u8]) {
+        for &amp;b in bytes {
+            self.0 ^= b as u64;
+            self.0 = self.0.wrapping_mul(0x100000001b3);
+        }
+    }
+}</code></pre>
+<p>The computed range is the <code>project.md</code> content plus the task files <strong>sorted by filename</strong> (filename + content), fed in one by one. Sorting is crucial — the filesystem guarantees nothing about directory-entry order; without sorting, two enumerations of the same directory already produce different fingerprints.</p>
+
+<h2>🛠️ Fix two: serialization must be idempotent</h2>
+<p>A deterministic hash alone isn't enough. The fingerprint's input is file content, and project.md's Front Matter is <strong>serialized out by ourselves</strong>. If serialization is unstable — say <code>serde_yaml</code> emits fields in enum order, or nulls appear and vanish — then the user merely opening and saving changes the file's bytes, the fingerprint follows, and we get yet another phantom diff.</p>
+<p>So VinePalmaFlow hand-writes the Front Matter serialization: <strong>15 fields in a fixed output order, null/empty-string/empty-array always stripped, unrecognized custom fields sorted last</strong>. The same metadata serializes byte-identically no matter the device or version. That's "idempotent serialization": serialize(parse(x)) == x.</p>
+
+<h2>🧩 Supporting machinery: baseline mirror &amp; field-level merging</h2>
+<p>Fingerprints only solve "detecting differences"; "merging differences" relies on three-way merging. Under <code>.localflow/sync/peers/{peer_id}/{project_id}/</code>, every device keeps the <strong>baseline mirror</strong> (base) of the last sync result; merging compares the three sides:</p>
+<table>
+    <thead><tr><th>Local vs base</th><th>Peer vs base</th><th>Result</th></tr></thead>
+    <tbody>
+        <tr><td>Unchanged</td><td>Changed</td><td>Accept the peer's</td></tr>
+        <tr><td>Changed</td><td>Unchanged</td><td>Keep local</td></tr>
+        <tr><td>Both changed identically</td><td></td><td>Take either</td></tr>
+        <tr><td>Both changed, differently</td><td></td><td><strong>Conflict — hand it to the user</strong></td></tr>
+    </tbody>
+</table>
+<p>For project.md we add one more layer, <b>field-level merging</b>: the YAML Front Matter is merged three-way key by key, and the body gets its own textual three-way merge. If device A changes progress and device B changes the body, whole-file comparison would misjudge a conflict — field-level merging fuses them automatically. Only "the same field changed to different values by both sides" counts as a true conflict.</p>
+
+<h2>⚠️ A counter-intuitive detail: after resolving a conflict, update the base</h2>
+<p>The user picks "take theirs" in the conflict UI; if you only write back the target file, <strong>the base mirror still sits at the old version</strong> — at the next sync, from the peer's point of view your choice is yet another "new change", and the same conflict resurrects endlessly. The right move is to write the resolution into that peer's base directory at the same time:</p>
+<pre><code>fn resolve_conflict(...) {
+    std::fs::write(target, content)?;
+    // 更新基准镜像，本次选择成为新的共同基线
+    write_base(&amp;peer_base_dir(ws, peer_id, project_id), &amp;file, content)?;
+}</code></pre>
+<p>This bug was caught by our own tests before release — "the same conflict must not resurrect" is now a permanent regression case.</p>
+
+<h2>📝 Takeaways</h2>
+<p>The three cornerstones of incremental sync: <strong>deterministic hashing (FNV-1a) + idempotent serialization (fixed field order) + three-way merging (the base mirror advances with every resolution)</strong>. Missing any one, they bite back as "phantom diffs" or "resurrecting conflicts" — the kind of failure that is maddening to trace. Now, when VinePalmaFlow's two devices sync at idle, the log is as quiet as if nothing had happened — exactly what we wanted.</p>

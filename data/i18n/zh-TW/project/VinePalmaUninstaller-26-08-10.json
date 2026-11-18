@@ -5,5 +5,7 @@
     "軟體開發",
     "Linux",
     "Tauri"
-  ]
+  ],
+  "desc": "APT / Flatpak / Snap / Docker / AppImage / APM 六大來源統一的 Linux 解除安裝器。",
+  "status": "🚧 迭代中"
 }

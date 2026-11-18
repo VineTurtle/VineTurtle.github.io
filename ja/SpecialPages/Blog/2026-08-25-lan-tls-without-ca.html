@@ -23,7 +23,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="../../Resources/images/VineTurtleStudio.png" type="image/png" />
     <script src="../../JS/theme-init.js"></script>
-    <link rel="alternate" type="application/rss+xml" title="藤栖ブログ · VineTurtle Studio" href="https://grapeleafi.top/ja/feed.xml">
+    <link rel="alternate" type="application/rss+xml" title="藤棲ブログ · VineTurtle Studio" href="https://grapeleafi.top/ja/feed.xml">
     <link rel="stylesheet" href="../../CSS/layout.css" />
     <link rel="stylesheet" href="../../CSS/i18n.css">
     <link rel="stylesheet" href="../../CSS/style.css" />
@@ -51,52 +51,52 @@
             <div class="hero-img-wrap"><img src="../../Resources/images/blog/hero/flow-tls.jpg" alt="CA のない LAN で相互 TLS を組む" class="post-hero-img" data-fallback="🔐"><div class="fallback-hero">🔐</div></div>
             <header class="post-header">
                 <h1>CA のない LAN で相互 TLS を組む</h1>
-                <div class="post-meta"><span>📅 2026年8月25日</span><span>🕐 約 6 分</span><div class="dynamic-stats" data-dynamic-stats></div></div>
+                <div class="post-meta"><span>📅 2026年8月25日</span><span>🕐 約 7 分</span><div class="dynamic-stats" data-dynamic-stats></div></div>
 <div class="post-tags-display"><span class="tag">#Rust</span><span class="tag">#ネットワークセキュリティ</span><span class="tag">#Tauri</span><span class="tag">#落とし穴</span></div>
                 <div class="content-actions" data-content-actions></div>
             </header>
             <nav class="post-toc" data-toc hidden aria-label="目次"></nav>
-            <div class="post-body" lang="zh-CN" data-content-lang="zh-CN">
-<p>在开发 <strong>VinePalmaFlow</strong>（我们的本地优先项目管理工具）的局域网同步功能时，遇到了一个教科书上很少讲的问题：<strong>两台局域网设备之间要建立加密连接，可是既没有 CA 签发的证书，也没有域名，甚至对方的系统时钟都可能不准</strong>。Web PKI 那套信任模型在这里完全失效。这篇笔记记录 rustls 0.23 上的三个坑，以及我们最终的应用层认证设计。</p>
+            <div class="post-body" lang="ja" data-content-lang="ja">
+<p><strong>VinePalmaFlow</strong>（私たちのローカルファーストなプロジェクト管理ツール）の LAN 同期機能を開発中、教科書がめったに語らない問題に行き当たりました：<strong>2 台の LAN デバイス間で暗号化接続を確立したいのに、CA が発行した証明書もドメイン名もなく、相手のシステム時計が狂っていることすらある</strong>。Web PKI の信頼モデルはここでは完全に機能しません。このノートは rustls 0.23 で踏んだ 3 つの落とし穴と、最終的なアプリケーション層認証の設計を記録します。</p>
 
-<h2>📦 问题背景</h2>
-<p>VinePalmaFlow 的同步架构是：mDNS 发现设备 → TLS 1.3 加密通道 → WebSocket 交换 JSON 消息。安全目标是「只有互相配对过的设备才能同步数据」。听起来简单，但每一个前提条件在局域网里都不成立：</p>
+<h2>📦 問題の背景</h2>
+<p>VinePalmaFlow の同期アーキテクチャは：mDNS がデバイスを探索 → TLS 1.3 の暗号化チャネル → WebSocket で JSON メッセージ交換。セキュリティの目標は「相互にペアリング済みのデバイスだけがデータを同期できる」こと。単純に聞こえますが、前提条件はどれも LAN の中では成立しません：</p>
 <ul>
-    <li>❌ 没有 CA：不可能给局域网里的设备签发受信任证书</li>
-    <li>❌ 没有域名：SNI 的 <code>ServerName</code> 不能用字符串构造</li>
-    <li>❌ 时钟不可信：新装机的设备 BIOS 时钟可能停在几年前</li>
-    <li>✅ 唯一可信的：用户本人当场看着两块屏幕输入配对码</li>
+    <li>❌ CA がない：LAN 内のデバイスに信頼された証明書を発行することは不可能</li>
+    <li>❌ ドメインがない：SNI の <code>ServerName</code> は文字列では構築できない</li>
+    <li>❌ 時計が信頼できない：新規組み立てマシンの BIOS 時計は数年前で止まっていることもある</li>
+    <li>✅ 唯一信頼できるもの：2 台の画面を見ながらペアリングコードを打ち込むユーザー本人</li>
 </ul>
 
-<h2>坑一：rustls 0.23 必须显式安装 crypto provider</h2>
-<p>rustls 0.23 把加密后端拆成了可插拔的 provider，<strong>不安装就直接 panic</strong>。这是升级后最先撞上的墙：</p>
+<h2>落とし穴 1：rustls 0.23 は crypto provider の明示的インストールが必須</h2>
+<p>rustls 0.23 は暗号バックエンドをプラガブルな provider に分割し、<strong>インストールしないままでは即 panic します</strong>。アップグレード後に最初にぶつかる壁：</p>
 <pre><code>// 程序入口处，只装一次
 rustls::crypto::ring::default_provider()
     .install_default()
     .expect("failed to install rustls crypto provider");</code></pre>
 
-<h2>坑二：IP 直连的 ServerName 构造</h2>
-<p>Web 教材里客户端都是 <code>ServerName::try_from("example.com")</code>，但局域网里我们只有 IP。字符串形式的 IP 会在握手时被拒绝，必须使用专门的变体：</p>
+<h2>落とし穴 2：IP 直結接続の ServerName 構築</h2>
+<p>Web の教材ではクライアントは <code>ServerName::try_from("example.com")</code> と書きますが、LAN の中にあるのは IP だけです。文字列形式の IP はハンドシェイクで拒否されるため、専用のバリアントを使う必要があります：</p>
 <pre><code>use rustls::pki_types::ServerName;
 
 // ❌ ServerName::try_from("192.168.1.5")? —— 当作域名处理，校验失败
 // ✅
 let server_name = ServerName::IpAddress(ip.into());</code></pre>
-<p>另外对空地址与 <code>0.0.0.0</code> 要回退到 <code>127.0.0.1</code>，否则 mDNS 解析尚未完成时发起的首次同步会直接报错。</p>
+<p>なお、空アドレスと <code>0.0.0.0</code> は <code>127.0.0.1</code> にフォールバックすること。さもないと、mDNS 解決が完了する前に送出された最初の同期が即エラーになります。</p>
 
-<h2>坑三：证书有效期的时钟偏移</h2>
-<p>自签证书默认把 <code>not_before</code> 设为生成时刻。设想设备 A 时钟正常、设备 B 时钟慢了一天：B 生成证书 → A 校验时发现「证书还未生效」→ 握手失败。更糟的是这种问题<strong>只在特定两台设备间出现</strong>，极难复现。解法简单粗暴——把有效期窗口拉满：</p>
+<h2>落とし穴 3：証明書有効期限と時計ずれ</h2>
+<p>自己署名証明書は既定で <code>not_before</code> を生成時刻に設定します。デバイス A の時計は正常、デバイス B の時計は 1 日遅れ、という場面を想像してください：B が証明書を生成 → A が検証するとき「証明書はまだ有効ではない」→ ハンドシェイク失敗。さらに厄介なのは、この問題が<strong>特定の 2 台の組合せでだけ発生する</strong>ことで、再現が極めて困難です。解法は単純豪快——有効期限のウィンドウを最大まで引き伸ばす：</p>
 <pre><code>let mut params = rcgen::CertificateParams::new(vec![])?;
 params.not_before = rcgen::date_time_ymd(2020, 1, 1);
 params.not_after  = rcgen::date_time_ymd(2099, 12, 31);
 // 证书与私钥以 DER 落盘，设备生命周期内复用，不再重签</code></pre>
 
-<h2>🔑 信任模型：把认证下沉到应用层</h2>
-<p>放弃证书链校验后，两端各挂一个自定义 verifier（rustls 的 <code>danger</code> trait）：客户端「接受任意服务端证书」，服务端「强制索要客户端证书」。<strong>TLS 只负责加密，身份认证完全交给上层</strong>：</p>
+<h2>🔑 信頼モデル：認証をアプリケーション層へ下ろす</h2>
+<p>証明書チェーン検証を諦めた後、両端にカスタム verifier（rustls の <code>danger</code> トレイト）を掛けます：クライアントは「サーバー証明書を何でも受け入れる」、サーバーは「クライアント証明書を強制要求」。<strong>TLS は暗号化だけを担い、身元認証は完全に上位層へ</strong>：</p>
 <ul>
-    <li>每台设备首次启动时生成自签证书，<strong>CN 字段写入设备 ID</strong></li>
-    <li>握手完成后，服务端从对方客户端证书 DER 里解析出 CN，作为「认证后的设备身份」</li>
-    <li>所有同步消息都要求该 ID 在信任列表 <code>devices.json</code> 中，消息体里声称的 id <strong>不作数</strong></li>
+    <li>各デバイスは初回起動時に自己署名証明書を生成し、<strong>CN フィールドにデバイス ID を書き込む</strong></li>
+    <li>ハンドシェイク完了後、サーバーは相手のクライアント証明書 DER から CN を解析し、「認証済みデバイス身元」とする</li>
+    <li>すべての同期メッセージは、その ID が信頼リスト <code>devices.json</code> に存在することを要求し、メッセージ本体が名乗る id は<strong>無効</strong></li>
 </ul>
 <pre><code>// 服务端：从客户端证书提取真实身份
 fn cert_common_name(cert_der: &[u8]) -&gt; Option&lt;String&gt; { /* 解析 CN */ }
@@ -105,14 +105,14 @@ fn cert_common_name(cert_der: &[u8]) -&gt; Option&lt;String&gt; { /* 解析 CN *
 if !is_trusted(&amp;cert_peer_id) {
     return reject("device not paired");
 }</code></pre>
-<p>配对本身靠<strong>双向 6 位配对码</strong>：两台设备各自屏幕显示一个码，用户互相输入对方的码，双向核对通过才写入信任列表。这本质上是 TOFU（Trust On First Use）+ 人工带外验证的组合，安全性等价于蓝牙配对。</p>
-<p>顺手做了一个加固：在 <code>verify_tls12_signature</code> 里直接返回错误，<strong>禁用 TLS 1.2</strong>，只允许 1.3 握手，少一类降级攻击面。</p>
+<p>ペアリング自体は<strong>双方向の 6 桁ペアリングコード</strong>に頼ります：2 台のデバイスがそれぞれ画面にコードを表示し、ユーザーが互いに相手のコードを入力、双方向の照合が通って初めて信頼リストに書き込まれます。本質的には TOFU（Trust On First Use）+ 人手による帯域外検証の組合せで、セキュリティは Bluetooth ペアリングに相当します。</p>
+<p>ついでに一つ補強：<code>verify_tls12_signature</code> で直接エラーを返し、<strong>TLS 1.2 を無効化</strong>して 1.3 ハンドシェイクのみを許可——ダウングレード攻撃の面を一つ減らします。</p>
 
-<h2>✅ 用测试锁住安全模型</h2>
-<p>这类「自定义 verifier + 应用层认证」的设计很容易在重构中被悄悄破坏，我们为它写了专门的回归测试：伪造证书 CN（不在信任列表）的推送必须被拒绝、未配对设备的 <code>sync_push</code> 必须返回错误、TLS 回环握手必须成功。安全逻辑一旦写好，就让测试替你站岗。</p>
+<h2>✅ テストでセキュリティモデルを固定</h2>
+<p>「カスタム verifier + アプリケーション層認証」のような設計は、リファクタリングの途中で静かに壊れやすいものです。そこで専用のリグレッションテストを書きました：偽装証明書 CN（信頼リスト外）の push は必ず拒否、未ペアリングデバイスの <code>sync_push</code> は必ずエラー、TLS ループバックハンドシェイクは必ず成功。セキュリティロジックを書いたら、あとはテストに見張りを任せましょう。</p>
 
-<h2>📝 小结</h2>
-<p>局域网点对点加密的正确姿势：<strong>自签证书承载身份、TLS 只管加密、认证下沉应用层、配对码完成 TOFU、有效期窗口拉满容忍时钟漂移</strong>。整套设计在 VinePalmaFlow 里大约 300 行 Rust，没有引入任何 CA 基础设施，却提供了与云端服务相当的传输安全。</p>
+<h2>📝 まとめ</h2>
+<p>LAN のピアツーピア暗号化の正しい姿勢：<strong>自己署名証明書が身元を担い、TLS は暗号化だけを管轄し、認証はアプリケーション層に下ろし、ペアリングコードで TOFU を完結させ、有効期限ウィンドウを最大まで引き伸ばして時計ずれを許容</strong>。設計全体は VinePalmaFlow 内で約 300 行の Rust で、CA インフラを一切導入せずに、クラウドサービスに匹敵する通信安全を実現しています。</p>
 
             </div>
         </article>

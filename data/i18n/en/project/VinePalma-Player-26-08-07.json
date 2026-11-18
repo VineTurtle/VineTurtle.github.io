@@ -5,5 +5,7 @@
     "Linux",
     "Tauri",
     "Media player"
-  ]
+  ],
+  "desc": "VinePalma Player settings — a local player worth choosing.",
+  "status": "🚧 In progress"
 }
