@@ -1,0 +1,10 @@
+{
+  "title": "完全静的サイトの 4 つの定番の落とし穴",
+  "excerpt": "GrapeLeafi ファンサイトを幾年か運営して溜まった、静的サイトの典型バグ 4 つ。決して発火しない「今日」、スマホで効かない hover、GitHub Pages の大文字小文字 404、そして @latest という時限爆弾。",
+  "tags": [
+    "JavaScript",
+    "CSS",
+    "GitHub Pages",
+    "落とし穴"
+  ]
+}

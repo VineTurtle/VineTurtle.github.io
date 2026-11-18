@@ -20,8 +20,8 @@ window.VTS.createDetailPage({
             + '<div class="detail-header">'
             + '<h1>' + h.escapeHtml(project.title) + '</h1>'
             + '<div class="detail-meta">'
-            + '<span class="project-status ' + h.escapeHtml(project.statusClass || 'status-plan') + '">' + h.escapeHtml(project.status || '进行中') + '</span>'
-            + '<span class="detail-year">📅 ' + h.escapeHtml(project.year || '待定') + '</span>'
+            + '<span class="project-status ' + h.escapeHtml(project.statusClass || 'status-plan') + '">' + h.escapeHtml(project.status || h.t('list.ongoing')) + '</span>'
+            + '<span class="detail-year">📅 ' + h.escapeHtml(project.year || h.t('list.tbd')) + '</span>'
             + '<div class="dynamic-stats" data-dynamic-stats></div>'
             + '</div>'
             + '</div>'
@@ -32,7 +32,7 @@ window.VTS.createDetailPage({
         h.bindImageFallbacks(container);
         h.setupCopyButtons(container);
         h.highlightCode(container);
-        document.title = project.title + ' · 藤栖龟舍';
+        document.title = project.title + ' · ' + (window.VTS && VTS.t ? VTS.t('site.name') : '藤栖龟舍');
         document.body.dataset.contentKind = 'project';
         document.body.dataset.contentSlug = project.slug || '';
         document.body.dataset.contentKey = 'project:' + (project.slug || '');

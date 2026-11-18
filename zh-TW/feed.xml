@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>藤棲部落格 · VineTurtle Studio</title>
+    <link>https://grapeleafi.top/zh-TW/SpecialPages/Blog/index.html</link>
+    <description>記錄森林小鎮的靈感碎片與創作手記。</description>
+    <language>zh-TW</language>
+    <lastBuildDate>Mon, 24 Aug 2026 16:00:00 GMT</lastBuildDate>
+    <atom:link href="https://grapeleafi.top/zh-TW/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>沒有 CA 的區域網路，怎麼做雙向 TLS</title>
+      <link>https://grapeleafi.top/zh-TW/SpecialPages/Blog/2026-08-25-lan-tls-without-ca.html</link>
+      <guid isPermaLink="true">https://grapeleafi.top/zh-TW/SpecialPages/Blog/2026-08-25-lan-tls-without-ca.html</guid>
+      <pubDate>Mon, 24 Aug 2026 16:00:00 GMT</pubDate>
+      <description>VinePalmaFlow 的區域網路同步要在沒有憑證頒發機構、沒有網域、甚至系統時鐘都不準的環境裡建立 TLS 1.3 雙向認證——記錄 rustls 0.23 的三個坑與我們的應用層認證設計。</description>
+      <category>Rust</category>
+      <category>網路安全</category>
+      <category>Tauri</category>
+      <category>踩坑</category>
+    </item>
+    <item>
+      <title>內容指紋與增量同步：為什麼手寫 FNV-1a</title>
+      <link>https://grapeleafi.top/zh-TW/SpecialPages/Blog/2026-08-25-content-hash-fnv1a.html</link>
+      <guid isPermaLink="true">https://grapeleafi.top/zh-TW/SpecialPages/Blog/2026-08-25-content-hash-fnv1a.html</guid>
+      <pubDate>Mon, 24 Aug 2026 16:00:00 GMT</pubDate>
+      <description>用 std 的 DefaultHasher 做內容指紋，同一份檔案在不同行程算出的雜湊竟然不一樣——增量同步退化成每次全量傳輸。聊聊假差異的根因與 FNV-1a + 冪等序列化的解法。</description>
+      <category>Rust</category>
+      <category>演算法</category>
+      <category>踩坑</category>
+      <category>同步</category>
+    </item>
+    <item>
+      <title>純靜態網站的四個經典坑</title>
+      <link>https://grapeleafi.top/zh-TW/SpecialPages/Blog/2026-08-25-static-site-pitfalls.html</link>
+      <guid isPermaLink="true">https://grapeleafi.top/zh-TW/SpecialPages/Blog/2026-08-25-static-site-pitfalls.html</guid>
+      <pubDate>Mon, 24 Aug 2026 16:00:00 GMT</pubDate>
+      <description>維護 GrapeLeafi 粉絲站幾年，攢下四個最典型的靜態站 bug：永不觸發的「今天」、手機上失效的 hover、GitHub Pages 的大小寫 404、以及 @latest 的定時炸彈。</description>
+      <category>JavaScript</category>
+      <category>CSS</category>
+      <category>GitHub Pages</category>
+      <category>踩坑</category>
+    </item>
+    <item>
+      <title>在瀏覽器裡手寫二進位編碼器：ICO / CUR / ICNS 組裝實錄</title>
+      <link>https://grapeleafi.top/zh-TW/SpecialPages/Blog/2026-08-25-binary-encoder-ico-icns.html</link>
+      <guid isPermaLink="true">https://grapeleafi.top/zh-TW/SpecialPages/Blog/2026-08-25-binary-encoder-ico-icns.html</guid>
+      <pubDate>Mon, 24 Aug 2026 16:00:00 GMT</pubDate>
+      <description>Canvas 只能匯出 PNG/JPEG/WebP，那 ICO、CUR、ICNS 圖示格式怎麼辦？VinePalmaToolbox 的答案是：用 DataView 依規格一個位元組一個位元組拼出來。</description>
+      <category>前端</category>
+      <category>二進位</category>
+      <category>VinePalmaToolbox</category>
+      <category>踩坑</category>
+    </item>
+    <item>
+      <title>解除安裝器的安全設計：Linux 上絕不誤刪的三重防線</title>
+      <link>https://grapeleafi.top/zh-TW/SpecialPages/Blog/2026-08-25-uninstaller-safety.html</link>
+      <guid isPermaLink="true">https://grapeleafi.top/zh-TW/SpecialPages/Blog/2026-08-25-uninstaller-safety.html</guid>
+      <pubDate>Mon, 24 Aug 2026 16:00:00 GMT</pubDate>
+      <description>刪檔案的工具有很多，要怎麼保證永遠不刪錯？VinePalmaUninstaller 的答案：計畫即白名單、路徑黑名單、保護開關三道防線，外加 pkexec 提權時的輸出解析玄學。</description>
+      <category>Rust</category>
+      <category>Linux</category>
+      <category>安全設計</category>
+      <category>VinePalmaUninstaller</category>
+    </item>
+    <item>
+      <title>Electron Linux 圖示踩坑記：從打包到工作列圖示的完整指南</title>
+      <link>https://grapeleafi.top/zh-TW/SpecialPages/Blog/2026-07-22-linux-app-icon-fix.html</link>
+      <guid isPermaLink="true">https://grapeleafi.top/zh-TW/SpecialPages/Blog/2026-07-22-linux-app-icon-fix.html</guid>
+      <pubDate>Tue, 21 Jul 2026 16:00:00 GMT</pubDate>
+      <description>打包後啟動器圖示正常，工作列卻是空白？問題出在桌面環境透過 WM_CLASS 關聯視窗和 .desktop 檔案。</description>
+      <category>技術筆記</category>
+      <category>Electron</category>
+      <category>Linux</category>
+    </item>
+  </channel>
+</rss>

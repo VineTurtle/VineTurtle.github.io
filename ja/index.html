@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2a5c3a">
+    <meta name="description" content="藤栖亀舎 VineTurtle Studio — 森の自然美学を核としたクリエイティブスタジオ、森の町の四季を記録します。">
+    <title>藤棲亀舎 - VineTurtle Studio</title>
+    <link rel="canonical" href="https://grapeleafi.top/ja/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="藤棲亀舎 VineTurtle Studio" />
+    <meta property="og:title" content="藤棲亀舎 - VineTurtle Studio" />
+    <meta property="og:description" content="藤栖亀舎 VineTurtle Studio — 森の自然美学を核としたクリエイティブスタジオ、森の町の四季を記録します。" />
+    <meta property="og:url" content="https://grapeleafi.top/ja/" />
+    <meta property="og:image" content="https://grapeleafi.top/Resources/images/og-cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="./Resources/images/VineTurtleStudio.png" type="image/png">
+    <link rel="alternate" type="application/rss+xml" title="藤栖ブログ · VineTurtle Studio" href="./feed.xml">
+    <script src="./JS/theme-init.js"></script>
+    <link rel="stylesheet" href="./CSS/layout.css">
+    <link rel="stylesheet" href="./CSS/i18n.css">
+    <link rel="stylesheet" href="./CSS/style.css">
+    <link rel="stylesheet" href="./CSS/home-feed.css">
+    <script src="./JS/i18n.js"></script>
+    <script src="./JS/layout.js" defer></script>
+    <script src="./JS/script.js" defer></script>
+    <script src="./JS/home-feed.js" defer></script>
+    <script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://grapeleafi.top/#organization","name":"藤棲亀舎 VineTurtle Studio","alternateName":"VineTurtle Studio","url":"https://grapeleafi.top/ja/","description":"森に根ざし、四季とともに。","logo":"https://grapeleafi.top/ja/Resources/images/VineTurtleStudio.png","slogan":"森に根ざし、四季とともに。","email":"VineTurtleStudio@outlook.com","inLanguage":"ja"},{"@type":"WebSite","@id":"https://grapeleafi.top/#website","url":"https://grapeleafi.top/ja/","name":"藤棲亀舎 VineTurtle Studio","inLanguage":"ja","publisher":{"@id":"https://grapeleafi.top/#organization"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://grapeleafi.top/ja/SpecialPages/Search/index.html?q={search_term_string}"},"query-input":"required name=search_term_string"}}]}
+</script>
+    <meta property="og:locale" content="ja_JP" />
+    <link rel="alternate" hreflang="zh-CN" href="https://grapeleafi.top/" />
+    <link rel="alternate" hreflang="zh-TW" href="https://grapeleafi.top/zh-TW/" />
+    <link rel="alternate" hreflang="en" href="https://grapeleafi.top/en/" />
+    <link rel="alternate" hreflang="ja" href="https://grapeleafi.top/ja/" />
+    <link rel="alternate" hreflang="x-default" href="https://grapeleafi.top/" />
+</head>
+<body>
+<noscript><div class="noscript-warn" data-i18n="common.noscript">このサイトはコンテンツを正しく表示するために JavaScript が必要です。</div></noscript>
+<div id="header-placeholder"></div>
+
+<main class="main-content">
+    <div class="page-container">
+        <!-- ===== 首页 ===== -->
+        <section id="page-home" class="page-section active" data-page="home">
+            <div class="container">
+                <div class="hero-card">
+                    <img src="./Resources/images/VineTurtleStudio.png" alt="藤棲亀舎" class="hero-logo" data-i18n-attrs="alt:site.name">
+                    <h1 class="studio-name" data-i18n="home.heroName">藤棲亀舎</h1>
+                    <p class="tagline" data-i18n="site.tagline">森に根ざし、四季とともに。</p>
+                    <p class="hero-lead" data-i18n="home.heroLead">ツルと亀の影が交差する創作工房。森の町の四季を記録しています。</p>
+                    <div class="hero-actions">
+                        <a class="hero-btn is-primary" href="#page-works" data-i18n="home.btnWorks">作品を見る</a>
+                        <a class="hero-btn" href="./SpecialPages/Blog/index.html" data-i18n="home.btnBlog">ブログを読む</a>
+                        <a class="hero-btn" href="./SpecialPages/Gallery/index.html" data-i18n="home.btnGallery">ギャラリーを見る</a>
+                    </div>
+                </div>
+
+                <!-- 动态区块：精选固定、最近更新与热门自动生成，配置见 data/meta/home.json -->
+                <div class="home-feed" id="homeFeed">
+                    <p class="feed-loading" id="feedLoading" data-i18n="home.feedLoading">森の作品と記事を整理しています…</p>
+
+                    <section class="feed-block" data-block="featured" hidden>
+                        <div class="feed-head">
+                            <h2 data-i18n="home.featured">🌟 おすすめ</h2>
+                            <a class="feed-more" href="#page-more" data-i18n="home.feedMore">もっと見る →</a>
+                        </div>
+                        <div class="feed-grid feed-grid-featured" data-slot="featured"></div>
+                    </section>
+
+                    <section class="feed-block" data-block="recent" hidden>
+                        <div class="feed-head">
+                            <h2 data-i18n="home.recent">🕒 最近の更新</h2>
+                            <span class="feed-note" data-i18n="home.recentNote">公開日時順に自動並び替え</span>
+                        </div>
+                        <div class="feed-grid" data-slot="recent"></div>
+                    </section>
+
+                    <section class="feed-block" data-block="hot" hidden>
+                        <div class="feed-head">
+                            <h2 data-i18n="home.hot">🔥 人気</h2>
+                            <span class="feed-note" data-i18n="home.hotNote">閲覧数・編集重み・新鮮度の総合順</span>
+                        </div>
+                        <div class="feed-grid" data-slot="hot"></div>
+                    </section>
+                </div>
+                <noscript>
+                    <p class="feed-note"><span data-i18n="home.feedNoJs">動的セクションには JavaScript が必要です。次のページからもご覧いただけます：</span>
+                        <a href="./SpecialPages/Project/index.html" data-i18n="home.cardProject">プロジェクト</a>、
+                        <a href="./SpecialPages/Blog/index.html" data-i18n="home.cardBlog">ブログ</a>、
+                        <a href="./SpecialPages/Gallery/index.html" data-i18n="home.cardGallery">ギャラリー</a> <span data-i18n="home.feedBrowseAll">すべてのコンテンツを見る。</span></p>
+                </noscript>
+            </div>
+        </section>
+
+        <!-- ===== 关于 ===== -->
+        <section id="page-about" class="page-section" data-page="about">
+            <div class="container">
+                <div class="content-card">
+                    <h2 data-i18n="home.aboutTitle">藤棲亀舎について</h2>
+                    <p data-i18n="home.about1">藤棲亀舎は2026年に設立された、森の自然美学を核とする創作スタジオです。</p>
+                    <p data-i18n="home.about2">デザインは森のように育つべきだと信じています——ゆっくりと、自然に、生命力にあふれて。</p>
+                    <div class="about-details">
+                        <div class="detail-item"><span class="detail-label" data-i18n="home.idea">🌱 理念</span><span data-i18n="home.ideaValue">自然との共生</span></div>
+                        <div class="detail-item"><span class="detail-label" data-i18n="home.attitude">🐢 姿勢</span><span data-i18n="home.attitudeValue">着実に前へ</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 作品 ===== -->
+        <section id="page-works" class="page-section" data-page="works">
+            <div class="container">
+                <div class="content-card">
+                    <h2 data-i18n="home.worksTitle">私たちの作品</h2>
+                    <p data-i18n="home.worksLead">私たちの創作物の一部をご紹介します：</p>
+                    <ul class="work-list">
+                        <li data-i18n="home.worksPlayer">🎬 VinePalma Player — FFmpeg ベースのローカル再生プレーヤー</li>
+                        <li data-i18n="home.worksFlow">🧭 VinePalmaFlow — クラウドに上げないローカル完結のプロジェクト管理</li>
+                        <li data-i18n="home.worksUninstaller">🧹 VinePalmaUninstaller — 6 つの配布元を統合する Linux アンインストーラー</li>
+                        <li data-i18n="home.worksToolbox">🛠️ VinePalmaToolbox — 多機能デスクトップツールボックス</li>
+                        <li data-i18n="home.worksGrapeLeafi">🌿 GrapeLeafi — ぶどう葉ちゃんのあたたかなおうち</li>
+                    </ul>
+                    <p class="work-note"><span data-i18n="home.worksMore">まだまだ作品が育っています…… </span><a href="./SpecialPages/Project/index.html" data-i18n="home.viewAllProjects">すべてのプロジェクトを見る →</a></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 更多 ===== -->
+        <section id="page-more" class="page-section" data-page="more">
+            <div class="container">
+                <div class="content-card">
+                    <h2 data-i18n="home.moreTitle">🌿 もっと探索</h2>
+                    <p data-i18n="home.moreLead">藤棲亀舎のコンテンツの世界へようこそ。探索したい分野を選んでください：</p>
+                </div>
+                <div class="more-grid">
+                    <a href="./SpecialPages/Gallery/index.html" class="more-card">
+                        <div class="more-icon">🖼️</div><h3 data-i18n="home.cardGallery">ギャラリー</h3><p data-i18n="home.cardGalleryDesc">視覚作品をお楽しみください</p><span class="more-badge" data-i18n="nav.enter">入口へ</span>
+                    </a>
+                    <a href="./SpecialPages/Blog/index.html" class="more-card">
+                        <div class="more-icon">📝</div><h3 data-i18n="home.cardBlog">ブログ</h3><p data-i18n="home.cardBlogDesc">記事とインスピレーションを読む</p><span class="more-badge" data-i18n="nav.enter">入口へ</span>
+                    </a>
+                    <a href="./SpecialPages/Project/index.html" class="more-card">
+                        <div class="more-icon">🚀</div><h3 data-i18n="home.cardProject">プロジェクト</h3><p data-i18n="home.cardProjectDesc">創作プロジェクトの集大成</p><span class="more-badge" data-i18n="nav.enter">入口へ</span>
+                    </a>
+                    <a href="./SpecialPages/Search/index.html" class="more-card">
+                        <div class="more-icon">🔍</div><h3 data-i18n="home.cardSearch">検索</h3><p data-i18n="home.cardSearchDesc">タイトル・タグ・キーワードで探す</p><span class="more-badge" data-i18n="nav.enter">入口へ</span>
+                    </a>
+                    <!-- more-nav-anchor：新增分类的入口卡片由后台插到这一行之前，请勿删除 -->
+
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+
+<div id="footer-placeholder"></div>
+<div class="month-badge" id="monthBadge">🌿 1月</div>
+</body>
+</html>

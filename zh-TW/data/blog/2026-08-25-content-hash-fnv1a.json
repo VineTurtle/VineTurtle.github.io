@@ -1,0 +1,11 @@
+{
+  "id": 5,
+  "slug": "2026-08-25-content-hash-fnv1a",
+  "title": "内容指纹与增量同步：为什么手写 FNV-1a",
+  "date": "2026-08-25",
+  "tags": ["Rust", "算法", "踩坑", "同步"],
+  "excerpt": "用 std 的 DefaultHasher 做内容指纹，同一份文件在不同进程算出的哈希竟然不一样——增量同步退化成每次全量传输。聊聊假差异的根因与 FNV-1a + 幂等序列化的解法。",
+  "thumbnail": "../../Resources/images/blog/hero/content-hash.jpg",
+  "hero": "../../Resources/images/blog/hero/content-hash.jpg",
+  "fallbackIcon": "#️⃣"
+}

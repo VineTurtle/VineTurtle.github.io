@@ -1,0 +1,10 @@
+{
+  "title": "Content fingerprints and incremental sync: why hand-write FNV-1a",
+  "excerpt": "Using std's DefaultHasher for content fingerprints, the same file hashed differently across processes, so incremental sync degraded into a full transfer every time. On the root cause of those phantom diffs, and the FNV-1a plus idempotent serialization fix.",
+  "tags": [
+    "Rust",
+    "Algorithms",
+    "Pitfalls",
+    "Sync"
+  ]
+}

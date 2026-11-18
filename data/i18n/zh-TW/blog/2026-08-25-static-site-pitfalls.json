@@ -1,0 +1,10 @@
+{
+  "title": "純靜態網站的四個經典坑",
+  "excerpt": "維護 GrapeLeafi 粉絲站幾年，攢下四個最典型的靜態站 bug：永不觸發的「今天」、手機上失效的 hover、GitHub Pages 的大小寫 404、以及 @latest 的定時炸彈。",
+  "tags": [
+    "JavaScript",
+    "CSS",
+    "GitHub Pages",
+    "踩坑"
+  ]
+}

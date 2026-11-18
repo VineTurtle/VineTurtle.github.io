@@ -1,0 +1,56 @@
+<p>在开发 <strong>VinePalmaFlow</strong>（我们的本地优先项目管理工具）的局域网同步功能时，遇到了一个教科书上很少讲的问题：<strong>两台局域网设备之间要建立加密连接，可是既没有 CA 签发的证书，也没有域名，甚至对方的系统时钟都可能不准</strong>。Web PKI 那套信任模型在这里完全失效。这篇笔记记录 rustls 0.23 上的三个坑，以及我们最终的应用层认证设计。</p>
+
+<h2>📦 问题背景</h2>
+<p>VinePalmaFlow 的同步架构是：mDNS 发现设备 → TLS 1.3 加密通道 → WebSocket 交换 JSON 消息。安全目标是「只有互相配对过的设备才能同步数据」。听起来简单，但每一个前提条件在局域网里都不成立：</p>
+<ul>
+    <li>❌ 没有 CA：不可能给局域网里的设备签发受信任证书</li>
+    <li>❌ 没有域名：SNI 的 <code>ServerName</code> 不能用字符串构造</li>
+    <li>❌ 时钟不可信：新装机的设备 BIOS 时钟可能停在几年前</li>
+    <li>✅ 唯一可信的：用户本人当场看着两块屏幕输入配对码</li>
+</ul>
+
+<h2>坑一：rustls 0.23 必须显式安装 crypto provider</h2>
+<p>rustls 0.23 把加密后端拆成了可插拔的 provider，<strong>不安装就直接 panic</strong>。这是升级后最先撞上的墙：</p>
+<pre><code>// 程序入口处，只装一次
+rustls::crypto::ring::default_provider()
+    .install_default()
+    .expect("failed to install rustls crypto provider");</code></pre>
+
+<h2>坑二：IP 直连的 ServerName 构造</h2>
+<p>Web 教材里客户端都是 <code>ServerName::try_from("example.com")</code>，但局域网里我们只有 IP。字符串形式的 IP 会在握手时被拒绝，必须使用专门的变体：</p>
+<pre><code>use rustls::pki_types::ServerName;
+
+// ❌ ServerName::try_from("192.168.1.5")? —— 当作域名处理，校验失败
+// ✅
+let server_name = ServerName::IpAddress(ip.into());</code></pre>
+<p>另外对空地址与 <code>0.0.0.0</code> 要回退到 <code>127.0.0.1</code>，否则 mDNS 解析尚未完成时发起的首次同步会直接报错。</p>
+
+<h2>坑三：证书有效期的时钟偏移</h2>
+<p>自签证书默认把 <code>not_before</code> 设为生成时刻。设想设备 A 时钟正常、设备 B 时钟慢了一天：B 生成证书 → A 校验时发现「证书还未生效」→ 握手失败。更糟的是这种问题<strong>只在特定两台设备间出现</strong>，极难复现。解法简单粗暴——把有效期窗口拉满：</p>
+<pre><code>let mut params = rcgen::CertificateParams::new(vec![])?;
+params.not_before = rcgen::date_time_ymd(2020, 1, 1);
+params.not_after  = rcgen::date_time_ymd(2099, 12, 31);
+// 证书与私钥以 DER 落盘，设备生命周期内复用，不再重签</code></pre>
+
+<h2>🔑 信任模型：把认证下沉到应用层</h2>
+<p>放弃证书链校验后，两端各挂一个自定义 verifier（rustls 的 <code>danger</code> trait）：客户端「接受任意服务端证书」，服务端「强制索要客户端证书」。<strong>TLS 只负责加密，身份认证完全交给上层</strong>：</p>
+<ul>
+    <li>每台设备首次启动时生成自签证书，<strong>CN 字段写入设备 ID</strong></li>
+    <li>握手完成后，服务端从对方客户端证书 DER 里解析出 CN，作为「认证后的设备身份」</li>
+    <li>所有同步消息都要求该 ID 在信任列表 <code>devices.json</code> 中，消息体里声称的 id <strong>不作数</strong></li>
+</ul>
+<pre><code>// 服务端：从客户端证书提取真实身份
+fn cert_common_name(cert_der: &[u8]) -&gt; Option&lt;String&gt; { /* 解析 CN */ }
+
+// 消息处理时以证书 CN 为准，而非消息体里的 id
+if !is_trusted(&amp;cert_peer_id) {
+    return reject("device not paired");
+}</code></pre>
+<p>配对本身靠<strong>双向 6 位配对码</strong>：两台设备各自屏幕显示一个码，用户互相输入对方的码，双向核对通过才写入信任列表。这本质上是 TOFU（Trust On First Use）+ 人工带外验证的组合，安全性等价于蓝牙配对。</p>
+<p>顺手做了一个加固：在 <code>verify_tls12_signature</code> 里直接返回错误，<strong>禁用 TLS 1.2</strong>，只允许 1.3 握手，少一类降级攻击面。</p>
+
+<h2>✅ 用测试锁住安全模型</h2>
+<p>这类「自定义 verifier + 应用层认证」的设计很容易在重构中被悄悄破坏，我们为它写了专门的回归测试：伪造证书 CN（不在信任列表）的推送必须被拒绝、未配对设备的 <code>sync_push</code> 必须返回错误、TLS 回环握手必须成功。安全逻辑一旦写好，就让测试替你站岗。</p>
+
+<h2>📝 小结</h2>
+<p>局域网点对点加密的正确姿势：<strong>自签证书承载身份、TLS 只管加密、认证下沉应用层、配对码完成 TOFU、有效期窗口拉满容忍时钟漂移</strong>。整套设计在 VinePalmaFlow 里大约 300 行 Rust，没有引入任何 CA 基础设施，却提供了与云端服务相当的传输安全。</p>

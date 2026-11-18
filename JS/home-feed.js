@@ -5,8 +5,36 @@
 (function () {
     'use strict';
 
+    var t = function (key, vars) {
+        return window.VTS && window.VTS.t ? window.VTS.t(key, vars) : key;
+    };
+
     var MAX_CARDS = 6;
     var FRESH_DAYS = 60; // 新鲜度线性衰减窗口（天）
+
+    // 精选徽章：data/meta/home.json 里是中文术语，这里映射到字典（R17），未知值原样显示
+    var BADGE_KEY = {
+        '本地优先': 'badge.localFirst',
+        '社区站点': 'badge.community',
+        '技术笔记': 'badge.techNote'
+    };
+
+    function badgeText(raw) {
+        if (!raw) return raw;
+        var key = BADGE_KEY[String(raw).trim()];
+        if (!key) return raw;
+        var localized = t(key);
+        return localized && localized !== key ? localized : raw;
+    }
+
+    // 数据里优先用 badgeKey（字典键，新增徽章不必改代码）；旧数据的 badge 中文文案走兼容映射
+    function badgeFromRef(ref) {
+        if (ref && ref.badgeKey) {
+            var localized = t(ref.badgeKey);
+            if (localized && localized !== ref.badgeKey) return localized;
+        }
+        return badgeText(ref && ref.badge);
+    }
 
     function esc(value) {
         return String(value == null ? '' : value)
@@ -35,7 +63,7 @@
         var slug = entry.slug || String(entry.id);
         var item = {
             kind: kind,
-            kindLabel: isBlog ? '文章' : '项目',
+            kindLabel: isBlog ? t('kind.post') : t('kind.project'),
             slug: slug,
             title: entry.title || '',
             date: entry.date || '',
@@ -78,7 +106,7 @@
             + (opts.badge ? '<span class="feed-badge">' + esc(opts.badge) + '</span>' : '')
             + '</div>'
             + '<div class="feed-body">'
-            + '<span class="feed-kind feed-kind-' + item.kind + '">' + esc(item.kindLabel) + '</span>'
+            + '<span class="feed-kind feed-kind-' + item.kind + '" data-i18n="' + (item.kind === 'blog' ? 'kind.post' : 'kind.project') + '">' + esc(item.kindLabel) + '</span>'
             + '<h3 class="feed-title">' + esc(item.title) + '</h3>'
             + (item.desc ? '<p class="feed-desc">' + esc(item.desc) + '</p>' : '')
             + '<div class="feed-meta">' + (item.date ? '<span>📅 ' + esc(item.date) + '</span>' : '') + tags + '</div>'
@@ -122,7 +150,7 @@
             all.forEach(function (item) { byKey[item.kind + ':' + item.slug] = item; });
             var featured = (config.featured || []).map(function (ref) {
                 return byKey[ref.type + ':' + ref.slug]
-                    ? { item: byKey[ref.type + ':' + ref.slug], badge: ref.badge }
+                    ? { item: byKey[ref.type + ':' + ref.slug], badge: badgeFromRef(ref) }
                     : null;
             }).filter(Boolean);
 
@@ -138,11 +166,16 @@
                 return hotScore(b, weights, stats) - hotScore(a, weights, stats);
             }).slice(0, MAX_CARDS);
 
-            // 标题可在配置里改
+            // 区块标题优先走字典（P0 界面文案）；缺 key 时回退到配置（简中数据）
             var titles = config.sections || {};
+            var titleKeys = { featured: 'home.featured', recent: 'home.recent', hot: 'home.hot' };
             ['featured', 'recent', 'hot'].forEach(function (key) {
                 var block = document.querySelector('[data-block="' + key + '"] h2');
-                if (block && titles[key]) block.textContent = titles[key];
+                if (!block) return;
+                var i18nKey = titleKeys[key];
+                var localized = window.VTS && VTS.t ? VTS.t(i18nKey) : i18nKey;
+                block.textContent = (localized && localized !== i18nKey) ? localized : (titles[key] || block.textContent);
+                block.setAttribute('data-i18n', i18nKey);
             });
 
             // 精选卡片各自带徽标，单独渲染

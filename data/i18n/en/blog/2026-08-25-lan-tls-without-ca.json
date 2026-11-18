@@ -1,0 +1,10 @@
+{
+  "title": "Mutual TLS on a LAN with no CA",
+  "excerpt": "VinePalmaFlow's LAN sync has to establish TLS 1.3 mutual authentication with no certificate authority, no domain names and clocks that may be wrong. Notes on three rustls 0.23 pitfalls and the application-layer auth we designed around them.",
+  "tags": [
+    "Rust",
+    "Network security",
+    "Tauri",
+    "Pitfalls"
+  ]
+}

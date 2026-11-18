@@ -1,0 +1,48 @@
+{
+  "items": {
+    "sakura-tea": {
+      "title": "Tea under the cherry tree",
+      "desc": "An afternoon tea party beneath the cherry blossoms, petals scattered across the stone path"
+    },
+    "sakura-reading": {
+      "title": "Reading in the cherry garden",
+      "desc": "A reading hour on a park bench, Xiaomeng and an old book"
+    },
+    "grape-arbor": {
+      "title": "Smile beneath the grape arbor",
+      "desc": "Under the vine trellis, Grapeleaf with a basket of purple grapes"
+    },
+    "vineyard-picnic": {
+      "title": "Vineyard picnic",
+      "desc": "Orangeberry and Xiaomeng picnic in the vineyard, sharing freshly picked grapes"
+    },
+    "orange-teatime": {
+      "title": "Citrus afternoon tea",
+      "desc": "An afternoon tea for Orangeberry and little Grapeleaf, the room full of orange scent"
+    },
+    "apple-orchard": {
+      "title": "Harvest in the apple orchard",
+      "desc": "Walking the orchard with a basket, picking the first red apple of autumn"
+    },
+    "grapeleafi-summer": {
+      "title": "Grapeleaf: summer grapes",
+      "desc": "Summer character art of Grapeleaf, keeper of the vineyard"
+    },
+    "orchard-outfit": {
+      "title": "Orchard outfit: Orangeberry",
+      "desc": "A straw hat and overall shorts, orchard workwear"
+    },
+    "xiaomeng-chibi": {
+      "title": "Xiaomeng, chibi",
+      "desc": "Xiaomeng with a book and black tea, cherry petals resting on her hair"
+    },
+    "grapeleafi-chibi": {
+      "title": "Grapeleaf, chibi",
+      "desc": "A soft seated pose, warm brown cardigan with a red ribbon"
+    },
+    "toolbox-cover": {
+      "title": "VinePalmaToolbox cover",
+      "desc": "The official cover artwork for the toolbox app"
+    }
+  }
+}

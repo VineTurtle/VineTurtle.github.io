@@ -1,0 +1,10 @@
+{
+  "title": "VinePalmaFlow 本機專案管理",
+  "excerpt": "永遠不上雲的本機優先專案管理工具：Markdown 即資料庫，區域網路像雲一樣協作",
+  "tags": [
+    "Tauri",
+    "Rust",
+    "專案管理",
+    "區域網路同步"
+  ]
+}

@@ -12,16 +12,20 @@
             document.body.classList.toggle('month-' + m, m === currentMonth);
         }
 
-        // 更新月份徽标
+        // 更新月份徽标：英文字典的模板是「{icon} {month}」，需要月份名而不是数字（R8）
+        const t = window.VTS && window.VTS.t ? window.VTS.t : function (k, v) { return k; };
+        const lang = (window.VTS && window.VTS.lang) || 'zh-CN';
+        const MONTHS_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const monthValue = lang === 'en' ? MONTHS_EN[currentMonth - 1] : currentMonth;
         const badge = document.getElementById('monthBadge');
         if (badge) {
-            badge.textContent = `${MONTH_ICONS[currentMonth - 1] || '🌿'} ${currentMonth}月`;
+            badge.textContent = t('common.monthBadge', { icon: MONTH_ICONS[currentMonth - 1] || '🌿', month: monthValue });
         }
 
         // 更新月份显示（如果页面里有）
         const monthEl = document.querySelector('.month-indicator');
         if (monthEl) {
-            monthEl.textContent = `森林小镇 · ${currentMonth}月`;
+            monthEl.textContent = t('common.monthIndicator', { month: currentMonth });
         }
     }
 

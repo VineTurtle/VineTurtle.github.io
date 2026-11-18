@@ -2,6 +2,10 @@
 (function () {
     'use strict';
 
+    var t = function (key, vars) {
+        return window.VTS && window.VTS.t ? window.VTS.t(key, vars) : key;
+    };
+
     function ready(fn) {
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
         else fn();
@@ -55,7 +59,8 @@
 
         const title = document.createElement('p');
         title.className = 'post-toc-title';
-        title.textContent = '📑 本文目录';
+        title.setAttribute('data-i18n', 'detail.toc');
+        title.textContent = t('detail.toc');
         toc.innerHTML = '';
         toc.appendChild(title);
         toc.appendChild(list);
@@ -93,17 +98,21 @@
         const copyBtn = document.createElement('button');
         copyBtn.type = 'button';
         copyBtn.className = 'content-action-btn';
-        copyBtn.textContent = '🔗 复制链接';
+        copyBtn.setAttribute('data-i18n', 'detail.copyLink');
+        copyBtn.textContent = t('detail.copyLink');
         copyBtn.addEventListener('click', function () {
             copyText(window.location.href).then(function () {
                 copyBtn.classList.add('copied');
-                copyBtn.textContent = '✅ 已复制';
+                copyBtn.removeAttribute('data-i18n');
+                copyBtn.textContent = t('detail.copied');
                 setTimeout(function () {
                     copyBtn.classList.remove('copied');
-                    copyBtn.textContent = '🔗 复制链接';
+                    copyBtn.setAttribute('data-i18n', 'detail.copyLink');
+                    copyBtn.textContent = t('detail.copyLink');
                 }, 1800);
             }).catch(function () {
-                copyBtn.textContent = '复制失败，请手动复制';
+                copyBtn.removeAttribute('data-i18n');
+                copyBtn.textContent = t('detail.copyFail');
             });
         });
         mount.appendChild(copyBtn);
@@ -112,7 +121,8 @@
             const shareBtn = document.createElement('button');
             shareBtn.type = 'button';
             shareBtn.className = 'content-action-btn';
-            shareBtn.textContent = '📤 分享';
+            shareBtn.setAttribute('data-i18n', 'detail.share');
+            shareBtn.textContent = t('detail.share');
             shareBtn.addEventListener('click', function () {
                 navigator.share({
                     title: document.title,

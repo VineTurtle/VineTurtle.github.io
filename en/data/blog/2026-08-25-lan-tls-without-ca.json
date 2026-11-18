@@ -1,0 +1,11 @@
+{
+  "id": 4,
+  "slug": "2026-08-25-lan-tls-without-ca",
+  "title": "没有 CA 的局域网，怎么做双向 TLS",
+  "date": "2026-08-25",
+  "tags": ["Rust", "网络安全", "Tauri", "踩坑"],
+  "excerpt": "VinePalmaFlow 的局域网同步要在没有证书颁发机构、没有域名、甚至系统时钟都不准的环境里建立 TLS 1.3 双向认证——记录 rustls 0.23 的三个坑与我们的应用层认证设计。",
+  "thumbnail": "../../Resources/images/blog/hero/flow-tls.jpg",
+  "hero": "../../Resources/images/blog/hero/flow-tls.jpg",
+  "fallbackIcon": "🔐"
+}

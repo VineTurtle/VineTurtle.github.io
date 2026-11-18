@@ -3,6 +3,10 @@
 (function () {
     'use strict';
 
+    var t = function (key, vars) {
+        return window.VTS && window.VTS.t ? window.VTS.t(key, vars) : key;
+    };
+
     var root = (window.VTS && window.VTS.root) || '';
     var configUrl = root + 'data/meta/dynamic.json';
     var config = null;
@@ -75,7 +79,7 @@
 
             var viewsEl = document.createElement('span');
             viewsEl.className = 'stat-item';
-            viewsEl.innerHTML = '👁 <span>' + formatCount(views) + '</span> 阅读';
+            viewsEl.innerHTML = '👁 <span>' + formatCount(views) + '</span>' + t('dynamic.reads');
             mount.appendChild(viewsEl);
 
             var likeBtn = document.createElement('button');
@@ -86,9 +90,9 @@
             if (liked) {
                 likeBtn.classList.add('is-liked');
                 likeBtn.disabled = true;
-                likeBtn.setAttribute('aria-label', '已点赞');
+                likeBtn.setAttribute('aria-label', t('dynamic.liked'));
             } else {
-                likeBtn.setAttribute('aria-label', '点赞');
+                likeBtn.setAttribute('aria-label', t('dynamic.like'));
                 likeBtn.addEventListener('click', function () {
                     likeBtn.disabled = true;
                     fetchJson(apiBase + '/like', {
@@ -99,11 +103,11 @@
                         var next = Number(result && result.likes);
                         if (!isNaN(next)) likeBtn.innerHTML = '❤️ <span>' + formatCount(next) + '</span>';
                         likeBtn.classList.add('is-liked');
-                        likeBtn.setAttribute('aria-label', '已点赞');
+                        likeBtn.setAttribute('aria-label', t('dynamic.liked'));
                         storageSet('vts:liked:' + key, '1');
                     }).catch(function () {
                         likeBtn.disabled = false;
-                        likeBtn.textContent = '❤️ 稍后再试';
+                        likeBtn.textContent = t('dynamic.retry');
                     });
                 });
             }
@@ -156,12 +160,12 @@
 
         var title = document.createElement('h2');
         title.className = 'comments-title';
-        title.textContent = '💬 评论';
+        title.textContent = t('comments.title');
         section.appendChild(title);
 
         var hint = document.createElement('p');
         hint.className = 'comments-hint';
-        hint.textContent = '评论由 GitHub Discussions 提供，需要登录 GitHub 账号。';
+        hint.textContent = t('comments.hint');
         section.appendChild(hint);
 
         var term = contentKey() || (window.location.pathname + window.location.search);
@@ -183,7 +187,7 @@
         script.setAttribute('data-lang', 'zh-CN');
         script.setAttribute('data-loading', 'lazy');
         script.onerror = function () {
-            hint.textContent = '评论组件加载失败，可能是网络或 GitHub 访问问题。';
+            hint.textContent = t('comments.fail');
         };
         section.appendChild(script);
     }

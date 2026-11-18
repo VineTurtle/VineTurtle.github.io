@@ -1,0 +1,18 @@
+/* CSS/style.css */
+body.month-1 { --primary: #5b6e7a; --secondary: #a3b6c4; --bg: #edf2f5; --accent: #7e94a0; --text: #354952; }
+body.month-2 { --primary: #6b4e3a; --secondary: #b28c73; --bg: #f5ede8; --accent: #8c6c56; --text: #4a362a; }
+body.month-3 { --primary: #7eb36a; --secondary: #c8dfa4; --bg: #f7faf2; --accent: #9dcf86; --text: #3f5c34; }
+body.month-4 { --primary: #d9928a; --secondary: #f0cdc8; --bg: #fdf6f5; --accent: #e5b2ab; --text: #775954; }
+body.month-5 { --primary: #2a5c3a; --secondary: #88b17e; --bg: #e4efe1; --accent: #4a7c5b; --text: #23382c; }
+body.month-6 { --primary: #5a8c4e; --secondary: #f1a35c; --bg: #f3f8eb; --accent: #8ab06b; --text: #374d2e; }
+body.month-7 { --primary: #7b7a9c; --secondary: #c2c0d9; --bg: #f2f0f8; --accent: #a09fc0; --text: #484764; }
+body.month-8 { --primary: #bca45c; --secondary: #decb8c; --bg: #fcf8ee; --accent: #cbb874; --text: #635632; }
+body.month-9 { --primary: #9a4c4c; --secondary: #c68686; --bg: #f5edec; --accent: #b86969; --text: #5e3232; }
+body.month-10 { --primary: #b85a32; --secondary: #e69b6a; --bg: #fcf3eb; --accent: #d07b4c; --text: #6a3822; }
+body.month-11 { --primary: #708090; --secondary: #b0bec5; --bg: #f0f2f4; --accent: #8da0ad; --text: #455560; }
+body.month-12 { --primary: #1b3b29; --secondary: #4a6b5a; --bg: #e0e7e1; --accent: #335543; --text: #1a2b20; }
+
+body {
+    background-color: var(--bg, #e4efe1);
+    color: var(--text, #23382c);
+}

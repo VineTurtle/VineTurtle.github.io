@@ -28,7 +28,7 @@ window.VTS.createDetailPage({
         h.bindImageFallbacks(container);
         h.setupCopyButtons(container);
         h.highlightCode(container);
-        document.title = post.title + ' · 藤栖龟舍';
+        document.title = post.title + ' · ' + (window.VTS && VTS.t ? VTS.t('site.name') : '藤栖龟舍');
         document.body.dataset.contentKind = 'blog';
         document.body.dataset.contentSlug = post.slug || '';
         document.body.dataset.contentKey = 'blog:' + (post.slug || '');

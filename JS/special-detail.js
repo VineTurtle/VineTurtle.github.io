@@ -3,6 +3,10 @@
 (function() {
     'use strict';
 
+    var t = function (key, vars) {
+        return window.VTS && window.VTS.t ? window.VTS.t(key, vars) : key;
+    };
+
     function escapeHtml(value) {
         const str = value == null ? '' : String(value);
         return str.replace(/[&<>"']/g, function(c) {
@@ -10,12 +14,18 @@
         });
     }
 
-    // 将 ISO 日期格式化为「YYYY年M月D日」，无法解析时原样返回
+    // 将 ISO 日期按语言本地化（R8）
     function formatDate(value) {
         if (!value) return '';
         const m = String(value).match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
         if (!m) return String(value);
-        return m[1] + '年' + Number(m[2]) + '月' + Number(m[3]) + '日';
+        const y = m[1], mo = Number(m[2]), d = Number(m[3]);
+        const lang = (window.VTS && VTS.lang) || 'zh-CN';
+        if (lang === 'en') {
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return months[mo - 1] + ' ' + d + ', ' + y;
+        }
+        return y + '年' + mo + '月' + d + '日';
     }
 
     function getParam(name) {
@@ -56,24 +66,25 @@
 
             const btn = document.createElement('button');
             btn.className = 'copy-btn';
-            btn.setAttribute('aria-label', '复制代码');
+            btn.setAttribute('aria-label', t('a11y.copyCode'));
+            btn.setAttribute('data-i18n-attrs', 'aria-label:a11y.copyCode');
 
             const icon = document.createElement('span');
             icon.className = 'copy-icon';
             icon.textContent = '📋';
-            const label = document.createTextNode(' 复制');
+            const label = document.createTextNode(t('code.copy'));
             btn.appendChild(icon);
             btn.appendChild(label);
 
             const restore = function() {
                 btn.classList.remove('copied');
                 icon.textContent = '📋';
-                label.nodeValue = ' 复制';
+                label.nodeValue = t('code.copy');
             };
             const flashCopied = function(ok) {
                 btn.classList.add('copied');
                 icon.textContent = ok ? '✅' : '❌';
-                label.nodeValue = ok ? ' 已复制' : ' 复制失败';
+                label.nodeValue = ok ? t('code.copied') : t('code.fail');
                 setTimeout(restore, 2000);
             };
 
@@ -209,7 +220,7 @@
         }
         canonical.href = pageUrl;
         setMeta('og:url', pageUrl);
-        setMeta('og:title', item.title + ' · 藤栖龟舍');
+        setMeta('og:title', item.title + ' · ' + t('site.name'));
         setMeta('og:description', item.excerpt || item.desc || '');
         setMeta('og:image', absolute(item.hero || item.thumbnail));
     }
@@ -222,6 +233,7 @@
         //   heroImgClass,
         //   render(item, htmlContent, container)
         // }
+        let lastRender = null;
 
         function tryLoadFiles(name) {
             return Promise.all([
@@ -247,6 +259,7 @@
 
             return chain.then(function(results) {
                 const item = JSON.parse(results[0]);
+                lastRender = { item: item, html: results[1], container: container };
                 config.render(item, results[1], container);
                 enhanceShareMeta(item);
                 return true;
@@ -276,7 +289,7 @@
         function showError(container, message) {
             container.innerHTML = '<div class="' + config.notFoundClass + '">'
                 + '<span class="big-icon">🔍</span>'
-                + '<p>内容不存在或加载失败</p>'
+                + '<p data-i18n="list.notFound">' + escapeHtml(t('list.notFound')) + '</p>'
                 + '<p class="not-found-msg">' + escapeHtml(message) + '</p>'
                 + '</div>';
         }
@@ -288,8 +301,8 @@
 
             const missing = '<div class="' + config.notFoundClass + '">'
                 + '<span class="big-icon">🔍</span>'
-                + '<p>缺少内容标识参数</p>'
-                + '<p class="not-found-msg">请使用 ?slug=xxx 或 ?id=xxx 访问</p>'
+                + '<p data-i18n="list.missingParam">' + escapeHtml(t('list.missingParam')) + '</p>'
+                + '<p class="not-found-msg" data-i18n="list.missingHint">' + escapeHtml(t('list.missingHint')) + '</p>'
                 + '</div>';
 
             if (!slugParam && !idParam) {
@@ -313,7 +326,7 @@
                 if (isNaN(id) || id <= 0) {
                     container.innerHTML = '<div class="' + config.notFoundClass + '">'
                         + '<span class="big-icon">🔍</span>'
-                        + '<p>无效的ID</p>'
+                        + '<p data-i18n="list.invalidId">' + escapeHtml(t('list.invalidId')) + '</p>'
                         + '</div>';
                     return;
                 }
@@ -346,6 +359,13 @@
                 render();
                 setupBackLink();
             }
+            // 语言切换：用已加载的内容就地重渲染（正文不译，仅界面文案/元信息变化）
+            window.addEventListener('vts:langchange', function () {
+                if (lastRender) {
+                    config.render(lastRender.item, lastRender.html, lastRender.container);
+                    enhanceShareMeta(lastRender.item);
+                }
+            });
         }
 
         init();

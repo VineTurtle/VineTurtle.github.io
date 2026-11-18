@@ -1,0 +1,9 @@
+{
+  "title": "Electron on Linux: the icon pitfalls, from packaging to the taskbar",
+  "excerpt": "The launcher icon looks fine after packaging, yet the taskbar shows a blank tile. The desktop environment matches windows to .desktop files through WM_CLASS.",
+  "tags": [
+    "Tech notes",
+    "Electron",
+    "Linux"
+  ]
+}

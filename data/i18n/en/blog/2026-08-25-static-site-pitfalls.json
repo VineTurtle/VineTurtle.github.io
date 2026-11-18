@@ -1,0 +1,10 @@
+{
+  "title": "Four classic pitfalls of a purely static site",
+  "excerpt": "Years of running the GrapeLeafi fan site produced four textbook static-site bugs: a \"today\" that never fires, hover states that die on mobile, GitHub Pages' case-sensitive 404s, and the @latest time bomb.",
+  "tags": [
+    "JavaScript",
+    "CSS",
+    "GitHub Pages",
+    "Pitfalls"
+  ]
+}

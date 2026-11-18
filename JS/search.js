@@ -2,6 +2,10 @@
 (function () {
     'use strict';
 
+    var t = function (key, vars) {
+        return window.VTS && window.VTS.t ? window.VTS.t(key, vars) : key;
+    };
+
     var root = (window.VTS && window.VTS.root) || '';
     var input = document.getElementById('searchInput');
     var form = document.getElementById('searchForm');
@@ -27,7 +31,13 @@
         if (!value) return '';
         var m = String(value).match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
         if (!m) return String(value);
-        return m[1] + '年' + Number(m[2]) + '月' + Number(m[3]) + '日';
+        var y = m[1], mo = Number(m[2]), d = Number(m[3]);
+        var lang = (window.VTS && VTS.lang) || 'zh-CN';
+        if (lang === 'en') {
+            var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return months[mo - 1] + ' ' + d + ', ' + y;
+        }
+        return y + '年' + mo + '月' + d + '日';
     }
 
     function normalize(value) {
@@ -89,24 +99,24 @@
         var results = search(query);
         var q = String(query || '').trim();
         if (!loaded) {
-            statusEl.textContent = '正在加载索引…';
+            statusEl.textContent = t('search.loading');
             return;
         }
         if (!entries.length) {
-            statusEl.textContent = '搜索索引为空，可能还没有内容。';
-            resultsEl.innerHTML = '<div class="search-empty"><span class="big-icon">🌱</span><p>还没有可搜索的内容。</p></div>';
+            statusEl.textContent = t('search.indexEmpty');
+            resultsEl.innerHTML = '<div class="search-empty"><span class="big-icon">🌱</span><p data-i18n="search.noneHere">' + escapeHtml(t('search.noneHere')) + '</p></div>';
             return;
         }
         if (!q) {
-            statusEl.textContent = '共 ' + entries.length + ' 条内容，显示最近更新。按 / 可快速聚焦搜索框。';
+            statusEl.textContent = t('search.allCount', { count: entries.length });
         } else if (results.length) {
-            statusEl.textContent = '找到 ' + results.length + ' 条与「' + q + '」相关的内容。';
+            statusEl.textContent = t('search.foundCount', { count: results.length, q: q });
         } else {
-            statusEl.textContent = '没有找到与「' + q + '」相关的内容。';
+            statusEl.textContent = t('search.noResult', { q: q });
         }
 
         if (!results.length) {
-            resultsEl.innerHTML = '<div class="search-empty"><span class="big-icon">🔍</span><p>换个关键词试试，比如标签、软件名或文章标题。</p></div>';
+            resultsEl.innerHTML = '<div class="search-empty"><span class="big-icon">🔍</span><p data-i18n="search.emptyHint">' + escapeHtml(t('search.emptyHint')) + '</p></div>';
             return;
         }
         resultsEl.innerHTML = results.slice(0, 40).map(cardHtml).join('');
@@ -159,7 +169,12 @@
             render(initial);
         })
         .catch(function (err) {
-            statusEl.textContent = '搜索索引加载失败：' + err.message;
-            resultsEl.innerHTML = '<div class="search-empty"><span class="big-icon">⚠️</span><p>请刷新重试，或直接浏览博客与项目列表。</p></div>';
+            statusEl.textContent = t('search.loadFail', { msg: err.message });
+            resultsEl.innerHTML = '<div class="search-empty"><span class="big-icon">⚠️</span><p data-i18n="search.retry">' + escapeHtml(t('search.retry')) + '</p></div>';
         });
+
+    // 语言切换：就地重渲染搜索结果
+    window.addEventListener('vts:langchange', function () {
+        render(input.value);
+    });
 })();

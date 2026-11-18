@@ -8,6 +8,8 @@
     <title>页面走丢了 · 藤栖龟舍</title>
     <link rel="icon" href="/Resources/images/VineTurtleStudio.png" type="image/png">
     <script src="/JS/theme-init.js"></script>
+    <script src="/JS/i18n.js"></script>
+    <link rel="stylesheet" href="/CSS/i18n.css">
     <style>
         :root { --primary: #2a5c3a; --accent: #4a7c5b; --bg: #e4efe1; --text: #23382c; }
         * { box-sizing: border-box; }
@@ -73,20 +75,21 @@
     </style>
 </head>
 <body>
+    <div class="lang-switcher standalone" id="langSwitcher"></div>
     <div class="card">
-        <img class="logo" src="/Resources/images/VineTurtleStudio.png" alt="藤栖龟舍">
-        <div class="code">🌿 404</div>
-        <h1>这条小路通往林外了</h1>
-        <p>你要找的页面不存在，或者已经被移走。</p>
-        <p>不妨从这里重新出发：</p>
+        <img class="logo" src="/Resources/images/VineTurtleStudio.png" alt="藤栖龟舍" data-i18n-attrs="alt:site.name">
+        <div class="code" data-i18n="notfound.code">🌿 404</div>
+        <h1 data-i18n="notfound.title">这条小路通往林外了</h1>
+        <p data-i18n="notfound.p1">你要找的页面不存在，或者已经被移走。</p>
+        <p data-i18n="notfound.p2">不妨从这里重新出发：</p>
         <div class="links">
-            <a class="primary" href="/">回到首页</a>
-            <a href="/SpecialPages/Project/index.html">项目</a>
-            <a href="/SpecialPages/Blog/index.html">博客</a>
-            <a href="/SpecialPages/Gallery/index.html">画廊</a>
-            <a href="/SpecialPages/Search/index.html">站内搜索</a>
+            <a class="primary" href="/" data-i18n="notfound.home">回到首页</a>
+            <a href="/SpecialPages/Project/index.html" data-i18n="nav.project">项目</a>
+            <a href="/SpecialPages/Blog/index.html" data-i18n="nav.blog">博客</a>
+            <a href="/SpecialPages/Gallery/index.html" data-i18n="nav.gallery">画廊</a>
+            <a href="/SpecialPages/Search/index.html" data-i18n="nav.search">站内搜索</a>
         </div>
-        <footer>© 2026 藤栖龟舍 VineTurtle Studio</footer>
+        <footer data-i18n="notfound.footer">© 2026 藤栖龟舍 VineTurtle Studio</footer>
     </div>
 </body>
 </html>

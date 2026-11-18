@@ -1,0 +1,99 @@
+/* CSS/i18n.css —— 语言切换器样式（P0） */
+/* 独立文件，避免改动既有 layout.css；所有页面在 i18n.js 后引入。 */
+
+.lang-switcher {
+    display: inline-flex;
+    align-items: center;
+}
+
+.lang-select {
+    height: 38px;
+    padding: 0 26px 0 10px;
+    border: 1px solid var(--header-border, rgba(42, 92, 58, 0.28));
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.6) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%232a5c3a'/></svg>") no-repeat right 8px center;
+    color: var(--primary, #2a5c3a);
+    font-family: inherit;
+    font-size: 0.78rem;
+    line-height: 1;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.lang-select:hover {
+    background-color: rgba(255, 255, 255, 0.94);
+    transform: translateY(-1px);
+}
+
+.lang-select:focus-visible {
+    outline: 2px solid var(--primary, #2a5c3a);
+    outline-offset: 2px;
+}
+
+html[data-theme="dark"] .lang-select {
+    background-color: rgba(30, 42, 34, 0.74);
+    border-color: rgba(190, 225, 200, 0.12);
+    color: #a6d8ad;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%23a6d8ad'/></svg>");
+}
+
+html[data-theme="dark"] .lang-select:hover {
+    background-color: rgba(255, 255, 255, 0.07);
+}
+
+/* 404 等无 header 的独立页：切换器固定在右上角 */
+.lang-switcher.standalone {
+    position: fixed;
+    top: 14px;
+    right: 16px;
+    z-index: 50;
+}
+
+.lang-switcher.standalone .lang-select {
+    background-color: rgba(255, 255, 255, 0.72);
+}
+
+/* 窄屏：与其他头部按钮一致，缩小并允许换行 */
+@media (max-width: 760px) {
+    .lang-select {
+        height: 34px;
+        padding-left: 8px;
+        padding-right: 22px;
+        font-size: 0.72rem;
+    }
+}
+
+/* ---------- 语言相关排版（R25） ---------- */
+/* 英/日文案比中文长，长单词（尤其德语式复合词、URL、代码标识）允许在词内断行，
+   避免撑破卡片、详情页标题与分页链接；仅作用于非简中页面，简中基线不受影响。 */
+html[lang="en"] h1,
+html[lang="en"] h2,
+html[lang="en"] h3,
+html[lang="ja"] h1,
+html[lang="ja"] h2,
+html[lang="ja"] h3 {
+    overflow-wrap: break-word;
+    word-break: normal;
+    hyphens: auto;
+}
+
+html[lang="en"] .feed-title,
+html[lang="en"] .related-title,
+html[lang="en"] .pager-title,
+html[lang="en"] .work-list li,
+html[lang="en"] .tag,
+html[lang="ja"] .feed-title,
+html[lang="ja"] .related-title,
+html[lang="ja"] .pager-title,
+html[lang="ja"] .work-list li,
+html[lang="ja"] .tag {
+    overflow-wrap: anywhere;
+}
+
+/* 日文正文按日文规则断行 */
+html[lang="ja"] .post-body,
+html[lang="ja"] .detail-body {
+    line-break: strict;
+}

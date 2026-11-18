@@ -1,0 +1,10 @@
+{
+  "title": "解除安裝器的安全設計：Linux 上絕不誤刪的三重防線",
+  "excerpt": "刪檔案的工具有很多，要怎麼保證永遠不刪錯？VinePalmaUninstaller 的答案：計畫即白名單、路徑黑名單、保護開關三道防線，外加 pkexec 提權時的輸出解析玄學。",
+  "tags": [
+    "Rust",
+    "Linux",
+    "安全設計",
+    "VinePalmaUninstaller"
+  ]
+}

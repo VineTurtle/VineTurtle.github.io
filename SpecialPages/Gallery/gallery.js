@@ -1,94 +1,53 @@
 (function () {
     'use strict';
 
+    var t = function (key, vars) {
+        return window.VTS && window.VTS.t ? window.VTS.t(key, vars) : key;
+    };
+
     var CATEGORIES = [
-        { key: 'all', label: '✨ 全部' },
-        { key: 'scene', label: '🌸 场景插画' },
-        { key: 'character', label: '🎭 角色立绘' },
-        { key: 'cover', label: '💿 软件封面' }
+        { key: 'all', i18n: 'gallery.all' },
+        { key: 'scene', i18n: 'gallery.scene' },
+        { key: 'character', i18n: 'gallery.character' },
+        { key: 'cover', i18n: 'gallery.cover' }
     ];
 
-    var BASE = '../../Resources/images/gallery/';
+    // 页面相对路径：画廊数据与图片都相对于本页（各语言目录各有一份，R4/R19）
+    var DATA_URL = '../../data/gallery.json';
+    var DEFAULT_BASE = '../../Resources/images/gallery/';
 
-    var WORKS = [
-        {
-            src: BASE + 'sakura-tea.jpg',
-            thumb: BASE + 'thumbs/sakura-tea.jpg',
-            title: '春庭樱茶',
-            desc: '樱花树下的午后茶会，粉瓣落满石板路',
-            cat: 'scene'
-        },
-        {
-            src: BASE + 'sakura-reading.jpg',
-            thumb: BASE + 'thumbs/sakura-reading.jpg',
-            title: '樱庭读书',
-            desc: '公园长椅上的阅读时光，小梦与一本旧书',
-            cat: 'scene'
-        },
-        {
-            src: BASE + 'grape-arbor.jpg',
-            thumb: BASE + 'thumbs/grape-arbor.jpg',
-            title: '葡萄架下的微笑',
-            desc: '藤蔓棚架下，葡叶酱与一篮紫葡萄',
-            cat: 'scene'
-        },
-        {
-            src: BASE + 'vineyard-picnic.jpg',
-            thumb: BASE + 'thumbs/vineyard-picnic.jpg',
-            title: '葡萄园野餐',
-            desc: '橙果子与小梦的葡萄园野餐，分享新摘的葡萄',
-            cat: 'scene'
-        },
-        {
-            src: BASE + 'orange-teatime.jpg',
-            thumb: BASE + 'thumbs/orange-teatime.jpg',
-            title: '柑橘下午茶',
-            desc: '橙果子与小葡叶的下午茶，满室橙香',
-            cat: 'scene'
-        },
-        {
-            src: BASE + 'apple-orchard.jpg',
-            thumb: BASE + 'thumbs/apple-orchard.jpg',
-            title: '苹果园的丰收',
-            desc: '提着果篮穿行果园，摘下秋天第一颗红苹果',
-            cat: 'scene'
-        },
-        {
-            src: BASE + 'grapeleafi-summer.jpg',
-            thumb: BASE + 'thumbs/grapeleafi-summer.jpg',
-            title: '葡叶酱 · 夏日葡萄',
-            desc: '葡园管理者葡叶酱的夏日立绘',
-            cat: 'character'
-        },
-        {
-            src: BASE + 'orchard-outfit.jpg',
-            thumb: BASE + 'thumbs/orchard-outfit.jpg',
-            title: '果园穿搭 · 橙果子',
-            desc: '草帽与背带短裤，果园劳作装扮',
-            cat: 'character'
-        },
-        {
-            src: BASE + 'xiaomeng-chibi.jpg',
-            thumb: BASE + 'thumbs/xiaomeng-chibi.jpg',
-            title: '小梦妹妹 Q版',
-            desc: '捧着书本与红茶的小梦，樱花瓣落在发梢',
-            cat: 'character'
-        },
-        {
-            src: BASE + 'grapeleafi-chibi.jpg',
-            thumb: BASE + 'thumbs/grapeleafi-chibi.jpg',
-            title: '葡叶酱 Q版',
-            desc: '软萌坐姿，暖棕色开衫配红丝带',
-            cat: 'character'
-        },
-        {
-            src: BASE + 'toolbox-cover.jpg',
-            thumb: BASE + 'thumbs/toolbox-cover.jpg',
-            title: 'VinePalmaToolbox 封面',
-            desc: '工具箱软件的官方封面视觉',
-            cat: 'cover'
-        }
-    ];
+    var WORKS = [];
+    var loading = false;
+
+    // 把数据文件里的相对文件名拼成页面相对路径；缺字段时回退默认目录
+    function normalize(data) {
+        var base = data.imagesBase || DEFAULT_BASE;
+        var items = data.items || [];
+        return items.map(function (it) {
+            var src = String(it.src || '');
+            var thumb = String(it.thumb || it.src || '');
+            return {
+                src: src.indexOf('/') === 0 || /^http/.test(src) ? src : base + src,
+                thumb: thumb.indexOf('/') === 0 || /^http/.test(thumb) ? thumb : base + thumb,
+                title: it.title || '',
+                desc: it.desc || '',
+                cat: it.cat || 'scene'
+            };
+        });
+    }
+
+    function loadWorks(done) {
+        if (loading) return;
+        loading = true;
+        fetch(DATA_URL, { cache: 'no-cache' })
+            .then(function (res) { return res.ok ? res.json() : Promise.reject(new Error('gallery')); })
+            .then(function (data) { WORKS = normalize(data); })
+            .catch(function () { WORKS = []; })
+            .then(function () {
+                loading = false;
+                if (done) done();
+            });
+    }
 
     var currentFilter = 'all';
     var lightboxIndex = -1;
@@ -112,7 +71,7 @@
             btn.type = 'button';
             btn.setAttribute('role', 'tab');
             btn.setAttribute('aria-selected', c.key === currentFilter ? 'true' : 'false');
-            btn.appendChild(document.createTextNode(c.label + ' '));
+            btn.appendChild(document.createTextNode(t(c.i18n) + ' '));
             btn.appendChild(el('span', 'gallery-filter-count', String(count)));
             btn.addEventListener('click', function () {
                 currentFilter = c.key;
@@ -135,7 +94,7 @@
             var card = el('figure', 'gallery-item');
             card.tabIndex = 0;
             card.setAttribute('role', 'button');
-            card.setAttribute('aria-label', '查看大图：' + w.title);
+            card.setAttribute('aria-label', t('a11y.viewImageAlt', { alt: w.title }));
 
             var imgWrap = el('div', 'gallery-item-img');
             var img = document.createElement('img');
@@ -172,13 +131,13 @@
 
         var closeBtn = el('button', 'gallery-lb-close', '×');
         closeBtn.type = 'button';
-        closeBtn.setAttribute('aria-label', '关闭');
+        closeBtn.setAttribute('aria-label', t('a11y.close'));
         var prevBtn = el('button', 'gallery-lb-nav gallery-lb-prev', '‹');
         prevBtn.type = 'button';
-        prevBtn.setAttribute('aria-label', '上一张');
+        prevBtn.setAttribute('aria-label', t('a11y.prev'));
         var nextBtn = el('button', 'gallery-lb-nav gallery-lb-next', '›');
         nextBtn.type = 'button';
-        nextBtn.setAttribute('aria-label', '下一张');
+        nextBtn.setAttribute('aria-label', t('a11y.next'));
 
         var img = document.createElement('img');
         img.id = 'galleryLbImg';
@@ -243,7 +202,15 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-        renderFilter();
-        renderGrid();
+        loadWorks(function () {
+            renderFilter();
+            renderGrid();
+        });
+    });
+    window.addEventListener('vts:langchange', function () {
+        loadWorks(function () {
+            renderFilter();
+            renderGrid();
+        });
     });
 })();

@@ -1,0 +1,9 @@
+{
+  "title": "VinePalmaUninstaller：開発記録",
+  "excerpt": "APT / Flatpak / Snap / Docker / AppImage / APM の 6 つの配布元を統合した Linux アンインストーラー。",
+  "tags": [
+    "ソフトウェア開発",
+    "Linux",
+    "Tauri"
+  ]
+}

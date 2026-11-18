@@ -1,0 +1,184 @@
+[
+  {
+    "kind": "posts",
+    "kindLabel": "Blog article",
+    "title": "Mutual TLS on a LAN with no CA",
+    "slug": "2026-08-25-lan-tls-without-ca",
+    "date": "2026-08-25",
+    "tags": [
+      "Rust",
+      "Network security",
+      "Tauri",
+      "Pitfalls"
+    ],
+    "desc": "VinePalmaFlow's LAN sync has to establish TLS 1.3 mutual authentication with no certificate authority, no domain names and clocks that may be wrong. Notes on three rustls 0.23 pitfalls and the application-layer auth we designed around them.",
+    "icon": "🔐",
+    "cover": "../../Resources/images/blog/thumbnails/flow-tls.jpg",
+    "url": "SpecialPages/Blog/2026-08-25-lan-tls-without-ca.html"
+  },
+  {
+    "kind": "posts",
+    "kindLabel": "Blog article",
+    "title": "Content fingerprints and incremental sync: why hand-write FNV-1a",
+    "slug": "2026-08-25-content-hash-fnv1a",
+    "date": "2026-08-25",
+    "tags": [
+      "Rust",
+      "Algorithms",
+      "Pitfalls",
+      "Sync"
+    ],
+    "desc": "Using std's DefaultHasher for content fingerprints, the same file hashed differently across processes, so incremental sync degraded into a full transfer every time. On the root cause of those phantom diffs, and the FNV-1a plus idempotent serialization fix.",
+    "icon": "#️⃣",
+    "cover": "../../Resources/images/blog/thumbnails/content-hash.jpg",
+    "url": "SpecialPages/Blog/2026-08-25-content-hash-fnv1a.html"
+  },
+  {
+    "kind": "posts",
+    "kindLabel": "Blog article",
+    "title": "Four classic pitfalls of a purely static site",
+    "slug": "2026-08-25-static-site-pitfalls",
+    "date": "2026-08-25",
+    "tags": [
+      "JavaScript",
+      "CSS",
+      "GitHub Pages",
+      "Pitfalls"
+    ],
+    "desc": "Years of running the GrapeLeafi fan site produced four textbook static-site bugs: a \"today\" that never fires, hover states that die on mobile, GitHub Pages' case-sensitive 404s, and the @latest time bomb.",
+    "icon": "⚠️",
+    "cover": "../../Resources/images/blog/thumbnails/static-site-pitfalls.jpg",
+    "url": "SpecialPages/Blog/2026-08-25-static-site-pitfalls.html"
+  },
+  {
+    "kind": "posts",
+    "kindLabel": "Blog article",
+    "title": "Hand-writing a binary encoder in the browser: assembling ICO, CUR and ICNS",
+    "slug": "2026-08-25-binary-encoder-ico-icns",
+    "date": "2026-08-25",
+    "tags": [
+      "Frontend",
+      "Binary formats",
+      "VinePalmaToolbox",
+      "Pitfalls"
+    ],
+    "desc": "Canvas can only export PNG, JPEG or WebP, so how do you produce ICO, CUR and ICNS? VinePalmaToolbox answers it by assembling each format byte by byte with DataView, straight from the specs.",
+    "icon": "🛠️",
+    "cover": "../../Resources/images/blog/thumbnails/toolbox-binary.jpg",
+    "url": "SpecialPages/Blog/2026-08-25-binary-encoder-ico-icns.html"
+  },
+  {
+    "kind": "posts",
+    "kindLabel": "Blog article",
+    "title": "Designing a safe uninstaller: three layers that keep Linux deletions honest",
+    "slug": "2026-08-25-uninstaller-safety",
+    "date": "2026-08-25",
+    "tags": [
+      "Rust",
+      "Linux",
+      "Safe design",
+      "VinePalmaUninstaller"
+    ],
+    "desc": "A tool that deletes files, so how do you guarantee it never deletes the wrong one? VinePalmaUninstaller's answer: the plan is the allow-list, a path deny-list, a protection switch, plus the black art of parsing pkexec output.",
+    "icon": "🛡️",
+    "cover": "../../Resources/images/blog/thumbnails/uninstaller-safety.jpg",
+    "url": "SpecialPages/Blog/2026-08-25-uninstaller-safety.html"
+  },
+  {
+    "kind": "projects",
+    "kindLabel": "Project",
+    "title": "GrapeLeafi: Grapeleaf's cozy little corner",
+    "slug": "GrapeLeafi-26-08-25",
+    "date": "2026-08-25",
+    "tags": [
+      "Web development",
+      "Static site",
+      "Community site"
+    ],
+    "desc": "A purely static fan-community site maintained for absolute beginners: countdown, birthday reminders and a mascot, all present.",
+    "icon": "🚀",
+    "cover": "../../Resources/images/projects/thumbnails/grapeleafi-site.jpg",
+    "url": "SpecialPages/Project/GrapeLeafi-26-08-25.html"
+  },
+  {
+    "kind": "projects",
+    "kindLabel": "Project",
+    "title": "VinePalmaFlow: local-first project management",
+    "slug": "VinePalmaFlow-26-08-25",
+    "date": "2026-08-25",
+    "tags": [
+      "Tauri",
+      "Rust",
+      "Project management",
+      "LAN sync"
+    ],
+    "desc": "A local-first project tool that never goes to the cloud: Markdown is the database, and the LAN collaborates like a cloud.",
+    "icon": "🚀",
+    "cover": "../../Resources/images/projects/thumbnails/vinepalma-flow.jpg",
+    "url": "SpecialPages/Project/VinePalmaFlow-26-08-25.html"
+  },
+  {
+    "kind": "projects",
+    "kindLabel": "Project",
+    "title": "VinePalmaUninstaller: development log",
+    "slug": "VinePalmaUninstaller-26-08-10",
+    "date": "2026-08-10",
+    "tags": [
+      "Software development",
+      "Linux",
+      "Tauri"
+    ],
+    "desc": "One Linux uninstaller covering six sources: APT, Flatpak, Snap, Docker, AppImage and APM.",
+    "icon": "🚀",
+    "cover": "../../Resources/images/projects/thumbnails/vinepalma-uninstaller.jpg",
+    "url": "SpecialPages/Project/VinePalmaUninstaller-26-08-10.html"
+  },
+  {
+    "kind": "projects",
+    "kindLabel": "Project",
+    "title": "VinePalma Player: a local video player",
+    "slug": "VinePalma-Player-26-08-07",
+    "date": "2026-08-07",
+    "tags": [
+      "Linux",
+      "Tauri",
+      "Media player"
+    ],
+    "desc": "VinePalma Player's settings, and why it is a local player worth choosing.",
+    "icon": "🚀",
+    "cover": "../../Resources/images/projects/thumbnails/vinepalma-player.jpg",
+    "url": "SpecialPages/Project/VinePalma-Player-26-08-07.html"
+  },
+  {
+    "kind": "projects",
+    "kindLabel": "Project",
+    "title": "VinePalmaToolbox: development log",
+    "slug": "VinePalmaToolbox-26-08-05",
+    "date": "2026-08-05",
+    "tags": [
+      "Tauri",
+      "Software development",
+      "Linux"
+    ],
+    "desc": "VinePalmaToolbox, a toolbox worth choosing.",
+    "icon": "🚀",
+    "cover": "../../Resources/images/projects/thumbnails/vinepalma-toolbox.jpg",
+    "url": "SpecialPages/Project/VinePalmaToolbox-26-08-05.html"
+  },
+  {
+    "kind": "posts",
+    "kindLabel": "Blog article",
+    "title": "Electron on Linux: the icon pitfalls, from packaging to the taskbar",
+    "slug": "2026-07-22-linux-app-icon-fix",
+    "date": "2026-07-22",
+    "tags": [
+      "Tech notes",
+      "Electron",
+      "Linux"
+    ],
+    "desc": "The launcher icon looks fine after packaging, yet the taskbar shows a blank tile. The desktop environment matches windows to .desktop files through WM_CLASS.",
+    "icon": "🐧",
+    "cover": "../../Resources/images/blog/thumbnails/electron_linux_icon.jpg",
+    "url": "SpecialPages/Blog/2026-07-22-linux-app-icon-fix.html"
+  }
+]

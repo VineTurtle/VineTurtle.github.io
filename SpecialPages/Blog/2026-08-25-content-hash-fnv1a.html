@@ -7,7 +7,13 @@
     <meta name="description" content="用 std 的 DefaultHasher 做内容指纹，同一份文件在不同进程算出的哈希竟然不一样——增量同步退化成每次全量传输。聊聊假差异的根因与 FNV-1a + 幂等序列化的解法。" />
     <title>内容指纹与增量同步：为什么手写 FNV-1a · 藤栖龟舍</title>
     <link rel="canonical" href="https://grapeleafi.top/SpecialPages/Blog/2026-08-25-content-hash-fnv1a.html" />
+    <link rel="alternate" hreflang="zh-CN" href="https://grapeleafi.top/SpecialPages/Blog/2026-08-25-content-hash-fnv1a.html" />
+    <link rel="alternate" hreflang="zh-TW" href="https://grapeleafi.top/zh-TW/SpecialPages/Blog/2026-08-25-content-hash-fnv1a.html" />
+    <link rel="alternate" hreflang="en" href="https://grapeleafi.top/en/SpecialPages/Blog/2026-08-25-content-hash-fnv1a.html" />
+    <link rel="alternate" hreflang="ja" href="https://grapeleafi.top/ja/SpecialPages/Blog/2026-08-25-content-hash-fnv1a.html" />
+    <link rel="alternate" hreflang="x-default" href="https://grapeleafi.top/SpecialPages/Blog/2026-08-25-content-hash-fnv1a.html" />
     <meta property="og:type" content="article" />
+    <meta property="og:locale" content="zh_CN" />
     <meta property="og:site_name" content="藤栖龟舍 VineTurtle Studio" />
     <meta property="og:title" content="内容指纹与增量同步：为什么手写 FNV-1a · 藤栖龟舍" />
     <meta property="og:description" content="用 std 的 DefaultHasher 做内容指纹，同一份文件在不同进程算出的哈希竟然不一样——增量同步退化成每次全量传输。聊聊假差异的根因与 FNV-1a + 幂等序列化的解法。" />
@@ -19,26 +25,28 @@
     <script src="../../JS/theme-init.js"></script>
     <link rel="alternate" type="application/rss+xml" title="藤栖博客 RSS" href="https://grapeleafi.top/feed.xml">
     <link rel="stylesheet" href="../../CSS/layout.css" />
+    <link rel="stylesheet" href="../../CSS/i18n.css">
     <link rel="stylesheet" href="../../CSS/style.css" />
     <link rel="stylesheet" href="../../CSS/special/blog.css">
     <link rel="stylesheet" href="../../CSS/special/post-detail.css">
     <link rel="stylesheet" href="../../CSS/dynamic.css" />
+    <script src="../../JS/i18n.js"></script>
     <script src="../../JS/layout.js" defer></script>
     <script src="../../JS/script.js" defer></script>
     <script src="../../JS/special-detail.js" defer></script>
     <script src="../../JS/static-detail.js" defer></script>
     <script src="../../JS/dynamic.js" defer></script>
 <script type="application/ld+json">
-[{"@context":"https://schema.org","@type":"BlogPosting","headline":"内容指纹与增量同步：为什么手写 FNV-1a","name":"内容指纹与增量同步：为什么手写 FNV-1a","description":"用 std 的 DefaultHasher 做内容指纹，同一份文件在不同进程算出的哈希竟然不一样——增量同步退化成每次全量传输。聊聊假差异的根因与 FNV-1a + 幂等序列化的解法。","url":"https://grapeleafi.top/SpecialPages/Blog/2026-08-25-content-hash-fnv1a.html","datePublished":"2026-08-25","dateModified":"2026-08-25","image":"https://grapeleafi.top/Resources/images/blog/hero/content-hash.jpg","author":{"@type":"Organization","name":"藤栖龟舍 VineTurtle Studio","url":"https://grapeleafi.top/"},"publisher":{"@type":"Organization","name":"藤栖龟舍 VineTurtle Studio","url":"https://grapeleafi.top/"},"keywords":"Rust, 算法, 踩坑, 同步"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://grapeleafi.top/"},{"@type":"ListItem","position":2,"name":"博客文章","item":"https://grapeleafi.top/SpecialPages/Blog/index.html"},{"@type":"ListItem","position":3,"name":"内容指纹与增量同步：为什么手写 FNV-1a","item":"https://grapeleafi.top/SpecialPages/Blog/2026-08-25-content-hash-fnv1a.html"}]}]
+[{"@context":"https://schema.org","@type":"BlogPosting","headline":"内容指纹与增量同步：为什么手写 FNV-1a","name":"内容指纹与增量同步：为什么手写 FNV-1a","description":"用 std 的 DefaultHasher 做内容指纹，同一份文件在不同进程算出的哈希竟然不一样——增量同步退化成每次全量传输。聊聊假差异的根因与 FNV-1a + 幂等序列化的解法。","url":"https://grapeleafi.top/SpecialPages/Blog/2026-08-25-content-hash-fnv1a.html","datePublished":"2026-08-25","dateModified":"2026-08-25","image":"https://grapeleafi.top/Resources/images/blog/hero/content-hash.jpg","inLanguage":"zh-CN","author":{"@type":"Organization","name":"藤栖龟舍 VineTurtle Studio","url":"https://grapeleafi.top/"},"publisher":{"@type":"Organization","name":"藤栖龟舍 VineTurtle Studio","url":"https://grapeleafi.top/"},"keywords":"Rust, 算法, 踩坑, 同步"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://grapeleafi.top/"},{"@type":"ListItem","position":2,"name":"博客文章","item":"https://grapeleafi.top/SpecialPages/Blog/index.html"},{"@type":"ListItem","position":3,"name":"内容指纹与增量同步：为什么手写 FNV-1a","item":"https://grapeleafi.top/SpecialPages/Blog/2026-08-25-content-hash-fnv1a.html"}]}]
 </script>
 </head>
 <body data-content-kind="blog" data-content-slug="2026-08-25-content-hash-fnv1a" data-content-key="blog:2026-08-25-content-hash-fnv1a">
-<noscript><div class="noscript-warn">本站需要启用 JavaScript 才能正常显示内容。</div></noscript>
+<noscript><div class="noscript-warn" data-i18n="common.noscript">本站需要启用 JavaScript 才能正常显示内容。</div></noscript>
 <div id="header-placeholder"></div>
 <main class="blog-main">
     <div class="container post-container">
         <nav class="breadcrumb" aria-label="面包屑"><a href="../../index.html">首页</a><span class="crumb-sep" aria-hidden="true">/</span><a href="index.html">博客文章</a><span class="crumb-sep" aria-hidden="true">/</span><span aria-current="page">内容指纹与增量同步：为什么手写 FNV-1a</span></nav>
-        <a href="index.html" class="back-link" id="backLink">← 返回博客列表</a>
+        <a href="index.html" class="back-link" id="backLink" data-i18n="list.backBlog">← 返回博客列表</a>
         <article class="post-article">
             <div class="hero-img-wrap"><img src="../../Resources/images/blog/hero/content-hash.jpg" alt="内容指纹与增量同步：为什么手写 FNV-1a" class="post-hero-img" data-fallback="#️⃣"><div class="fallback-hero">#️⃣</div></div>
             <header class="post-header">
@@ -48,7 +56,7 @@
                 <div class="content-actions" data-content-actions></div>
             </header>
             <nav class="post-toc" data-toc hidden aria-label="文章目录"></nav>
-            <div class="post-body">
+            <div class="post-body" lang="zh-CN" data-content-lang="zh-CN">
 <p>VinePalmaFlow 的局域网同步最初有个诡异现象：<strong>两台设备明明什么都没改，每次同步却总在互相传输全量数据</strong>。日志里显示所有项目的内容指纹（hash）都对不上。排查下来，根因藏在 Rust 标准库的一个「特性」里。</p>
 
 <h2>🔍 根因：DefaultHasher 的随机种子</h2>

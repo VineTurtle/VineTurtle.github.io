@@ -15,10 +15,12 @@
     <link rel="icon" href="../../Resources/images/VineTurtleStudio.png" type="image/png" />
     <script src="../../JS/theme-init.js"></script>
     <link rel="stylesheet" href="../../CSS/layout.css" />
+    <link rel="stylesheet" href="../../CSS/i18n.css">
     <link rel="stylesheet" href="../../CSS/style.css" />
     <link rel="stylesheet" href="../../CSS/special/blog.css" />
     <link rel="stylesheet" href="../../CSS/special/post-detail.css" />
     <link rel="stylesheet" href="../../CSS/dynamic.css" />
+    <script src="../../JS/i18n.js"></script>
     <script src="../../JS/layout.js" defer></script>
     <script src="../../JS/script.js" defer></script>
     <script src="../../JS/special-detail.js" defer></script>
@@ -26,11 +28,11 @@
     <script src="post.js" defer></script>
 </head>
 <body>
-<noscript><div class="noscript-warn">本站需要启用 JavaScript 才能正常显示内容。</div></noscript>
+<noscript><div class="noscript-warn" data-i18n="common.noscript">本站需要启用 JavaScript 才能正常显示内容。</div></noscript>
 <div id="header-placeholder"></div>
 <main class="blog-main">
     <div class="container post-container">
-        <a href="index.html" class="back-link" id="backLink">← 返回博客列表</a>
+        <a href="index.html" class="back-link" id="backLink" data-i18n="list.backBlog">← 返回博客列表</a>
         <div id="postContent"></div>
         <section class="comments-section" id="commentsSection" hidden></section>
     </div>

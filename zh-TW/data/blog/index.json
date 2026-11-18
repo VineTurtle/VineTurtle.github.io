@@ -1,0 +1,97 @@
+[
+  {
+    "id": 4,
+    "slug": "2026-08-25-lan-tls-without-ca",
+    "title": "沒有 CA 的區域網路，怎麼做雙向 TLS",
+    "date": "2026-08-25",
+    "tags": [
+      "Rust",
+      "網路安全",
+      "Tauri",
+      "踩坑"
+    ],
+    "excerpt": "VinePalmaFlow 的區域網路同步要在沒有憑證頒發機構、沒有網域、甚至系統時鐘都不準的環境裡建立 TLS 1.3 雙向認證——記錄 rustls 0.23 的三個坑與我們的應用層認證設計。",
+    "thumbnail": "../../Resources/images/blog/thumbnails/flow-tls.jpg",
+    "hero": "../../Resources/images/blog/hero/flow-tls.jpg",
+    "fallbackIcon": "🔐"
+  },
+  {
+    "id": 5,
+    "slug": "2026-08-25-content-hash-fnv1a",
+    "title": "內容指紋與增量同步：為什麼手寫 FNV-1a",
+    "date": "2026-08-25",
+    "tags": [
+      "Rust",
+      "演算法",
+      "踩坑",
+      "同步"
+    ],
+    "excerpt": "用 std 的 DefaultHasher 做內容指紋，同一份檔案在不同行程算出的雜湊竟然不一樣——增量同步退化成每次全量傳輸。聊聊假差異的根因與 FNV-1a + 冪等序列化的解法。",
+    "thumbnail": "../../Resources/images/blog/thumbnails/content-hash.jpg",
+    "hero": "../../Resources/images/blog/hero/content-hash.jpg",
+    "fallbackIcon": "#️⃣"
+  },
+  {
+    "id": 6,
+    "slug": "2026-08-25-static-site-pitfalls",
+    "title": "純靜態網站的四個經典坑",
+    "date": "2026-08-25",
+    "tags": [
+      "JavaScript",
+      "CSS",
+      "GitHub Pages",
+      "踩坑"
+    ],
+    "excerpt": "維護 GrapeLeafi 粉絲站幾年，攢下四個最典型的靜態站 bug：永不觸發的「今天」、手機上失效的 hover、GitHub Pages 的大小寫 404、以及 @latest 的定時炸彈。",
+    "thumbnail": "../../Resources/images/blog/thumbnails/static-site-pitfalls.jpg",
+    "hero": "../../Resources/images/blog/hero/static-site-pitfalls.jpg",
+    "fallbackIcon": "⚠️"
+  },
+  {
+    "id": 7,
+    "slug": "2026-08-25-binary-encoder-ico-icns",
+    "title": "在瀏覽器裡手寫二進位編碼器：ICO / CUR / ICNS 組裝實錄",
+    "date": "2026-08-25",
+    "tags": [
+      "前端",
+      "二進位",
+      "VinePalmaToolbox",
+      "踩坑"
+    ],
+    "excerpt": "Canvas 只能匯出 PNG/JPEG/WebP，那 ICO、CUR、ICNS 圖示格式怎麼辦？VinePalmaToolbox 的答案是：用 DataView 依規格一個位元組一個位元組拼出來。",
+    "thumbnail": "../../Resources/images/blog/thumbnails/toolbox-binary.jpg",
+    "hero": "../../Resources/images/blog/hero/toolbox-binary.jpg",
+    "fallbackIcon": "🛠️"
+  },
+  {
+    "id": 8,
+    "slug": "2026-08-25-uninstaller-safety",
+    "title": "解除安裝器的安全設計：Linux 上絕不誤刪的三重防線",
+    "date": "2026-08-25",
+    "tags": [
+      "Rust",
+      "Linux",
+      "安全設計",
+      "VinePalmaUninstaller"
+    ],
+    "excerpt": "刪檔案的工具有很多，要怎麼保證永遠不刪錯？VinePalmaUninstaller 的答案：計畫即白名單、路徑黑名單、保護開關三道防線，外加 pkexec 提權時的輸出解析玄學。",
+    "thumbnail": "../../Resources/images/blog/thumbnails/uninstaller-safety.jpg",
+    "hero": "../../Resources/images/blog/hero/uninstaller-safety.jpg",
+    "fallbackIcon": "🛡️"
+  },
+  {
+    "id": 1,
+    "slug": "2026-07-22-linux-app-icon-fix",
+    "title": "Electron Linux 圖示踩坑記：從打包到工作列圖示的完整指南",
+    "date": "2026-07-22",
+    "tags": [
+      "技術筆記",
+      "Electron",
+      "Linux"
+    ],
+    "excerpt": "打包後啟動器圖示正常，工作列卻是空白？問題出在桌面環境透過 WM_CLASS 關聯視窗和 .desktop 檔案。",
+    "thumbnail": "../../Resources/images/blog/thumbnails/electron_linux_icon.jpg",
+    "hero": "../../Resources/images/blog/hero/electron_linux_icon.jpg",
+    "fallbackIcon": "🐧"
+  }
+]

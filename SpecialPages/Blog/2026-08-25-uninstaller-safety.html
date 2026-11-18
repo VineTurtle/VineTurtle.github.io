@@ -7,7 +7,13 @@
     <meta name="description" content="一个能删文件的工具，怎么保证自己永远不删错？VinePalmaUninstaller 的答案：计划即白名单、路径黑名单、保护开关三道防线，外加 pkexec 提权时的输出解析玄学。" />
     <title>卸载器的安全设计：Linux 上绝不误删的三重防线 · 藤栖龟舍</title>
     <link rel="canonical" href="https://grapeleafi.top/SpecialPages/Blog/2026-08-25-uninstaller-safety.html" />
+    <link rel="alternate" hreflang="zh-CN" href="https://grapeleafi.top/SpecialPages/Blog/2026-08-25-uninstaller-safety.html" />
+    <link rel="alternate" hreflang="zh-TW" href="https://grapeleafi.top/zh-TW/SpecialPages/Blog/2026-08-25-uninstaller-safety.html" />
+    <link rel="alternate" hreflang="en" href="https://grapeleafi.top/en/SpecialPages/Blog/2026-08-25-uninstaller-safety.html" />
+    <link rel="alternate" hreflang="ja" href="https://grapeleafi.top/ja/SpecialPages/Blog/2026-08-25-uninstaller-safety.html" />
+    <link rel="alternate" hreflang="x-default" href="https://grapeleafi.top/SpecialPages/Blog/2026-08-25-uninstaller-safety.html" />
     <meta property="og:type" content="article" />
+    <meta property="og:locale" content="zh_CN" />
     <meta property="og:site_name" content="藤栖龟舍 VineTurtle Studio" />
     <meta property="og:title" content="卸载器的安全设计：Linux 上绝不误删的三重防线 · 藤栖龟舍" />
     <meta property="og:description" content="一个能删文件的工具，怎么保证自己永远不删错？VinePalmaUninstaller 的答案：计划即白名单、路径黑名单、保护开关三道防线，外加 pkexec 提权时的输出解析玄学。" />
@@ -19,26 +25,28 @@
     <script src="../../JS/theme-init.js"></script>
     <link rel="alternate" type="application/rss+xml" title="藤栖博客 RSS" href="https://grapeleafi.top/feed.xml">
     <link rel="stylesheet" href="../../CSS/layout.css" />
+    <link rel="stylesheet" href="../../CSS/i18n.css">
     <link rel="stylesheet" href="../../CSS/style.css" />
     <link rel="stylesheet" href="../../CSS/special/blog.css">
     <link rel="stylesheet" href="../../CSS/special/post-detail.css">
     <link rel="stylesheet" href="../../CSS/dynamic.css" />
+    <script src="../../JS/i18n.js"></script>
     <script src="../../JS/layout.js" defer></script>
     <script src="../../JS/script.js" defer></script>
     <script src="../../JS/special-detail.js" defer></script>
     <script src="../../JS/static-detail.js" defer></script>
     <script src="../../JS/dynamic.js" defer></script>
 <script type="application/ld+json">
-[{"@context":"https://schema.org","@type":"BlogPosting","headline":"卸载器的安全设计：Linux 上绝不误删的三重防线","name":"卸载器的安全设计：Linux 上绝不误删的三重防线","description":"一个能删文件的工具，怎么保证自己永远不删错？VinePalmaUninstaller 的答案：计划即白名单、路径黑名单、保护开关三道防线，外加 pkexec 提权时的输出解析玄学。","url":"https://grapeleafi.top/SpecialPages/Blog/2026-08-25-uninstaller-safety.html","datePublished":"2026-08-25","dateModified":"2026-08-25","image":"https://grapeleafi.top/Resources/images/blog/hero/uninstaller-safety.jpg","author":{"@type":"Organization","name":"藤栖龟舍 VineTurtle Studio","url":"https://grapeleafi.top/"},"publisher":{"@type":"Organization","name":"藤栖龟舍 VineTurtle Studio","url":"https://grapeleafi.top/"},"keywords":"Rust, Linux, 安全设计, VinePalmaUninstaller"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://grapeleafi.top/"},{"@type":"ListItem","position":2,"name":"博客文章","item":"https://grapeleafi.top/SpecialPages/Blog/index.html"},{"@type":"ListItem","position":3,"name":"卸载器的安全设计：Linux 上绝不误删的三重防线","item":"https://grapeleafi.top/SpecialPages/Blog/2026-08-25-uninstaller-safety.html"}]}]
+[{"@context":"https://schema.org","@type":"BlogPosting","headline":"卸载器的安全设计：Linux 上绝不误删的三重防线","name":"卸载器的安全设计：Linux 上绝不误删的三重防线","description":"一个能删文件的工具，怎么保证自己永远不删错？VinePalmaUninstaller 的答案：计划即白名单、路径黑名单、保护开关三道防线，外加 pkexec 提权时的输出解析玄学。","url":"https://grapeleafi.top/SpecialPages/Blog/2026-08-25-uninstaller-safety.html","datePublished":"2026-08-25","dateModified":"2026-08-25","image":"https://grapeleafi.top/Resources/images/blog/hero/uninstaller-safety.jpg","inLanguage":"zh-CN","author":{"@type":"Organization","name":"藤栖龟舍 VineTurtle Studio","url":"https://grapeleafi.top/"},"publisher":{"@type":"Organization","name":"藤栖龟舍 VineTurtle Studio","url":"https://grapeleafi.top/"},"keywords":"Rust, Linux, 安全设计, VinePalmaUninstaller"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://grapeleafi.top/"},{"@type":"ListItem","position":2,"name":"博客文章","item":"https://grapeleafi.top/SpecialPages/Blog/index.html"},{"@type":"ListItem","position":3,"name":"卸载器的安全设计：Linux 上绝不误删的三重防线","item":"https://grapeleafi.top/SpecialPages/Blog/2026-08-25-uninstaller-safety.html"}]}]
 </script>
 </head>
 <body data-content-kind="blog" data-content-slug="2026-08-25-uninstaller-safety" data-content-key="blog:2026-08-25-uninstaller-safety">
-<noscript><div class="noscript-warn">本站需要启用 JavaScript 才能正常显示内容。</div></noscript>
+<noscript><div class="noscript-warn" data-i18n="common.noscript">本站需要启用 JavaScript 才能正常显示内容。</div></noscript>
 <div id="header-placeholder"></div>
 <main class="blog-main">
     <div class="container post-container">
         <nav class="breadcrumb" aria-label="面包屑"><a href="../../index.html">首页</a><span class="crumb-sep" aria-hidden="true">/</span><a href="index.html">博客文章</a><span class="crumb-sep" aria-hidden="true">/</span><span aria-current="page">卸载器的安全设计：Linux 上绝不误删的三重防线</span></nav>
-        <a href="index.html" class="back-link" id="backLink">← 返回博客列表</a>
+        <a href="index.html" class="back-link" id="backLink" data-i18n="list.backBlog">← 返回博客列表</a>
         <article class="post-article">
             <div class="hero-img-wrap"><img src="../../Resources/images/blog/hero/uninstaller-safety.jpg" alt="卸载器的安全设计：Linux 上绝不误删的三重防线" class="post-hero-img" data-fallback="🛡️"><div class="fallback-hero">🛡️</div></div>
             <header class="post-header">
@@ -48,7 +56,7 @@
                 <div class="content-actions" data-content-actions></div>
             </header>
             <nav class="post-toc" data-toc hidden aria-label="文章目录"></nav>
-            <div class="post-body">
+            <div class="post-body" lang="zh-CN" data-content-lang="zh-CN">
 <p>开发 <strong>VinePalmaUninstaller</strong>（我们的 Linux 图形化卸载器）时，最常被问的问题不是「能卸载什么」，而是「<strong>会不会删错</strong>」。一个以删除为核心能力的工具，安全性不是特性，是底线。这篇笔记拆解我们的三重防线设计，以及 pkexec 提权路上踩的输出解析坑。</p>
 
 <h2>防线一：计划即白名单</h2>

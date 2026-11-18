@@ -1,0 +1,9 @@
+{
+  "title": "VinePalmaUninstaller: development log",
+  "excerpt": "One Linux uninstaller covering six sources: APT, Flatpak, Snap, Docker, AppImage and APM.",
+  "tags": [
+    "Software development",
+    "Linux",
+    "Tauri"
+  ]
+}

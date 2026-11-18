@@ -1,0 +1,10 @@
+{
+  "title": "Hand-writing a binary encoder in the browser: assembling ICO, CUR and ICNS",
+  "excerpt": "Canvas can only export PNG, JPEG or WebP, so how do you produce ICO, CUR and ICNS? VinePalmaToolbox answers it by assembling each format byte by byte with DataView, straight from the specs.",
+  "tags": [
+    "Frontend",
+    "Binary formats",
+    "VinePalmaToolbox",
+    "Pitfalls"
+  ]
+}

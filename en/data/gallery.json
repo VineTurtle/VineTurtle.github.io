@@ -1,0 +1,95 @@
+{
+  "_说明": "画廊唯一数据源（简中）。标题与说明可按语言覆盖于 data/i18n/<lang>/gallery.json。",
+  "imagesBase": "../../Resources/images/gallery/",
+  "thumbDir": "thumbs/",
+  "items": [
+    {
+      "id": "sakura-tea",
+      "src": "sakura-tea.jpg",
+      "thumb": "thumbs/sakura-tea.jpg",
+      "title": "Tea under the cherry tree",
+      "desc": "An afternoon tea party beneath the cherry blossoms, petals scattered across the stone path",
+      "cat": "scene"
+    },
+    {
+      "id": "sakura-reading",
+      "src": "sakura-reading.jpg",
+      "thumb": "thumbs/sakura-reading.jpg",
+      "title": "Reading in the cherry garden",
+      "desc": "A reading hour on a park bench, Xiaomeng and an old book",
+      "cat": "scene"
+    },
+    {
+      "id": "grape-arbor",
+      "src": "grape-arbor.jpg",
+      "thumb": "thumbs/grape-arbor.jpg",
+      "title": "Smile beneath the grape arbor",
+      "desc": "Under the vine trellis, Grapeleaf with a basket of purple grapes",
+      "cat": "scene"
+    },
+    {
+      "id": "vineyard-picnic",
+      "src": "vineyard-picnic.jpg",
+      "thumb": "thumbs/vineyard-picnic.jpg",
+      "title": "Vineyard picnic",
+      "desc": "Orangeberry and Xiaomeng picnic in the vineyard, sharing freshly picked grapes",
+      "cat": "scene"
+    },
+    {
+      "id": "orange-teatime",
+      "src": "orange-teatime.jpg",
+      "thumb": "thumbs/orange-teatime.jpg",
+      "title": "Citrus afternoon tea",
+      "desc": "An afternoon tea for Orangeberry and little Grapeleaf, the room full of orange scent",
+      "cat": "scene"
+    },
+    {
+      "id": "apple-orchard",
+      "src": "apple-orchard.jpg",
+      "thumb": "thumbs/apple-orchard.jpg",
+      "title": "Harvest in the apple orchard",
+      "desc": "Walking the orchard with a basket, picking the first red apple of autumn",
+      "cat": "scene"
+    },
+    {
+      "id": "grapeleafi-summer",
+      "src": "grapeleafi-summer.jpg",
+      "thumb": "thumbs/grapeleafi-summer.jpg",
+      "title": "Grapeleaf: summer grapes",
+      "desc": "Summer character art of Grapeleaf, keeper of the vineyard",
+      "cat": "character"
+    },
+    {
+      "id": "orchard-outfit",
+      "src": "orchard-outfit.jpg",
+      "thumb": "thumbs/orchard-outfit.jpg",
+      "title": "Orchard outfit: Orangeberry",
+      "desc": "A straw hat and overall shorts, orchard workwear",
+      "cat": "character"
+    },
+    {
+      "id": "xiaomeng-chibi",
+      "src": "xiaomeng-chibi.jpg",
+      "thumb": "thumbs/xiaomeng-chibi.jpg",
+      "title": "Xiaomeng, chibi",
+      "desc": "Xiaomeng with a book and black tea, cherry petals resting on her hair",
+      "cat": "character"
+    },
+    {
+      "id": "grapeleafi-chibi",
+      "src": "grapeleafi-chibi.jpg",
+      "thumb": "thumbs/grapeleafi-chibi.jpg",
+      "title": "Grapeleaf, chibi",
+      "desc": "A soft seated pose, warm brown cardigan with a red ribbon",
+      "cat": "character"
+    },
+    {
+      "id": "toolbox-cover",
+      "src": "toolbox-cover.jpg",
+      "thumb": "thumbs/toolbox-cover.jpg",
+      "title": "VinePalmaToolbox cover",
+      "desc": "The official cover artwork for the toolbox app",
+      "cat": "cover"
+    }
+  ]
+}

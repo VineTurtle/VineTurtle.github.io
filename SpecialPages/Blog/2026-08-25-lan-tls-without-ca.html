@@ -7,7 +7,13 @@
     <meta name="description" content="VinePalmaFlow 的局域网同步要在没有证书颁发机构、没有域名、甚至系统时钟都不准的环境里建立 TLS 1.3 双向认证——记录 rustls 0.23 的三个坑与我们的应用层认证设计。" />
     <title>没有 CA 的局域网，怎么做双向 TLS · 藤栖龟舍</title>
     <link rel="canonical" href="https://grapeleafi.top/SpecialPages/Blog/2026-08-25-lan-tls-without-ca.html" />
+    <link rel="alternate" hreflang="zh-CN" href="https://grapeleafi.top/SpecialPages/Blog/2026-08-25-lan-tls-without-ca.html" />
+    <link rel="alternate" hreflang="zh-TW" href="https://grapeleafi.top/zh-TW/SpecialPages/Blog/2026-08-25-lan-tls-without-ca.html" />
+    <link rel="alternate" hreflang="en" href="https://grapeleafi.top/en/SpecialPages/Blog/2026-08-25-lan-tls-without-ca.html" />
+    <link rel="alternate" hreflang="ja" href="https://grapeleafi.top/ja/SpecialPages/Blog/2026-08-25-lan-tls-without-ca.html" />
+    <link rel="alternate" hreflang="x-default" href="https://grapeleafi.top/SpecialPages/Blog/2026-08-25-lan-tls-without-ca.html" />
     <meta property="og:type" content="article" />
+    <meta property="og:locale" content="zh_CN" />
     <meta property="og:site_name" content="藤栖龟舍 VineTurtle Studio" />
     <meta property="og:title" content="没有 CA 的局域网，怎么做双向 TLS · 藤栖龟舍" />
     <meta property="og:description" content="VinePalmaFlow 的局域网同步要在没有证书颁发机构、没有域名、甚至系统时钟都不准的环境里建立 TLS 1.3 双向认证——记录 rustls 0.23 的三个坑与我们的应用层认证设计。" />
@@ -19,26 +25,28 @@
     <script src="../../JS/theme-init.js"></script>
     <link rel="alternate" type="application/rss+xml" title="藤栖博客 RSS" href="https://grapeleafi.top/feed.xml">
     <link rel="stylesheet" href="../../CSS/layout.css" />
+    <link rel="stylesheet" href="../../CSS/i18n.css">
     <link rel="stylesheet" href="../../CSS/style.css" />
     <link rel="stylesheet" href="../../CSS/special/blog.css">
     <link rel="stylesheet" href="../../CSS/special/post-detail.css">
     <link rel="stylesheet" href="../../CSS/dynamic.css" />
+    <script src="../../JS/i18n.js"></script>
     <script src="../../JS/layout.js" defer></script>
     <script src="../../JS/script.js" defer></script>
     <script src="../../JS/special-detail.js" defer></script>
     <script src="../../JS/static-detail.js" defer></script>
     <script src="../../JS/dynamic.js" defer></script>
 <script type="application/ld+json">
-[{"@context":"https://schema.org","@type":"BlogPosting","headline":"没有 CA 的局域网，怎么做双向 TLS","name":"没有 CA 的局域网，怎么做双向 TLS","description":"VinePalmaFlow 的局域网同步要在没有证书颁发机构、没有域名、甚至系统时钟都不准的环境里建立 TLS 1.3 双向认证——记录 rustls 0.23 的三个坑与我们的应用层认证设计。","url":"https://grapeleafi.top/SpecialPages/Blog/2026-08-25-lan-tls-without-ca.html","datePublished":"2026-08-25","dateModified":"2026-08-25","image":"https://grapeleafi.top/Resources/images/blog/hero/flow-tls.jpg","author":{"@type":"Organization","name":"藤栖龟舍 VineTurtle Studio","url":"https://grapeleafi.top/"},"publisher":{"@type":"Organization","name":"藤栖龟舍 VineTurtle Studio","url":"https://grapeleafi.top/"},"keywords":"Rust, 网络安全, Tauri, 踩坑"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://grapeleafi.top/"},{"@type":"ListItem","position":2,"name":"博客文章","item":"https://grapeleafi.top/SpecialPages/Blog/index.html"},{"@type":"ListItem","position":3,"name":"没有 CA 的局域网，怎么做双向 TLS","item":"https://grapeleafi.top/SpecialPages/Blog/2026-08-25-lan-tls-without-ca.html"}]}]
+[{"@context":"https://schema.org","@type":"BlogPosting","headline":"没有 CA 的局域网，怎么做双向 TLS","name":"没有 CA 的局域网，怎么做双向 TLS","description":"VinePalmaFlow 的局域网同步要在没有证书颁发机构、没有域名、甚至系统时钟都不准的环境里建立 TLS 1.3 双向认证——记录 rustls 0.23 的三个坑与我们的应用层认证设计。","url":"https://grapeleafi.top/SpecialPages/Blog/2026-08-25-lan-tls-without-ca.html","datePublished":"2026-08-25","dateModified":"2026-08-25","image":"https://grapeleafi.top/Resources/images/blog/hero/flow-tls.jpg","inLanguage":"zh-CN","author":{"@type":"Organization","name":"藤栖龟舍 VineTurtle Studio","url":"https://grapeleafi.top/"},"publisher":{"@type":"Organization","name":"藤栖龟舍 VineTurtle Studio","url":"https://grapeleafi.top/"},"keywords":"Rust, 网络安全, Tauri, 踩坑"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://grapeleafi.top/"},{"@type":"ListItem","position":2,"name":"博客文章","item":"https://grapeleafi.top/SpecialPages/Blog/index.html"},{"@type":"ListItem","position":3,"name":"没有 CA 的局域网，怎么做双向 TLS","item":"https://grapeleafi.top/SpecialPages/Blog/2026-08-25-lan-tls-without-ca.html"}]}]
 </script>
 </head>
 <body data-content-kind="blog" data-content-slug="2026-08-25-lan-tls-without-ca" data-content-key="blog:2026-08-25-lan-tls-without-ca">
-<noscript><div class="noscript-warn">本站需要启用 JavaScript 才能正常显示内容。</div></noscript>
+<noscript><div class="noscript-warn" data-i18n="common.noscript">本站需要启用 JavaScript 才能正常显示内容。</div></noscript>
 <div id="header-placeholder"></div>
 <main class="blog-main">
     <div class="container post-container">
         <nav class="breadcrumb" aria-label="面包屑"><a href="../../index.html">首页</a><span class="crumb-sep" aria-hidden="true">/</span><a href="index.html">博客文章</a><span class="crumb-sep" aria-hidden="true">/</span><span aria-current="page">没有 CA 的局域网，怎么做双向 TLS</span></nav>
-        <a href="index.html" class="back-link" id="backLink">← 返回博客列表</a>
+        <a href="index.html" class="back-link" id="backLink" data-i18n="list.backBlog">← 返回博客列表</a>
         <article class="post-article">
             <div class="hero-img-wrap"><img src="../../Resources/images/blog/hero/flow-tls.jpg" alt="没有 CA 的局域网，怎么做双向 TLS" class="post-hero-img" data-fallback="🔐"><div class="fallback-hero">🔐</div></div>
             <header class="post-header">
@@ -48,7 +56,7 @@
                 <div class="content-actions" data-content-actions></div>
             </header>
             <nav class="post-toc" data-toc hidden aria-label="文章目录"></nav>
-            <div class="post-body">
+            <div class="post-body" lang="zh-CN" data-content-lang="zh-CN">
 <p>在开发 <strong>VinePalmaFlow</strong>（我们的本地优先项目管理工具）的局域网同步功能时，遇到了一个教科书上很少讲的问题：<strong>两台局域网设备之间要建立加密连接，可是既没有 CA 签发的证书，也没有域名，甚至对方的系统时钟都可能不准</strong>。Web PKI 那套信任模型在这里完全失效。这篇笔记记录 rustls 0.23 上的三个坑，以及我们最终的应用层认证设计。</p>
 
 <h2>📦 问题背景</h2>

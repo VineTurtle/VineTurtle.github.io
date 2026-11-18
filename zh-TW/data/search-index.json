@@ -1,0 +1,184 @@
+[
+  {
+    "kind": "posts",
+    "kindLabel": "部落格文章",
+    "title": "沒有 CA 的區域網路，怎麼做雙向 TLS",
+    "slug": "2026-08-25-lan-tls-without-ca",
+    "date": "2026-08-25",
+    "tags": [
+      "Rust",
+      "網路安全",
+      "Tauri",
+      "踩坑"
+    ],
+    "desc": "VinePalmaFlow 的區域網路同步要在沒有憑證頒發機構、沒有網域、甚至系統時鐘都不準的環境裡建立 TLS 1.3 雙向認證——記錄 rustls 0.23 的三個坑與我們的應用層認證設計。",
+    "icon": "🔐",
+    "cover": "../../Resources/images/blog/thumbnails/flow-tls.jpg",
+    "url": "SpecialPages/Blog/2026-08-25-lan-tls-without-ca.html"
+  },
+  {
+    "kind": "posts",
+    "kindLabel": "部落格文章",
+    "title": "內容指紋與增量同步：為什麼手寫 FNV-1a",
+    "slug": "2026-08-25-content-hash-fnv1a",
+    "date": "2026-08-25",
+    "tags": [
+      "Rust",
+      "演算法",
+      "踩坑",
+      "同步"
+    ],
+    "desc": "用 std 的 DefaultHasher 做內容指紋，同一份檔案在不同行程算出的雜湊竟然不一樣——增量同步退化成每次全量傳輸。聊聊假差異的根因與 FNV-1a + 冪等序列化的解法。",
+    "icon": "#️⃣",
+    "cover": "../../Resources/images/blog/thumbnails/content-hash.jpg",
+    "url": "SpecialPages/Blog/2026-08-25-content-hash-fnv1a.html"
+  },
+  {
+    "kind": "posts",
+    "kindLabel": "部落格文章",
+    "title": "純靜態網站的四個經典坑",
+    "slug": "2026-08-25-static-site-pitfalls",
+    "date": "2026-08-25",
+    "tags": [
+      "JavaScript",
+      "CSS",
+      "GitHub Pages",
+      "踩坑"
+    ],
+    "desc": "維護 GrapeLeafi 粉絲站幾年，攢下四個最典型的靜態站 bug：永不觸發的「今天」、手機上失效的 hover、GitHub Pages 的大小寫 404、以及 @latest 的定時炸彈。",
+    "icon": "⚠️",
+    "cover": "../../Resources/images/blog/thumbnails/static-site-pitfalls.jpg",
+    "url": "SpecialPages/Blog/2026-08-25-static-site-pitfalls.html"
+  },
+  {
+    "kind": "posts",
+    "kindLabel": "部落格文章",
+    "title": "在瀏覽器裡手寫二進位編碼器：ICO / CUR / ICNS 組裝實錄",
+    "slug": "2026-08-25-binary-encoder-ico-icns",
+    "date": "2026-08-25",
+    "tags": [
+      "前端",
+      "二進位",
+      "VinePalmaToolbox",
+      "踩坑"
+    ],
+    "desc": "Canvas 只能匯出 PNG/JPEG/WebP，那 ICO、CUR、ICNS 圖示格式怎麼辦？VinePalmaToolbox 的答案是：用 DataView 依規格一個位元組一個位元組拼出來。",
+    "icon": "🛠️",
+    "cover": "../../Resources/images/blog/thumbnails/toolbox-binary.jpg",
+    "url": "SpecialPages/Blog/2026-08-25-binary-encoder-ico-icns.html"
+  },
+  {
+    "kind": "posts",
+    "kindLabel": "部落格文章",
+    "title": "解除安裝器的安全設計：Linux 上絕不誤刪的三重防線",
+    "slug": "2026-08-25-uninstaller-safety",
+    "date": "2026-08-25",
+    "tags": [
+      "Rust",
+      "Linux",
+      "安全設計",
+      "VinePalmaUninstaller"
+    ],
+    "desc": "刪檔案的工具有很多，要怎麼保證永遠不刪錯？VinePalmaUninstaller 的答案：計畫即白名單、路徑黑名單、保護開關三道防線，外加 pkexec 提權時的輸出解析玄學。",
+    "icon": "🛡️",
+    "cover": "../../Resources/images/blog/thumbnails/uninstaller-safety.jpg",
+    "url": "SpecialPages/Blog/2026-08-25-uninstaller-safety.html"
+  },
+  {
+    "kind": "projects",
+    "kindLabel": "專案",
+    "title": "GrapeLeafi 葡葉醬的溫暖小窩",
+    "slug": "GrapeLeafi-26-08-25",
+    "date": "2026-08-25",
+    "tags": [
+      "網頁開發",
+      "靜態網站",
+      "社區站點"
+    ],
+    "desc": "為零基礎使用者維護的純靜態粉絲社群站：倒數計時、生日提醒、看板娘一個不少",
+    "icon": "🚀",
+    "cover": "../../Resources/images/projects/thumbnails/grapeleafi-site.jpg",
+    "url": "SpecialPages/Project/GrapeLeafi-26-08-25.html"
+  },
+  {
+    "kind": "projects",
+    "kindLabel": "專案",
+    "title": "VinePalmaFlow 本機專案管理",
+    "slug": "VinePalmaFlow-26-08-25",
+    "date": "2026-08-25",
+    "tags": [
+      "Tauri",
+      "Rust",
+      "專案管理",
+      "區域網路同步"
+    ],
+    "desc": "永遠不上雲的本機優先專案管理工具：Markdown 即資料庫，區域網路像雲一樣協作",
+    "icon": "🚀",
+    "cover": "../../Resources/images/projects/thumbnails/vinepalma-flow.jpg",
+    "url": "SpecialPages/Project/VinePalmaFlow-26-08-25.html"
+  },
+  {
+    "kind": "projects",
+    "kindLabel": "專案",
+    "title": "VinePalmaUninstaller 軟體開發",
+    "slug": "VinePalmaUninstaller-26-08-10",
+    "date": "2026-08-10",
+    "tags": [
+      "軟體開發",
+      "Linux",
+      "Tauri"
+    ],
+    "desc": "APT / Flatpak / Snap / Docker / AppImage / APM 六大來源統一的 Linux 解除安裝器",
+    "icon": "🚀",
+    "cover": "../../Resources/images/projects/thumbnails/vinepalma-uninstaller.jpg",
+    "url": "SpecialPages/Project/VinePalmaUninstaller-26-08-10.html"
+  },
+  {
+    "kind": "projects",
+    "kindLabel": "專案",
+    "title": "VinePalma Player 本機播放器",
+    "slug": "VinePalma-Player-26-08-07",
+    "date": "2026-08-07",
+    "tags": [
+      "Linux",
+      "Tauri",
+      "播放器"
+    ],
+    "desc": "VinePalma Player 播放器設定，一個值得選擇的本機播放器",
+    "icon": "🚀",
+    "cover": "../../Resources/images/projects/thumbnails/vinepalma-player.jpg",
+    "url": "SpecialPages/Project/VinePalma-Player-26-08-07.html"
+  },
+  {
+    "kind": "projects",
+    "kindLabel": "專案",
+    "title": "VinePalmaToolbox 軟體開發",
+    "slug": "VinePalmaToolbox-26-08-05",
+    "date": "2026-08-05",
+    "tags": [
+      "Tauri",
+      "軟體開發",
+      "Linux"
+    ],
+    "desc": "VinePalmaToolbox，一個值得你選擇的工具箱",
+    "icon": "🚀",
+    "cover": "../../Resources/images/projects/thumbnails/vinepalma-toolbox.jpg",
+    "url": "SpecialPages/Project/VinePalmaToolbox-26-08-05.html"
+  },
+  {
+    "kind": "posts",
+    "kindLabel": "部落格文章",
+    "title": "Electron Linux 圖示踩坑記：從打包到工作列圖示的完整指南",
+    "slug": "2026-07-22-linux-app-icon-fix",
+    "date": "2026-07-22",
+    "tags": [
+      "技術筆記",
+      "Electron",
+      "Linux"
+    ],
+    "desc": "打包後啟動器圖示正常，工作列卻是空白？問題出在桌面環境透過 WM_CLASS 關聯視窗和 .desktop 檔案。",
+    "icon": "🐧",
+    "cover": "../../Resources/images/blog/thumbnails/electron_linux_icon.jpg",
+    "url": "SpecialPages/Blog/2026-07-22-linux-app-icon-fix.html"
+  }
+]

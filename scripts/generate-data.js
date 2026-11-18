@@ -5,9 +5,12 @@
 //   data/<分类>/<name>.json        —— 元数据（title/date/tags/...）
 //   data/<分类>/posts/<name>.html  —— 正文 HTML
 // 本脚本只负责汇总元数据，不生成正文。
+// P1：额外按语言生成 sitemap / feed / 搜索索引，输出到各语言镜像目录；
+//     正文与元数据仍以简中为单一来源（P2 才逐篇翻译），缺译回退简中。
 const fs = require('fs');
 const path = require('path');
 const { loadSiteConfig, absoluteUrl } = require('./site-config');
+const I18N = require('./i18n-common');
 
 const ROOT = path.join(__dirname, '..');
 const KINDS_FILE = path.join(__dirname, 'kinds.json');
@@ -38,7 +41,6 @@ function readJson(file) {
 }
 
 // 从文件名推断数字 id：仅纯数字文件名（如 "3.json" -> 3），失败返回 null。
-// 形如 "2026-07-22-linux-app-icon-fix" 的文件名是 slug，不是 id。
 function idFromFilename(name) {
     const base = name.replace(/\.json$/, '');
     if (!/^\d+$/.test(base)) return null;
@@ -56,7 +58,6 @@ function sortByDateDesc(a, b) {
 }
 
 // 列表/卡片优先使用 Resources/images/<分类>/thumbnails/ 下的压缩图。
-// 元数据通常指向 hero/ 原图，这里在生成索引时自动换成同名的缩略图，避免列表加载大图。
 function preferThumbnail(url) {
     if (!url) return url;
     const value = String(url);
@@ -75,15 +76,11 @@ function buildIndex(dir, indexName) {
         const item = readJson(path.join(dir, name));
         const base = name.replace(/\.json$/, '');
         const id = item.id != null ? item.id : idFromFilename(name);
-        // 文件名即 slug；缺失时自动补全，保证详情页能按 slug 加载
         const slug = item.slug || base;
         return { ...item, id, slug };
-    }).filter(x => x.title); // 跳过无标题的残缺文件
+    }).filter(x => x.title);
 
-    // 按日期倒序稳定排序
     const sorted = items.slice().sort(sortByDateDesc);
-
-    // 补齐缺失的 id（按排序顺序分配最小可用值）
     const used = new Set(sorted.map(x => x.id).filter(n => typeof n === 'number'));
     let next = 1;
     sorted.forEach(item => {
@@ -94,7 +91,6 @@ function buildIndex(dir, indexName) {
         }
     });
 
-    // 汇总到索引
     const index = sorted.map(({ id, slug, title, date, tags, excerpt, thumbnail, hero, fallbackIcon, status, statusClass, year, desc }) => ({
         id,
         ...(slug ? { slug } : {}),
@@ -111,12 +107,12 @@ function buildIndex(dir, indexName) {
         ...(desc ? { desc } : {})
     }));
 
-    fs.mkdirSync(dir, { recursive: true }); // 目录不存在时自动创建
+    fs.mkdirSync(dir, { recursive: true });
     fs.writeFileSync(path.join(dir, indexName), JSON.stringify(index, null, 2) + '\n');
     return index.length;
 }
 
-// ---------- 站点地图 / RSS / 搜索索引 ----------
+// ---------- 站点地图 / RSS / 搜索索引（按语言） ----------
 
 const SITE_URL = SITE.siteUrl;
 
@@ -129,25 +125,78 @@ function xmlEscape(value) {
         .replace(/'/g, '&apos;');
 }
 
-// 本地日期（YYYY-MM-DD）。不用 toISOString()，否则东八区凌晨会被算成前一天。
 function todayLocal() {
     const d = new Date();
     const pad = n => String(n).padStart(2, '0');
     return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
 }
 
-function readIndex(key) {
-    const cfg = kinds[key];
-    const indexFile = path.join(ROOT, cfg.dataDir || ('data/' + key), 'index.json');
-    if (!fs.existsSync(indexFile)) return [];
+// 画廊数据：简中 data/gallery.json 为唯一来源，其他语言按 data/i18n/<lang>/gallery.json 覆盖标题与说明
+function buildGallery(lang) {
+    const srcFile = path.join(ROOT, 'data', 'gallery.json');
+    if (!fs.existsSync(srcFile) || lang === I18N.DEFAULT_LANG) return 0;
+    const base = JSON.parse(fs.readFileSync(srcFile, 'utf-8'));
+    const ovFile = path.join(ROOT, 'data', 'i18n', lang, 'gallery.json');
+    let overrides = {};
+    if (fs.existsSync(ovFile)) {
+        try { overrides = JSON.parse(fs.readFileSync(ovFile, 'utf-8')).items || {}; } catch (e) { /* 回退简中 */ }
+    }
+    const items = (base.items || []).map(function (item) {
+        const ov = overrides[item.id];
+        if (!ov) return item;
+        return Object.assign({}, item, {
+            title: ov.title || item.title,
+            desc: ov.desc || item.desc
+        });
+    });
+    const out = path.join(I18N.langRoot(lang), 'data', 'gallery.json');
+    fs.mkdirSync(path.dirname(out), { recursive: true });
+    fs.writeFileSync(out, JSON.stringify(Object.assign({}, base, { items: items }), null, 2) + '\n');
+    return items.length;
+}
+
+// 索引文件的落盘位置：简中在源目录，其他语言在镜像目录内（各自一份，R4/R12）
+function subDirName(key) {
+    return path.basename(kinds[key].dataDir || ('data/' + key));
+}
+
+function langIndexFile(lang, key) {
+    const sub = subDirName(key);
+    return lang === I18N.DEFAULT_LANG
+        ? path.join(ROOT, kinds[key].dataDir || ('data/' + key), 'index.json')
+        : path.join(I18N.langRoot(lang), 'data', sub, 'index.json');
+}
+
+function readIndex(key, lang) {
+    const file = langIndexFile(lang || I18N.DEFAULT_LANG, key);
+    if (!fs.existsSync(file)) return [];
     try {
-        return JSON.parse(fs.readFileSync(indexFile, 'utf-8'));
+        return JSON.parse(fs.readFileSync(file, 'utf-8'));
     } catch (e) {
         return [];
     }
 }
 
-// 固定页面的 lastmod 取所有内容里的最新日期，避免每天运行都产生无意义 diff
+// 按语言生成一份列表索引：有 data/i18n/<lang>/<分类>/<slug>.json 就覆盖标题与摘要，否则保持简中（R12）
+function buildLocalizedIndex(lang, key) {
+    const items = readIndex(key, I18N.DEFAULT_LANG);
+    if (lang === I18N.DEFAULT_LANG) return items.length;
+    const sub = subDirName(key);
+    const localized = items.map(function (item) {
+        const meta = I18N.loadContentMeta(lang, sub, item.slug);
+        if (!meta) return item;
+        const patch = {};
+        ['title', 'excerpt', 'desc', 'tags'].forEach(function (field) {
+            if (meta[field] != null) patch[field] = meta[field];
+        });
+        return Object.assign({}, item, patch);
+    });
+    const out = langIndexFile(lang, key);
+    fs.mkdirSync(path.dirname(out), { recursive: true });
+    fs.writeFileSync(out, JSON.stringify(localized, null, 2) + '\n');
+    return localized.length;
+}
+
 function latestContentDate() {
     let latest = '';
     for (const key of Object.keys(kinds)) {
@@ -158,29 +207,46 @@ function latestContentDate() {
     return latest;
 }
 
-function detailUrl(cfg, slug) {
-    return SITE_URL + '/SpecialPages/' + cfg.pageName + '/' + encodeURIComponent(slug) + '.html';
+// 详情页站点内相对路径（不含语言前缀），sitemap 与详情页共用
+function detailPath(cfg, slug) {
+    return '/SpecialPages/' + cfg.pageName + '/' + encodeURIComponent(slug) + '.html';
 }
 
-// 汇总固定页面 + 每个分类下所有内容的静态详情页，输出 sitemap.xml
-function buildSitemap() {
+function detailUrl(lang, cfg, slug) {
+    return I18N.urlPrefix(SITE_URL, lang) + detailPath(cfg, slug);
+}
+
+// 同一条路径在各语言下的 hreflang 互指（sitemap 内声明，R10/R11）
+function alternateLinks(pathPart) {
+    const rows = I18N.LANGS.map(function (lang) {
+        return '    <xhtml:link rel="alternate" hreflang="' + lang + '" href="'
+            + xmlEscape(I18N.urlPrefix(SITE_URL, lang) + pathPart) + '" />';
+    });
+    rows.push('    <xhtml:link rel="alternate" hreflang="x-default" href="' + xmlEscape(SITE_URL + pathPart) + '" />');
+    return rows.join('\n');
+}
+
+// 汇总固定页面 + 每个分类下所有内容的静态详情页，输出某语言的 sitemap.xml
+// 每条 URL 带 xhtml:link 互指，搜索引擎可据此把四语版本识别为同一页面的语言变体（R9/R10/R11）
+function buildSitemap(lang) {
     const today = todayLocal();
     const latest = latestContentDate() || today;
+    const base = I18N.urlPrefix(SITE_URL, lang);
     const urls = [
-        { loc: SITE_URL + '/', lastmod: latest, changefreq: 'weekly', priority: '1.0' },
-        { loc: SITE_URL + '/SpecialPages/Blog/index.html', lastmod: latest, changefreq: 'weekly', priority: '0.9' },
-        { loc: SITE_URL + '/SpecialPages/Project/index.html', lastmod: latest, changefreq: 'weekly', priority: '0.9' },
-        { loc: SITE_URL + '/SpecialPages/Gallery/index.html', lastmod: latest, changefreq: 'monthly', priority: '0.8' },
-        { loc: SITE_URL + '/SpecialPages/Search/index.html', lastmod: latest, changefreq: 'monthly', priority: '0.4' },
-        { loc: SITE_URL + '/privacy/privacy.html', lastmod: latest, changefreq: 'yearly', priority: '0.3' }
+        { path: '/', lastmod: latest, changefreq: 'weekly', priority: '1.0' },
+        { path: '/SpecialPages/Blog/index.html', lastmod: latest, changefreq: 'weekly', priority: '0.9' },
+        { path: '/SpecialPages/Project/index.html', lastmod: latest, changefreq: 'weekly', priority: '0.9' },
+        { path: '/SpecialPages/Gallery/index.html', lastmod: latest, changefreq: 'monthly', priority: '0.8' },
+        { path: '/SpecialPages/Search/index.html', lastmod: latest, changefreq: 'monthly', priority: '0.4' },
+        { path: '/privacy/privacy.html', lastmod: latest, changefreq: 'yearly', priority: '0.3' }
     ];
 
     for (const key of Object.keys(kinds)) {
         const cfg = kinds[key];
-        for (const item of readIndex(key)) {
+        for (const item of readIndex(key, lang)) {
             if (!item.slug) continue;
             urls.push({
-                loc: detailUrl(cfg, item.slug),
+                path: detailPath(cfg, item.slug),
                 lastmod: item.date || today,
                 changefreq: 'monthly',
                 priority: '0.6'
@@ -190,7 +256,8 @@ function buildSitemap() {
 
     const rows = urls.map(u =>
         '  <url>\n'
-        + '    <loc>' + xmlEscape(u.loc) + '</loc>\n'
+        + '    <loc>' + xmlEscape(base + u.path) + '</loc>\n'
+        + alternateLinks(u.path) + '\n'
         + '    <lastmod>' + u.lastmod + '</lastmod>\n'
         + '    <changefreq>' + u.changefreq + '</changefreq>\n'
         + '    <priority>' + u.priority + '</priority>\n'
@@ -198,11 +265,28 @@ function buildSitemap() {
     ).join('\n');
 
     const xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        + '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        + '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'
         + rows + '\n</urlset>\n';
 
-    fs.writeFileSync(path.join(ROOT, 'sitemap.xml'), xml);
+    const outDir = I18N.langRoot(lang);
+    fs.mkdirSync(outDir, { recursive: true });
+    fs.writeFileSync(path.join(outDir, 'sitemap.xml'), xml);
     return urls.length;
+}
+
+// 根路径 sitemap 索引：一次提交即可让搜索引擎发现四份语言 sitemap（R9）
+function buildSitemapIndex() {
+    const rows = I18N.LANGS.map(function (lang) {
+        return '  <sitemap>\n'
+            + '    <loc>' + xmlEscape(I18N.urlPrefix(SITE_URL, lang) + '/sitemap.xml') + '</loc>\n'
+            + '    <lastmod>' + todayLocal() + '</lastmod>\n'
+            + '  </sitemap>';
+    }).join('\n');
+    const xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        + '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        + rows + '\n</sitemapindex>\n';
+    fs.writeFileSync(path.join(ROOT, 'sitemap-index.xml'), xml);
+    return I18N.LANGS.length;
 }
 
 function rfc822(date) {
@@ -211,12 +295,12 @@ function rfc822(date) {
     return isNaN(d.getTime()) ? '' : d.toUTCString();
 }
 
-// 博客 RSS。项目内容不放进来，保持订阅源聚焦。
-function buildFeed() {
-    const blog = readIndex('posts');
+// 某语言的博客 RSS。channel 标题/描述与 <language> 按语言本地化（R9）。
+function buildFeed(lang) {
+    const blog = readIndex('posts', lang);
     const latest = latestContentDate() || todayLocal();
     const items = blog.slice(0, 30).map(item => {
-        const link = detailUrl(kinds.posts, item.slug);
+        const link = detailUrl(lang, kinds.posts, item.slug);
         const pubDate = rfc822(item.date);
         const categories = (item.tags || []).map(t => '      <category>' + xmlEscape(t) + '</category>').join('\n');
         return '    <item>\n'
@@ -229,33 +313,41 @@ function buildFeed() {
             + '    </item>';
     }).join('\n');
 
+    const base = I18N.urlPrefix(SITE_URL, lang);
     const xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
         + '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n'
         + '  <channel>\n'
-        + '    <title>藤栖博客 · VineTurtle Studio</title>\n'
-        + '    <link>' + SITE_URL + '/SpecialPages/Blog/index.html</link>\n'
-        + '    <description>记录森林小镇的灵感碎片与创作手记。</description>\n'
-        + '    <language>zh-CN</language>\n'
+        + '    <title>' + xmlEscape(I18N.t(lang, 'feed.title')) + '</title>\n'
+        + '    <link>' + base + '/SpecialPages/Blog/index.html</link>\n'
+        + '    <description>' + xmlEscape(I18N.t(lang, 'feed.description')) + '</description>\n'
+        + '    <language>' + I18N.FEED_LANG[lang] + '</language>\n'
         + '    <lastBuildDate>' + rfc822(latest) + '</lastBuildDate>\n'
-        + '    <atom:link href="' + SITE_URL + '/feed.xml" rel="self" type="application/rss+xml" />\n'
+        + '    <atom:link href="' + base + '/feed.xml" rel="self" type="application/rss+xml" />\n'
         + items + '\n'
         + '  </channel>\n'
         + '</rss>\n';
 
-    fs.writeFileSync(path.join(ROOT, 'feed.xml'), xml);
+    const outDir = I18N.langRoot(lang);
+    fs.mkdirSync(outDir, { recursive: true });
+    fs.writeFileSync(path.join(outDir, 'feed.xml'), xml);
     return blog.length;
 }
 
-// 站内搜索索引：标题、摘要、标签、日期、静态详情页地址
-function buildSearchIndex() {
+// 站内搜索索引：相对 URL 保持不变（各语言目录各有自己的副本，R4）
+const KIND_LABEL_KEY = { posts: 'kind.postLabel', projects: 'kind.project' };
+
+function buildSearchIndex(lang) {
     const entries = [];
     for (const key of Object.keys(kinds)) {
         const cfg = kinds[key];
-        for (const item of readIndex(key)) {
+        const label = lang === I18N.DEFAULT_LANG
+            ? (cfg.label || key)
+            : I18N.t(lang, KIND_LABEL_KEY[key] || key) || (cfg.label || key);
+        for (const item of readIndex(key, lang)) {
             if (!item.slug) continue;
             entries.push({
                 kind: key,
-                kindLabel: cfg.label || key,
+                kindLabel: label,
                 title: item.title,
                 slug: item.slug,
                 date: item.date || '',
@@ -268,7 +360,9 @@ function buildSearchIndex() {
         }
     }
     entries.sort((a, b) => String(b.date).localeCompare(String(a.date)));
-    fs.writeFileSync(path.join(ROOT, 'data', 'search-index.json'), JSON.stringify(entries, null, 2) + '\n');
+    const outDir = path.join(I18N.langRoot(lang), 'data');
+    fs.mkdirSync(outDir, { recursive: true });
+    fs.writeFileSync(path.join(outDir, 'search-index.json'), JSON.stringify(entries, null, 2) + '\n');
     return entries.length;
 }
 
@@ -286,24 +380,44 @@ for (const key of Object.keys(kinds)) {
     }
 }
 
-// 以下产物依赖上面的索引，放在最后生成
-try {
-    const total = buildSitemap();
-    console.log(`✅ sitemap.xml 生成完成（${total} 个地址）`);
-} catch (e) {
-    console.error('❌ sitemap.xml 生成失败：' + e.message);
+// 以下产物依赖上面的索引，按语言循环生成到各自镜像目录
+for (const lang of I18N.LANGS) {
+    try {
+        let localized = 0;
+        for (const key of Object.keys(kinds)) localized += buildLocalizedIndex(lang, key);
+        if (lang !== I18N.DEFAULT_LANG) console.log(`✅ [${lang}] 列表索引本地化完成（${localized} 项）`);
+    } catch (e) {
+        console.error(`❌ [${lang}] 列表索引本地化失败：` + e.message);
+    }
+    try {
+        const total = buildGallery(lang);
+        if (lang !== I18N.DEFAULT_LANG) console.log(`✅ [${lang}] 画廊数据本地化完成（${total} 件）`);
+    } catch (e) {
+        console.error(`❌ [${lang}] 画廊数据本地化失败：` + e.message);
+    }
+    try {
+        const total = buildSitemap(lang);
+        console.log(`✅ [${lang}] sitemap.xml 生成完成（${total} 个地址）`);
+    } catch (e) {
+        console.error(`❌ [${lang}] sitemap.xml 生成失败：` + e.message);
+    }
+    try {
+        const total = buildFeed(lang);
+        console.log(`✅ [${lang}] feed.xml 生成完成（${total} 篇文章）`);
+    } catch (e) {
+        console.error(`❌ [${lang}] feed.xml 生成失败：` + e.message);
+    }
+    try {
+        const total = buildSearchIndex(lang);
+        console.log(`✅ [${lang}] data/search-index.json 生成完成（${total} 条）`);
+    } catch (e) {
+        console.error(`❌ [${lang}] 搜索索引生成失败：` + e.message);
+    }
 }
 
 try {
-    const total = buildFeed();
-    console.log(`✅ feed.xml 生成完成（${total} 篇文章）`);
+    const total = buildSitemapIndex();
+    console.log(`✅ sitemap-index.xml 生成完成（${total} 份语言 sitemap）`);
 } catch (e) {
-    console.error('❌ feed.xml 生成失败：' + e.message);
-}
-
-try {
-    const total = buildSearchIndex();
-    console.log(`✅ data/search-index.json 生成完成（${total} 条）`);
-} catch (e) {
-    console.error('❌ 搜索索引生成失败：' + e.message);
+    console.error('❌ sitemap-index.xml 生成失败：' + e.message);
 }

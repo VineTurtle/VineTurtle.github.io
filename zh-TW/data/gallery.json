@@ -1,0 +1,95 @@
+{
+  "_说明": "画廊唯一数据源（简中）。标题与说明可按语言覆盖于 data/i18n/<lang>/gallery.json。",
+  "imagesBase": "../../Resources/images/gallery/",
+  "thumbDir": "thumbs/",
+  "items": [
+    {
+      "id": "sakura-tea",
+      "src": "sakura-tea.jpg",
+      "thumb": "thumbs/sakura-tea.jpg",
+      "title": "春庭櫻茶",
+      "desc": "櫻花樹下的午後茶會，粉瓣落滿石板路",
+      "cat": "scene"
+    },
+    {
+      "id": "sakura-reading",
+      "src": "sakura-reading.jpg",
+      "thumb": "thumbs/sakura-reading.jpg",
+      "title": "櫻庭讀書",
+      "desc": "公園長椅上的閱讀時光，小夢與一本舊書",
+      "cat": "scene"
+    },
+    {
+      "id": "grape-arbor",
+      "src": "grape-arbor.jpg",
+      "thumb": "thumbs/grape-arbor.jpg",
+      "title": "葡萄架下的微笑",
+      "desc": "藤蔓棚架下，葡葉醬與一籃紫葡萄",
+      "cat": "scene"
+    },
+    {
+      "id": "vineyard-picnic",
+      "src": "vineyard-picnic.jpg",
+      "thumb": "thumbs/vineyard-picnic.jpg",
+      "title": "葡萄園野餐",
+      "desc": "橙果子與小夢的葡萄園野餐，分享新摘的葡萄",
+      "cat": "scene"
+    },
+    {
+      "id": "orange-teatime",
+      "src": "orange-teatime.jpg",
+      "thumb": "thumbs/orange-teatime.jpg",
+      "title": "柑橘下午茶",
+      "desc": "橙果子與小葡葉的下午茶，滿室橙香",
+      "cat": "scene"
+    },
+    {
+      "id": "apple-orchard",
+      "src": "apple-orchard.jpg",
+      "thumb": "thumbs/apple-orchard.jpg",
+      "title": "蘋果園的豐收",
+      "desc": "提著果籃穿行果園，摘下秋天第一顆紅蘋果",
+      "cat": "scene"
+    },
+    {
+      "id": "grapeleafi-summer",
+      "src": "grapeleafi-summer.jpg",
+      "thumb": "thumbs/grapeleafi-summer.jpg",
+      "title": "葡葉醬 · 夏日葡萄",
+      "desc": "葡園管理者葡葉醬的夏日立繪",
+      "cat": "character"
+    },
+    {
+      "id": "orchard-outfit",
+      "src": "orchard-outfit.jpg",
+      "thumb": "thumbs/orchard-outfit.jpg",
+      "title": "果園穿搭 · 橙果子",
+      "desc": "草帽與吊帶短褲，果園勞作裝扮",
+      "cat": "character"
+    },
+    {
+      "id": "xiaomeng-chibi",
+      "src": "xiaomeng-chibi.jpg",
+      "thumb": "thumbs/xiaomeng-chibi.jpg",
+      "title": "小夢妹妹 Q版",
+      "desc": "捧著書本與紅茶的小夢，櫻花瓣落在髮梢",
+      "cat": "character"
+    },
+    {
+      "id": "grapeleafi-chibi",
+      "src": "grapeleafi-chibi.jpg",
+      "thumb": "thumbs/grapeleafi-chibi.jpg",
+      "title": "葡葉醬 Q版",
+      "desc": "軟萌坐姿，暖棕色開衫配紅絲帶",
+      "cat": "character"
+    },
+    {
+      "id": "toolbox-cover",
+      "src": "toolbox-cover.jpg",
+      "thumb": "thumbs/toolbox-cover.jpg",
+      "title": "VinePalmaToolbox 封面",
+      "desc": "工具箱軟體的官方封面視覺",
+      "cat": "cover"
+    }
+  ]
+}

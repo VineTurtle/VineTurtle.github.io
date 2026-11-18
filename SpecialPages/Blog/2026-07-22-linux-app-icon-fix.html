@@ -7,7 +7,13 @@
     <meta name="description" content="打包后启动器图标正常，任务栏却是空白？问题出在桌面环境通过 WM_CLASS 关联窗口和 .desktop 文件。" />
     <title>Electron Linux 图标踩坑记：从打包到任务栏的完整指南 · 藤栖龟舍</title>
     <link rel="canonical" href="https://grapeleafi.top/SpecialPages/Blog/2026-07-22-linux-app-icon-fix.html" />
+    <link rel="alternate" hreflang="zh-CN" href="https://grapeleafi.top/SpecialPages/Blog/2026-07-22-linux-app-icon-fix.html" />
+    <link rel="alternate" hreflang="zh-TW" href="https://grapeleafi.top/zh-TW/SpecialPages/Blog/2026-07-22-linux-app-icon-fix.html" />
+    <link rel="alternate" hreflang="en" href="https://grapeleafi.top/en/SpecialPages/Blog/2026-07-22-linux-app-icon-fix.html" />
+    <link rel="alternate" hreflang="ja" href="https://grapeleafi.top/ja/SpecialPages/Blog/2026-07-22-linux-app-icon-fix.html" />
+    <link rel="alternate" hreflang="x-default" href="https://grapeleafi.top/SpecialPages/Blog/2026-07-22-linux-app-icon-fix.html" />
     <meta property="og:type" content="article" />
+    <meta property="og:locale" content="zh_CN" />
     <meta property="og:site_name" content="藤栖龟舍 VineTurtle Studio" />
     <meta property="og:title" content="Electron Linux 图标踩坑记：从打包到任务栏的完整指南 · 藤栖龟舍" />
     <meta property="og:description" content="打包后启动器图标正常，任务栏却是空白？问题出在桌面环境通过 WM_CLASS 关联窗口和 .desktop 文件。" />
@@ -19,26 +25,28 @@
     <script src="../../JS/theme-init.js"></script>
     <link rel="alternate" type="application/rss+xml" title="藤栖博客 RSS" href="https://grapeleafi.top/feed.xml">
     <link rel="stylesheet" href="../../CSS/layout.css" />
+    <link rel="stylesheet" href="../../CSS/i18n.css">
     <link rel="stylesheet" href="../../CSS/style.css" />
     <link rel="stylesheet" href="../../CSS/special/blog.css">
     <link rel="stylesheet" href="../../CSS/special/post-detail.css">
     <link rel="stylesheet" href="../../CSS/dynamic.css" />
+    <script src="../../JS/i18n.js"></script>
     <script src="../../JS/layout.js" defer></script>
     <script src="../../JS/script.js" defer></script>
     <script src="../../JS/special-detail.js" defer></script>
     <script src="../../JS/static-detail.js" defer></script>
     <script src="../../JS/dynamic.js" defer></script>
 <script type="application/ld+json">
-[{"@context":"https://schema.org","@type":"BlogPosting","headline":"Electron Linux 图标踩坑记：从打包到任务栏的完整指南","name":"Electron Linux 图标踩坑记：从打包到任务栏的完整指南","description":"打包后启动器图标正常，任务栏却是空白？问题出在桌面环境通过 WM_CLASS 关联窗口和 .desktop 文件。","url":"https://grapeleafi.top/SpecialPages/Blog/2026-07-22-linux-app-icon-fix.html","datePublished":"2026-07-22","dateModified":"2026-07-22","image":"https://grapeleafi.top/Resources/images/blog/hero/electron_linux_icon.jpg","author":{"@type":"Organization","name":"藤栖龟舍 VineTurtle Studio","url":"https://grapeleafi.top/"},"publisher":{"@type":"Organization","name":"藤栖龟舍 VineTurtle Studio","url":"https://grapeleafi.top/"},"keywords":"技术笔记, Electron, Linux"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://grapeleafi.top/"},{"@type":"ListItem","position":2,"name":"博客文章","item":"https://grapeleafi.top/SpecialPages/Blog/index.html"},{"@type":"ListItem","position":3,"name":"Electron Linux 图标踩坑记：从打包到任务栏的完整指南","item":"https://grapeleafi.top/SpecialPages/Blog/2026-07-22-linux-app-icon-fix.html"}]}]
+[{"@context":"https://schema.org","@type":"BlogPosting","headline":"Electron Linux 图标踩坑记：从打包到任务栏的完整指南","name":"Electron Linux 图标踩坑记：从打包到任务栏的完整指南","description":"打包后启动器图标正常，任务栏却是空白？问题出在桌面环境通过 WM_CLASS 关联窗口和 .desktop 文件。","url":"https://grapeleafi.top/SpecialPages/Blog/2026-07-22-linux-app-icon-fix.html","datePublished":"2026-07-22","dateModified":"2026-07-22","image":"https://grapeleafi.top/Resources/images/blog/hero/electron_linux_icon.jpg","inLanguage":"zh-CN","author":{"@type":"Organization","name":"藤栖龟舍 VineTurtle Studio","url":"https://grapeleafi.top/"},"publisher":{"@type":"Organization","name":"藤栖龟舍 VineTurtle Studio","url":"https://grapeleafi.top/"},"keywords":"技术笔记, Electron, Linux"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://grapeleafi.top/"},{"@type":"ListItem","position":2,"name":"博客文章","item":"https://grapeleafi.top/SpecialPages/Blog/index.html"},{"@type":"ListItem","position":3,"name":"Electron Linux 图标踩坑记：从打包到任务栏的完整指南","item":"https://grapeleafi.top/SpecialPages/Blog/2026-07-22-linux-app-icon-fix.html"}]}]
 </script>
 </head>
 <body data-content-kind="blog" data-content-slug="2026-07-22-linux-app-icon-fix" data-content-key="blog:2026-07-22-linux-app-icon-fix">
-<noscript><div class="noscript-warn">本站需要启用 JavaScript 才能正常显示内容。</div></noscript>
+<noscript><div class="noscript-warn" data-i18n="common.noscript">本站需要启用 JavaScript 才能正常显示内容。</div></noscript>
 <div id="header-placeholder"></div>
 <main class="blog-main">
     <div class="container post-container">
         <nav class="breadcrumb" aria-label="面包屑"><a href="../../index.html">首页</a><span class="crumb-sep" aria-hidden="true">/</span><a href="index.html">博客文章</a><span class="crumb-sep" aria-hidden="true">/</span><span aria-current="page">Electron Linux 图标踩坑记：从打包到任务栏的完整指南</span></nav>
-        <a href="index.html" class="back-link" id="backLink">← 返回博客列表</a>
+        <a href="index.html" class="back-link" id="backLink" data-i18n="list.backBlog">← 返回博客列表</a>
         <article class="post-article">
             <div class="hero-img-wrap"><img src="../../Resources/images/blog/hero/electron_linux_icon.jpg" alt="Electron Linux 图标踩坑记：从打包到任务栏的完整指南" class="post-hero-img" data-fallback="🐧"><div class="fallback-hero">🐧</div></div>
             <header class="post-header">
@@ -48,7 +56,7 @@
                 <div class="content-actions" data-content-actions></div>
             </header>
             <nav class="post-toc" data-toc hidden aria-label="文章目录"></nav>
-            <div class="post-body">
+            <div class="post-body" lang="zh-CN" data-content-lang="zh-CN">
 <p>最近在开发 <strong>VinePalma Player</strong> 的 Linux 版本时，遇到了一个看似简单却折腾了我很久的图标问题。安装后的应用图标正常显示，但运行后任务栏上的图标却是默认的「空白」状态。这篇文章记录了我踩过的坑和最终的解决方案。</p>
 
 <h2>📦 问题描述</h2>

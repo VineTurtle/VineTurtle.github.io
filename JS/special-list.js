@@ -3,6 +3,10 @@
 (function() {
     'use strict';
 
+    var t = function (key, vars) {
+        return window.VTS && window.VTS.t ? window.VTS.t(key, vars) : key;
+    };
+
     function escapeHtml(value) {
         const str = value == null ? '' : String(value);
         return str.replace(/[&<>"']/g, function(c) {
@@ -10,12 +14,19 @@
         });
     }
 
-    // 将 ISO 日期格式化为「YYYY年M月D日」，无法解析时原样返回
+    // 将 ISO 日期按语言本地化；无法解析时原样返回（R8）
     function formatDate(value) {
         if (!value) return '';
         const m = String(value).match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
         if (!m) return String(value);
-        return m[1] + '年' + Number(m[2]) + '月' + Number(m[3]) + '日';
+        const y = m[1], mo = Number(m[2]), d = Number(m[3]);
+        const lang = (window.VTS && VTS.lang) || 'zh-CN';
+        if (lang === 'en') {
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return months[mo - 1] + ' ' + d + ', ' + y;
+        }
+        if (lang === 'ja' || lang === 'zh-TW') return y + '年' + mo + '月' + d + '日';
+        return y + '年' + mo + '月' + d + '日'; // zh-CN 保持原样
     }
 
     // 在详情链接上附加 page / tag 参数
@@ -80,17 +91,18 @@
         const paginationEl = document.getElementById(config.paginationId);
 
         let items = [];
-        let activeTag = '全部';
+        const ALL_TAG = '全部'; // 内部 sentinel，保持中文以兼容 URL 参数与数据流
+        let activeTag = ALL_TAG;
         let currentPage = 1;
 
         function getAllTags() {
             const tagSet = new Set();
             items.forEach(p => (p.tags || []).forEach(t => tagSet.add(t)));
-            return ['全部', ...Array.from(tagSet).sort()];
+            return [ALL_TAG, ...Array.from(tagSet).sort()];
         }
 
         function getFiltered() {
-            if (activeTag === '全部') return items.slice();
+            if (activeTag === ALL_TAG) return items.slice();
             return items.filter(p => (p.tags || []).includes(activeTag));
         }
 
@@ -101,7 +113,7 @@
         function updateUrlParams() {
             const url = new URL(window.location.href);
             url.searchParams.set('page', currentPage);
-            if (activeTag !== '全部') {
+            if (activeTag !== ALL_TAG) {
                 url.searchParams.set('tag', activeTag);
             } else {
                 url.searchParams.delete('tag');
@@ -115,9 +127,9 @@
 
             allTags.forEach(tag => {
                 const btn = document.createElement('span');
-                btn.className = 'filter-tag' + (tag === '全部' ? ' all-tag' : '');
+                btn.className = 'filter-tag' + (tag === ALL_TAG ? ' all-tag' : '');
                 if (tag === activeTag) btn.classList.add('active');
-                btn.textContent = tag;
+                btn.textContent = tag === ALL_TAG ? t('list.allTags') : tag;
                 btn.dataset.tag = tag;
                 btn.addEventListener('click', function() {
                     if (activeTag === tag) return;
@@ -129,7 +141,7 @@
                 filterBar.insertBefore(btn, filterCount);
             });
 
-            filterCount.textContent = '共 ' + getFiltered().length + ' ' + config.noun;
+            filterCount.textContent = t('palette.count', { count: getFiltered().length }) + ' ' + t(config.nounKey || 'kind.post');
         }
 
         function renderGrid() {
@@ -145,7 +157,7 @@
             if (pageData.length === 0) {
                 html = '<div class="empty-state">'
                     + '<span class="empty-icon">' + (config.emptyIcon || '🔍') + '</span>'
-                    + '<p>没有找到包含「' + escapeHtml(activeTag) + '」' + (config.emptyNoun || config.noun) + '</p>'
+                    + '<p>' + escapeHtml(t(config.emptyKey || 'list.emptyPost', { tag: activeTag })) + '</p>'
                     + '</div>';
             } else {
                 pageData.forEach(item => {
@@ -153,6 +165,7 @@
                     const helpers = {
                         escapeHtml: escapeHtml,
                         formatDate: formatDate,
+                        t: t,
                         isPlaceholder: isPlaceholder,
                         page: currentPage,
                         tag: activeTag,
@@ -205,7 +218,7 @@
             }
 
             html += '<button class="page-next" ' + (currentPage >= totalPages ? 'disabled' : '') + ' data-page="' + (currentPage + 1) + '">›</button>';
-            html += '<span class="page-info">第 ' + currentPage + ' / ' + totalPages + ' 页</span>';
+            html += '<span class="page-info">' + escapeHtml(t('list.pageInfo', { current: currentPage, total: totalPages })) + '</span>';
 
             paginationEl.innerHTML = html;
 
@@ -272,7 +285,7 @@
                     console.error('加载数据失败:', err);
                     grid.innerHTML = '<div class="empty-state">'
                         + '<span class="empty-icon">⚠️</span>'
-                        + '<p>数据加载失败，请刷新重试</p>'
+                        + '<p data-i18n="list.loadFail">' + escapeHtml(t('list.loadFail')) + '</p>'
                         + '<p class="empty-msg">' + escapeHtml(err.message) + '</p>'
                         + '</div>';
                 });
@@ -285,6 +298,10 @@
             } else {
                 loadDataAndRender();
             }
+            // 语言切换：就地重渲染（数据已在内存，不重复请求）
+            window.addEventListener('vts:langchange', function () {
+                if (items.length) renderAll();
+            });
         }
 
         init();

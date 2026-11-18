@@ -1,0 +1,10 @@
+{
+  "title": "ブラウザで手書きするバイナリエンコーダー：ICO / CUR / ICNS を組み立てる",
+  "excerpt": "Canvas が書き出せるのは PNG/JPEG/WebP だけ。では ICO・CUR・ICNS はどうする？VinePalmaToolbox の答えは、DataView で仕様どおり 1 バイトずつ組み立てるというもの。",
+  "tags": [
+    "フロントエンド",
+    "バイナリ形式",
+    "VinePalmaToolbox",
+    "落とし穴"
+  ]
+}

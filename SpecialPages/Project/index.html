@@ -17,26 +17,28 @@
     <link rel="icon" href="../../Resources/images/VineTurtleStudio.png" type="image/png" />
     <script src="../../JS/theme-init.js"></script>
     <link rel="stylesheet" href="../../CSS/layout.css" />
+    <link rel="stylesheet" href="../../CSS/i18n.css">
     <link rel="stylesheet" href="../../CSS/style.css" />
     <link rel="stylesheet" href="../../CSS/special/project.css" />
     <link rel="stylesheet" href="../../CSS/special/list.css" />
+    <script src="../../JS/i18n.js"></script>
     <script src="../../JS/layout.js" defer></script>
     <script src="../../JS/script.js" defer></script>
     <script src="../../JS/special-list.js" defer></script>
     <script src="project.js" defer></script>
 </head>
 <body>
-<noscript><div class="noscript-warn">本站需要启用 JavaScript 才能正常显示内容。</div></noscript>
+<noscript><div class="noscript-warn" data-i18n="common.noscript">本站需要启用 JavaScript 才能正常显示内容。</div></noscript>
 <div id="header-placeholder"></div>
 <main class="project-main">
     <div class="container">
         <div class="page-header">
-            <h1>🚀 藤栖项目</h1>
-            <p>我们正在建造与已经落成的森林创意作品</p>
+            <h1 data-i18n="title.projectListH1">🚀 藤栖项目</h1>
+            <p data-i18n="title.projectListDesc">我们正在建造与已经落成的森林创意作品</p>
         </div>
         <!-- 标签筛选栏 -->
         <div class="filter-bar" id="filterBar">
-            <span class="filter-label">🏷️ 筛选：</span>
+            <span class="filter-label" data-i18n="list.filter">🏷️ 筛选：</span>
             <span class="filter-count" id="filterCount"></span>
         </div>
         <!-- 项目卡片网格 -->

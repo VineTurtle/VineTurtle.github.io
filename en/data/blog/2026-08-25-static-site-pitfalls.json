@@ -1,0 +1,11 @@
+{
+  "id": 6,
+  "slug": "2026-08-25-static-site-pitfalls",
+  "title": "纯静态网站的四个经典坑",
+  "date": "2026-08-25",
+  "tags": ["JavaScript", "CSS", "GitHub Pages", "踩坑"],
+  "excerpt": "维护 GrapeLeafi 粉丝站几年，攒下四个最典型的静态站 bug：永不触发的「今天」、手机上失效的 hover、GitHub Pages 的大小写 404、以及 @latest 的定时炸弹。",
+  "thumbnail": "../../Resources/images/blog/hero/static-site-pitfalls.jpg",
+  "hero": "../../Resources/images/blog/hero/static-site-pitfalls.jpg",
+  "fallbackIcon": "⚠️"
+}

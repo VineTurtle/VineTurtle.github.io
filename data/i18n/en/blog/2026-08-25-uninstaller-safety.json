@@ -1,0 +1,10 @@
+{
+  "title": "Designing a safe uninstaller: three layers that keep Linux deletions honest",
+  "excerpt": "A tool that deletes files, so how do you guarantee it never deletes the wrong one? VinePalmaUninstaller's answer: the plan is the allow-list, a path deny-list, a protection switch, plus the black art of parsing pkexec output.",
+  "tags": [
+    "Rust",
+    "Linux",
+    "Safe design",
+    "VinePalmaUninstaller"
+  ]
+}

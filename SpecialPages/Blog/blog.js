@@ -6,8 +6,8 @@ window.VTS.createListPage({
     filterBarId: 'filterBar',
     filterCountId: 'filterCount',
     paginationId: 'pagination',
-    noun: '篇',
-    emptyNoun: '标签的文章',
+    nounKey: 'list.countPost',
+    emptyKey: 'list.emptyPost',
     mainSelector: '.blog-main',
     tagBadgeSelector: '.blog-tag-badge',
     coverClass: 'blog-card-cover',
@@ -32,12 +32,12 @@ window.VTS.createListPage({
         }
 
         const metaHtml = isPlaceholder
-            ? '<div class="blog-card-meta"><span class="blog-date">' + h.escapeHtml(h.formatDate(post.date) || '即将发布') + '</span><span class="blog-tag">新文</span></div>'
-            : '<div class="blog-card-meta"><span class="blog-date">' + h.escapeHtml(h.formatDate(post.date)) + '</span><span class="blog-tag">' + h.escapeHtml(post.tags[0] || '随笔') + '</span></div>';
+            ? '<div class="blog-card-meta"><span class="blog-date">' + h.escapeHtml(h.formatDate(post.date) || h.t('list.coming')) + '</span><span class="blog-tag">' + h.t('list.newPost') + '</span></div>'
+            : '<div class="blog-card-meta"><span class="blog-date">' + h.escapeHtml(h.formatDate(post.date)) + '</span><span class="blog-tag">' + h.escapeHtml(post.tags[0] || h.t('list.essay')) + '</span></div>';
 
         const readmoreHtml = isPlaceholder
-            ? '<span class="blog-readmore">敬请期待</span>'
-            : '<span class="blog-readmore">阅读全文 →</span>';
+            ? '<span class="blog-readmore">' + h.t('list.soon') + '</span>'
+            : '<span class="blog-readmore">' + h.t('list.readMore') + '</span>';
 
         return '<article class="' + cardClass + '">'
             + linkWrapper

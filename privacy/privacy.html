@@ -18,9 +18,11 @@
     <!-- 复用主站样式 -->
     <script src="../JS/theme-init.js"></script>
     <link rel="stylesheet" href="../CSS/layout.css" />
+    <link rel="stylesheet" href="../CSS/i18n.css">
     <link rel="stylesheet" href="../CSS/style.css" />
     <link rel="stylesheet" href="../CSS/special/privacy.css" />
     <!-- 脚本 -->
+    <script src="../JS/i18n.js"></script>
     <script src="../JS/layout.js" defer></script>
     <script src="../JS/script.js" defer></script>
 </head>
@@ -32,10 +34,10 @@
 <!-- 主内容 -->
 <main class="main-content">
     <div class="container privacy-container">
-        <h1>📄 隐私策略</h1>
-        <p class="privacy-updated"><strong>最后更新：</strong>2026 年 11 月 13 日</p>
+        <h1 data-i18n="privacy.h1">📄 隐私策略</h1>
+        <p class="privacy-updated"><strong data-i18n="privacy.updatedPrefix">最后更新：</strong>2026 年 11 月 13 日</p>
 
-        <nav class="privacy-toc" aria-label="目录">
+        <nav class="privacy-toc" aria-label="目录" data-i18n-attrs="aria-label:a11y.toc">
             <a href="#scope">适用范围</a>
             <a href="#site">本站点</a>
             <a href="#interaction">互动功能</a>
@@ -114,7 +116,7 @@
         <h2 id="updates">9. 政策更新</h2>
         <p>我们可能会更新本策略，例如新增统计工具或上线新的应用功能时。任何实质性变更都会更新本页顶部的「最后更新」日期；如变更影响较大，我们会在站内显著位置提示。建议你定期回来查看。</p>
 
-        <div class="privacy-copyright">
+        <div class="privacy-copyright" data-i18n="privacy.copyright">
             &copy; 2026 藤栖龟舍 VineTurtle Studio · 保留所有权利
         </div>
     </div>

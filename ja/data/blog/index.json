@@ -1,0 +1,97 @@
+[
+  {
+    "id": 4,
+    "slug": "2026-08-25-lan-tls-without-ca",
+    "title": "CA のない LAN で相互 TLS を組む",
+    "date": "2026-08-25",
+    "tags": [
+      "Rust",
+      "ネットワークセキュリティ",
+      "Tauri",
+      "落とし穴"
+    ],
+    "excerpt": "VinePalmaFlow の LAN 同期は、認証局もドメインもなく、システム時計すら狂い得る環境で TLS 1.3 の相互認証を張らなければならない。rustls 0.23 の 3 つの落とし穴と、アプリ層での認証設計を記録する。",
+    "thumbnail": "../../Resources/images/blog/thumbnails/flow-tls.jpg",
+    "hero": "../../Resources/images/blog/hero/flow-tls.jpg",
+    "fallbackIcon": "🔐"
+  },
+  {
+    "id": 5,
+    "slug": "2026-08-25-content-hash-fnv1a",
+    "title": "コンテンツ指紋と差分同期：なぜ FNV-1a を自作したのか",
+    "date": "2026-08-25",
+    "tags": [
+      "Rust",
+      "アルゴリズム",
+      "落とし穴",
+      "同期"
+    ],
+    "excerpt": "std の DefaultHasher でコンテンツ指紋を取ると、同じファイルがプロセスごとに別のハッシュになる。差分同期は毎回全転送に逆戻り。偽の差分の原因と、FNV-1a + 冪等なシリアライズという解決策を語る。",
+    "thumbnail": "../../Resources/images/blog/thumbnails/content-hash.jpg",
+    "hero": "../../Resources/images/blog/hero/content-hash.jpg",
+    "fallbackIcon": "#️⃣"
+  },
+  {
+    "id": 6,
+    "slug": "2026-08-25-static-site-pitfalls",
+    "title": "完全静的サイトの 4 つの定番の落とし穴",
+    "date": "2026-08-25",
+    "tags": [
+      "JavaScript",
+      "CSS",
+      "GitHub Pages",
+      "落とし穴"
+    ],
+    "excerpt": "GrapeLeafi ファンサイトを幾年か運営して溜まった、静的サイトの典型バグ 4 つ。決して発火しない「今日」、スマホで効かない hover、GitHub Pages の大文字小文字 404、そして @latest という時限爆弾。",
+    "thumbnail": "../../Resources/images/blog/thumbnails/static-site-pitfalls.jpg",
+    "hero": "../../Resources/images/blog/hero/static-site-pitfalls.jpg",
+    "fallbackIcon": "⚠️"
+  },
+  {
+    "id": 7,
+    "slug": "2026-08-25-binary-encoder-ico-icns",
+    "title": "ブラウザで手書きするバイナリエンコーダー：ICO / CUR / ICNS を組み立てる",
+    "date": "2026-08-25",
+    "tags": [
+      "フロントエンド",
+      "バイナリ形式",
+      "VinePalmaToolbox",
+      "落とし穴"
+    ],
+    "excerpt": "Canvas が書き出せるのは PNG/JPEG/WebP だけ。では ICO・CUR・ICNS はどうする？VinePalmaToolbox の答えは、DataView で仕様どおり 1 バイトずつ組み立てるというもの。",
+    "thumbnail": "../../Resources/images/blog/thumbnails/toolbox-binary.jpg",
+    "hero": "../../Resources/images/blog/hero/toolbox-binary.jpg",
+    "fallbackIcon": "🛠️"
+  },
+  {
+    "id": 8,
+    "slug": "2026-08-25-uninstaller-safety",
+    "title": "アンインストーラーの安全設計：Linux で絶対に誤削除しない三重の防御",
+    "date": "2026-08-25",
+    "tags": [
+      "Rust",
+      "Linux",
+      "安全設計",
+      "VinePalmaUninstaller"
+    ],
+    "excerpt": "ファイルを消せる道具が、二度と消し間違えないとどう保証するか。VinePalmaUninstaller の答えは、計画＝許可リスト、パスの拒否リスト、保護スイッチの三重防御に、pkexec 昇格時の出力パースという秘技を添えたもの。",
+    "thumbnail": "../../Resources/images/blog/thumbnails/uninstaller-safety.jpg",
+    "hero": "../../Resources/images/blog/hero/uninstaller-safety.jpg",
+    "fallbackIcon": "🛡️"
+  },
+  {
+    "id": 1,
+    "slug": "2026-07-22-linux-app-icon-fix",
+    "title": "Electron Linux アイコン踏み抜き記：パッケージからタスクバーまでの完全ガイド",
+    "date": "2026-07-22",
+    "tags": [
+      "技術メモ",
+      "Electron",
+      "Linux"
+    ],
+    "excerpt": "パッケージ後のランチャーアイコンは正常なのに、タスクバーだけ真っ白？原因はデスクトップ環境が WM_CLASS でウィンドウと .desktop を紐づける仕組みにあった。",
+    "thumbnail": "../../Resources/images/blog/thumbnails/electron_linux_icon.jpg",
+    "hero": "../../Resources/images/blog/hero/electron_linux_icon.jpg",
+    "fallbackIcon": "🐧"
+  }
+]

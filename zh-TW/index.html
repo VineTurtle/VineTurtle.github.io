@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2a5c3a">
+    <meta name="description" content="藤棲龜舍 VineTurtle Studio —— 以森林自然美學為核心的創意工作室，記錄森林小鎮的四季故事。">
+    <title>藤棲龜舍 - VineTurtle Studio</title>
+    <link rel="canonical" href="https://grapeleafi.top/zh-TW/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="藤棲龜舍 VineTurtle Studio" />
+    <meta property="og:title" content="藤棲龜舍 - VineTurtle Studio" />
+    <meta property="og:description" content="藤棲龜舍 VineTurtle Studio —— 以森林自然美學為核心的創意工作室，記錄森林小鎮的四季故事。" />
+    <meta property="og:url" content="https://grapeleafi.top/zh-TW/" />
+    <meta property="og:image" content="https://grapeleafi.top/Resources/images/og-cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="./Resources/images/VineTurtleStudio.png" type="image/png">
+    <link rel="alternate" type="application/rss+xml" title="藤棲部落格 · VineTurtle Studio" href="./feed.xml">
+    <script src="./JS/theme-init.js"></script>
+    <link rel="stylesheet" href="./CSS/layout.css">
+    <link rel="stylesheet" href="./CSS/i18n.css">
+    <link rel="stylesheet" href="./CSS/style.css">
+    <link rel="stylesheet" href="./CSS/home-feed.css">
+    <script src="./JS/i18n.js"></script>
+    <script src="./JS/layout.js" defer></script>
+    <script src="./JS/script.js" defer></script>
+    <script src="./JS/home-feed.js" defer></script>
+    <script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://grapeleafi.top/#organization","name":"藤棲龜舍 VineTurtle Studio","alternateName":"VineTurtle Studio","url":"https://grapeleafi.top/zh-TW/","description":"根植森林，四季共棲。","logo":"https://grapeleafi.top/zh-TW/Resources/images/VineTurtleStudio.png","slogan":"根植森林，四季共棲。","email":"VineTurtleStudio@outlook.com","inLanguage":"zh-TW"},{"@type":"WebSite","@id":"https://grapeleafi.top/#website","url":"https://grapeleafi.top/zh-TW/","name":"藤棲龜舍 VineTurtle Studio","inLanguage":"zh-TW","publisher":{"@id":"https://grapeleafi.top/#organization"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://grapeleafi.top/zh-TW/SpecialPages/Search/index.html?q={search_term_string}"},"query-input":"required name=search_term_string"}}]}
+</script>
+    <meta property="og:locale" content="zh_TW" />
+    <link rel="alternate" hreflang="zh-CN" href="https://grapeleafi.top/" />
+    <link rel="alternate" hreflang="zh-TW" href="https://grapeleafi.top/zh-TW/" />
+    <link rel="alternate" hreflang="en" href="https://grapeleafi.top/en/" />
+    <link rel="alternate" hreflang="ja" href="https://grapeleafi.top/ja/" />
+    <link rel="alternate" hreflang="x-default" href="https://grapeleafi.top/" />
+</head>
+<body>
+<noscript><div class="noscript-warn" data-i18n="common.noscript">本站需要啟用 JavaScript 才能正確顯示內容。</div></noscript>
+<div id="header-placeholder"></div>
+
+<main class="main-content">
+    <div class="page-container">
+        <!-- ===== 首页 ===== -->
+        <section id="page-home" class="page-section active" data-page="home">
+            <div class="container">
+                <div class="hero-card">
+                    <img src="./Resources/images/VineTurtleStudio.png" alt="藤棲龜舍" class="hero-logo" data-i18n-attrs="alt:site.name">
+                    <h1 class="studio-name" data-i18n="home.heroName">藤棲龜舍</h1>
+                    <p class="tagline" data-i18n="site.tagline">根植森林，四季共棲。</p>
+                    <p class="hero-lead" data-i18n="home.heroLead">藤蔓與龜影交織的創意工坊，記錄森林小鎮的四季故事。</p>
+                    <div class="hero-actions">
+                        <a class="hero-btn is-primary" href="#page-works" data-i18n="home.btnWorks">看看作品</a>
+                        <a class="hero-btn" href="./SpecialPages/Blog/index.html" data-i18n="home.btnBlog">讀讀部落格</a>
+                        <a class="hero-btn" href="./SpecialPages/Gallery/index.html" data-i18n="home.btnGallery">逛逛畫廊</a>
+                    </div>
+                </div>
+
+                <!-- 动态区块：精选固定、最近更新与热门自动生成，配置见 data/meta/home.json -->
+                <div class="home-feed" id="homeFeed">
+                    <p class="feed-loading" id="feedLoading" data-i18n="home.feedLoading">正在整理林間的作品與文章…</p>
+
+                    <section class="feed-block" data-block="featured" hidden>
+                        <div class="feed-head">
+                            <h2 data-i18n="home.featured">🌟 精選</h2>
+                            <a class="feed-more" href="#page-more" data-i18n="home.feedMore">更多內容 →</a>
+                        </div>
+                        <div class="feed-grid feed-grid-featured" data-slot="featured"></div>
+                    </section>
+
+                    <section class="feed-block" data-block="recent" hidden>
+                        <div class="feed-head">
+                            <h2 data-i18n="home.recent">🕒 最近更新</h2>
+                            <span class="feed-note" data-i18n="home.recentNote">依發布時間自動排序</span>
+                        </div>
+                        <div class="feed-grid" data-slot="recent"></div>
+                    </section>
+
+                    <section class="feed-block" data-block="hot" hidden>
+                        <div class="feed-head">
+                            <h2 data-i18n="home.hot">🔥 熱門內容</h2>
+                            <span class="feed-note" data-i18n="home.hotNote">閱讀數 + 編輯權重 + 新鮮度綜合排序</span>
+                        </div>
+                        <div class="feed-grid" data-slot="hot"></div>
+                    </section>
+                </div>
+                <noscript>
+                    <p class="feed-note"><span data-i18n="home.feedNoJs">動態區塊需要啟用 JavaScript；你也可以直接進入</span>
+                        <a href="./SpecialPages/Project/index.html" data-i18n="home.cardProject">專案</a>、
+                        <a href="./SpecialPages/Blog/index.html" data-i18n="home.cardBlog">部落格</a>、
+                        <a href="./SpecialPages/Gallery/index.html" data-i18n="home.cardGallery">畫廊</a> <span data-i18n="home.feedBrowseAll">瀏覽全部內容。</span></p>
+                </noscript>
+            </div>
+        </section>
+
+        <!-- ===== 关于 ===== -->
+        <section id="page-about" class="page-section" data-page="about">
+            <div class="container">
+                <div class="content-card">
+                    <h2 data-i18n="home.aboutTitle">關於藤棲龜舍</h2>
+                    <p data-i18n="home.about1">藤棲龜舍成立於2026年，是一個以森林自然美學為核心的創意工作室。</p>
+                    <p data-i18n="home.about2">我們相信，設計應該像森林一樣生長——緩慢、自然、充滿生命力。</p>
+                    <div class="about-details">
+                        <div class="detail-item"><span class="detail-label" data-i18n="home.idea">🌱 理念</span><span data-i18n="home.ideaValue">與自然共生</span></div>
+                        <div class="detail-item"><span class="detail-label" data-i18n="home.attitude">🐢 態度</span><span data-i18n="home.attitudeValue">踏實前行</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 作品 ===== -->
+        <section id="page-works" class="page-section" data-page="works">
+            <div class="container">
+                <div class="content-card">
+                    <h2 data-i18n="home.worksTitle">我們的作品</h2>
+                    <p data-i18n="home.worksLead">以下是我們的一些創作成果：</p>
+                    <ul class="work-list">
+                        <li data-i18n="home.worksPlayer">🎬 VinePalma Player —— 基於 FFmpeg 的本機播放器</li>
+                        <li data-i18n="home.worksFlow">🧭 VinePalmaFlow —— 永不上雲的本機專案管理</li>
+                        <li data-i18n="home.worksUninstaller">🧹 VinePalmaUninstaller —— 六大來源統一的 Linux 解除安裝器</li>
+                        <li data-i18n="home.worksToolbox">🛠️ VinePalmaToolbox —— 多功能桌面工具箱</li>
+                        <li data-i18n="home.worksGrapeLeafi">🌿 GrapeLeafi —— 葡葉醬的溫暖小窩</li>
+                    </ul>
+                    <p class="work-note"><span data-i18n="home.worksMore">更多作品正在生長中…… </span><a href="./SpecialPages/Project/index.html" data-i18n="home.viewAllProjects">查看全部專案 →</a></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 更多 ===== -->
+        <section id="page-more" class="page-section" data-page="more">
+            <div class="container">
+                <div class="content-card">
+                    <h2 data-i18n="home.moreTitle">🌿 更多探索</h2>
+                    <p data-i18n="home.moreLead">歡迎進入藤棲龜舍的更多內容世界。選擇你想探索的領域：</p>
+                </div>
+                <div class="more-grid">
+                    <a href="./SpecialPages/Gallery/index.html" class="more-card">
+                        <div class="more-icon">🖼️</div><h3 data-i18n="home.cardGallery">畫廊</h3><p data-i18n="home.cardGalleryDesc">欣賞我們的視覺創作</p><span class="more-badge" data-i18n="nav.enter">點選進入</span>
+                    </a>
+                    <a href="./SpecialPages/Blog/index.html" class="more-card">
+                        <div class="more-icon">📝</div><h3 data-i18n="home.cardBlog">部落格</h3><p data-i18n="home.cardBlogDesc">閱讀文章與靈感隨筆</p><span class="more-badge" data-i18n="nav.enter">點選進入</span>
+                    </a>
+                    <a href="./SpecialPages/Project/index.html" class="more-card">
+                        <div class="more-icon">🚀</div><h3 data-i18n="home.cardProject">專案</h3><p data-i18n="home.cardProjectDesc">我們的創意專案集錦</p><span class="more-badge" data-i18n="nav.enter">點選進入</span>
+                    </a>
+                    <a href="./SpecialPages/Search/index.html" class="more-card">
+                        <div class="more-icon">🔍</div><h3 data-i18n="home.cardSearch">搜尋</h3><p data-i18n="home.cardSearchDesc">依標題、標籤或關鍵字尋找內容</p><span class="more-badge" data-i18n="nav.enter">點選進入</span>
+                    </a>
+                    <!-- more-nav-anchor：新增分类的入口卡片由后台插到这一行之前，请勿删除 -->
+
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+
+<div id="footer-placeholder"></div>
+<div class="month-badge" id="monthBadge">🌿 1月</div>
+</body>
+</html>

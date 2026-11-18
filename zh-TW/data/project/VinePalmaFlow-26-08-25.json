@@ -1,0 +1,13 @@
+{
+  "id": 8,
+  "slug": "VinePalmaFlow-26-08-25",
+  "title": "VinePalmaFlow 本地项目管理",
+  "date": "2026-08-25",
+  "tags": ["Tauri", "Rust", "项目管理", "局域网同步"],
+  "hero": "../../Resources/images/projects/hero/vinepalma-flow.jpg",
+  "thumbnail": "../../Resources/images/projects/hero/vinepalma-flow.jpg",
+  "desc": "永远不上云的本地优先项目管理工具：Markdown 即数据库，局域网像云一样协作",
+  "status": "🚧 迭代中",
+  "statusClass": "status-progress",
+  "year": "2026"
+}

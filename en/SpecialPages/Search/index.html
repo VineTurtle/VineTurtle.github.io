@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2a5c3a" />
+    <meta name="description" content="Search articles and projects by title, tag, or keyword" />
+    <title>Search · Vine Turtle Nest</title>
+    <link rel="canonical" href="https://grapeleafi.top/en/SpecialPages/Search/index.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Vine Turtle Nest · VineTurtle Studio" />
+    <meta property="og:title" content="Search · Vine Turtle Nest" />
+    <meta property="og:description" content="Search articles and projects by title, tag, or keyword" />
+    <meta property="og:url" content="https://grapeleafi.top/en/SpecialPages/Search/index.html" />
+    <meta property="og:image" content="https://grapeleafi.top/Resources/images/og-cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="../../Resources/images/VineTurtleStudio.png" type="image/png" />
+    <script src="../../JS/theme-init.js"></script>
+    <link rel="stylesheet" href="../../CSS/layout.css" />
+    <link rel="stylesheet" href="../../CSS/i18n.css">
+    <link rel="stylesheet" href="../../CSS/style.css" />
+    <link rel="stylesheet" href="../../CSS/special/search.css" />
+    <script src="../../JS/i18n.js"></script>
+    <script src="../../JS/layout.js" defer></script>
+    <script src="../../JS/script.js" defer></script>
+    <script src="../../JS/search.js" defer></script>
+    <meta property="og:locale" content="en_US" />
+    <link rel="alternate" hreflang="zh-CN" href="https://grapeleafi.top/SpecialPages/Search/index.html" />
+    <link rel="alternate" hreflang="zh-TW" href="https://grapeleafi.top/zh-TW/SpecialPages/Search/index.html" />
+    <link rel="alternate" hreflang="en" href="https://grapeleafi.top/en/SpecialPages/Search/index.html" />
+    <link rel="alternate" hreflang="ja" href="https://grapeleafi.top/ja/SpecialPages/Search/index.html" />
+    <link rel="alternate" hreflang="x-default" href="https://grapeleafi.top/SpecialPages/Search/index.html" />
+</head>
+<body>
+<noscript><div class="noscript-warn" data-i18n="common.noscript">This site requires JavaScript to display content properly.</div></noscript>
+<div id="header-placeholder"></div>
+<main class="search-main">
+    <div class="container">
+        <div class="page-header">
+            <h1 data-i18n="title.searchH1">🔍 Site Search</h1>
+            <p data-i18n="title.searchDesc">Search articles and projects by title, tag, or keyword</p>
+        </div>
+
+        <form class="search-form" role="search" id="searchForm">
+            <label class="visually-hidden" for="searchInput" data-i18n="a11y.searchKeywords">Search keywords</label>
+            <input id="searchInput" type="search" name="q" placeholder="e.g. Electron, TLS, icon, VinePalma…" data-i18n-attrs="placeholder:search.placeholder" autocomplete="off" />
+            <button type="submit" data-i18n="search.btn">Search</button>
+        </form>
+
+        <p class="search-status" id="searchStatus" role="status" data-i18n="search.loading">Loading index…</p>
+        <div class="search-results" id="searchResults"></div>
+    </div>
+</main>
+<div id="footer-placeholder"></div>
+<div class="month-badge" id="monthBadge">🌿 1月</div>
+</body>
+</html>

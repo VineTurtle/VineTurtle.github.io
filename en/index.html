@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2a5c3a">
+    <meta name="description" content="Vine Turtle Studio — A creative studio rooted in forest natural aesthetics, recording the four seasons of a forest town.">
+    <title>Vine Turtle Nest - VineTurtle Studio</title>
+    <link rel="canonical" href="https://grapeleafi.top/en/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Vine Turtle Nest · VineTurtle Studio" />
+    <meta property="og:title" content="Vine Turtle Nest - VineTurtle Studio" />
+    <meta property="og:description" content="Vine Turtle Studio — A creative studio rooted in forest natural aesthetics, recording the four seasons of a forest town." />
+    <meta property="og:url" content="https://grapeleafi.top/en/" />
+    <meta property="og:image" content="https://grapeleafi.top/Resources/images/og-cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="./Resources/images/VineTurtleStudio.png" type="image/png">
+    <link rel="alternate" type="application/rss+xml" title="Vine Turtle Blog · VineTurtle Studio" href="./feed.xml">
+    <script src="./JS/theme-init.js"></script>
+    <link rel="stylesheet" href="./CSS/layout.css">
+    <link rel="stylesheet" href="./CSS/i18n.css">
+    <link rel="stylesheet" href="./CSS/style.css">
+    <link rel="stylesheet" href="./CSS/home-feed.css">
+    <script src="./JS/i18n.js"></script>
+    <script src="./JS/layout.js" defer></script>
+    <script src="./JS/script.js" defer></script>
+    <script src="./JS/home-feed.js" defer></script>
+    <script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://grapeleafi.top/#organization","name":"Vine Turtle Nest · VineTurtle Studio","alternateName":"VineTurtle Studio","url":"https://grapeleafi.top/en/","description":"Rooted in the forest, growing with the seasons.","logo":"https://grapeleafi.top/en/Resources/images/VineTurtleStudio.png","slogan":"Rooted in the forest, growing with the seasons.","email":"VineTurtleStudio@outlook.com","inLanguage":"en"},{"@type":"WebSite","@id":"https://grapeleafi.top/#website","url":"https://grapeleafi.top/en/","name":"Vine Turtle Nest · VineTurtle Studio","inLanguage":"en","publisher":{"@id":"https://grapeleafi.top/#organization"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://grapeleafi.top/en/SpecialPages/Search/index.html?q={search_term_string}"},"query-input":"required name=search_term_string"}}]}
+</script>
+    <meta property="og:locale" content="en_US" />
+    <link rel="alternate" hreflang="zh-CN" href="https://grapeleafi.top/" />
+    <link rel="alternate" hreflang="zh-TW" href="https://grapeleafi.top/zh-TW/" />
+    <link rel="alternate" hreflang="en" href="https://grapeleafi.top/en/" />
+    <link rel="alternate" hreflang="ja" href="https://grapeleafi.top/ja/" />
+    <link rel="alternate" hreflang="x-default" href="https://grapeleafi.top/" />
+</head>
+<body>
+<noscript><div class="noscript-warn" data-i18n="common.noscript">This site requires JavaScript to display content properly.</div></noscript>
+<div id="header-placeholder"></div>
+
+<main class="main-content">
+    <div class="page-container">
+        <!-- ===== 首页 ===== -->
+        <section id="page-home" class="page-section active" data-page="home">
+            <div class="container">
+                <div class="hero-card">
+                    <img src="./Resources/images/VineTurtleStudio.png" alt="Vine Turtle Nest" class="hero-logo" data-i18n-attrs="alt:site.name">
+                    <h1 class="studio-name" data-i18n="home.heroName">Vine Turtle Nest</h1>
+                    <p class="tagline" data-i18n="site.tagline">Rooted in the forest, growing with the seasons.</p>
+                    <p class="hero-lead" data-i18n="home.heroLead">A creative studio where vines and turtle shadows intertwine, recording the four seasons of a forest town.</p>
+                    <div class="hero-actions">
+                        <a class="hero-btn is-primary" href="#page-works" data-i18n="home.btnWorks">See our works</a>
+                        <a class="hero-btn" href="./SpecialPages/Blog/index.html" data-i18n="home.btnBlog">Read the blog</a>
+                        <a class="hero-btn" href="./SpecialPages/Gallery/index.html" data-i18n="home.btnGallery">Browse the gallery</a>
+                    </div>
+                </div>
+
+                <!-- 动态区块：精选固定、最近更新与热门自动生成，配置见 data/meta/home.json -->
+                <div class="home-feed" id="homeFeed">
+                    <p class="feed-loading" id="feedLoading" data-i18n="home.feedLoading">Gathering works and articles from the woods…</p>
+
+                    <section class="feed-block" data-block="featured" hidden>
+                        <div class="feed-head">
+                            <h2 data-i18n="home.featured">🌟 Featured</h2>
+                            <a class="feed-more" href="#page-more" data-i18n="home.feedMore">More content →</a>
+                        </div>
+                        <div class="feed-grid feed-grid-featured" data-slot="featured"></div>
+                    </section>
+
+                    <section class="feed-block" data-block="recent" hidden>
+                        <div class="feed-head">
+                            <h2 data-i18n="home.recent">🕒 Recently Updated</h2>
+                            <span class="feed-note" data-i18n="home.recentNote">Sorted automatically by publish date</span>
+                        </div>
+                        <div class="feed-grid" data-slot="recent"></div>
+                    </section>
+
+                    <section class="feed-block" data-block="hot" hidden>
+                        <div class="feed-head">
+                            <h2 data-i18n="home.hot">🔥 Popular</h2>
+                            <span class="feed-note" data-i18n="home.hotNote">Ranked by views, editorial weight, and freshness</span>
+                        </div>
+                        <div class="feed-grid" data-slot="hot"></div>
+                    </section>
+                </div>
+                <noscript>
+                    <p class="feed-note"><span data-i18n="home.feedNoJs">Dynamic sections require JavaScript; you can also go directly to</span>
+                        <a href="./SpecialPages/Project/index.html" data-i18n="home.cardProject">Projects</a>、
+                        <a href="./SpecialPages/Blog/index.html" data-i18n="home.cardBlog">Blog</a>、
+                        <a href="./SpecialPages/Gallery/index.html" data-i18n="home.cardGallery">Gallery</a> <span data-i18n="home.feedBrowseAll">to browse everything.</span></p>
+                </noscript>
+            </div>
+        </section>
+
+        <!-- ===== 关于 ===== -->
+        <section id="page-about" class="page-section" data-page="about">
+            <div class="container">
+                <div class="content-card">
+                    <h2 data-i18n="home.aboutTitle">About Vine Turtle Nest</h2>
+                    <p data-i18n="home.about1">Founded in 2026, Vine Turtle Nest is a creative studio centered on forest natural aesthetics.</p>
+                    <p data-i18n="home.about2">We believe design should grow like a forest — slowly, naturally, and full of life.</p>
+                    <div class="about-details">
+                        <div class="detail-item"><span class="detail-label" data-i18n="home.idea">🌱 Philosophy</span><span data-i18n="home.ideaValue">Living with nature</span></div>
+                        <div class="detail-item"><span class="detail-label" data-i18n="home.attitude">🐢 Attitude</span><span data-i18n="home.attitudeValue">Steady progress</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 作品 ===== -->
+        <section id="page-works" class="page-section" data-page="works">
+            <div class="container">
+                <div class="content-card">
+                    <h2 data-i18n="home.worksTitle">Our Works</h2>
+                    <p data-i18n="home.worksLead">Here are some of our creations:</p>
+                    <ul class="work-list">
+                        <li data-i18n="home.worksPlayer">🎬 VinePalma Player — a local video player built on FFmpeg</li>
+                        <li data-i18n="home.worksFlow">🧭 VinePalmaFlow — local-first project management that never touches the cloud</li>
+                        <li data-i18n="home.worksUninstaller">🧹 VinePalmaUninstaller — one Linux uninstaller for six package sources</li>
+                        <li data-i18n="home.worksToolbox">🛠️ VinePalmaToolbox — a multi-purpose desktop toolbox</li>
+                        <li data-i18n="home.worksGrapeLeafi">🌿 GrapeLeafi — a warm little home for Grapeleaf</li>
+                    </ul>
+                    <p class="work-note"><span data-i18n="home.worksMore">More works are growing… </span><a href="./SpecialPages/Project/index.html" data-i18n="home.viewAllProjects">View all projects →</a></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 更多 ===== -->
+        <section id="page-more" class="page-section" data-page="more">
+            <div class="container">
+                <div class="content-card">
+                    <h2 data-i18n="home.moreTitle">🌿 More to Explore</h2>
+                    <p data-i18n="home.moreLead">Welcome to more of Vine Turtle Nest. Pick an area to explore:</p>
+                </div>
+                <div class="more-grid">
+                    <a href="./SpecialPages/Gallery/index.html" class="more-card">
+                        <div class="more-icon">🖼️</div><h3 data-i18n="home.cardGallery">Gallery</h3><p data-i18n="home.cardGalleryDesc">Enjoy our visual creations</p><span class="more-badge" data-i18n="nav.enter">Enter</span>
+                    </a>
+                    <a href="./SpecialPages/Blog/index.html" class="more-card">
+                        <div class="more-icon">📝</div><h3 data-i18n="home.cardBlog">Blog</h3><p data-i18n="home.cardBlogDesc">Read articles and inspiration notes</p><span class="more-badge" data-i18n="nav.enter">Enter</span>
+                    </a>
+                    <a href="./SpecialPages/Project/index.html" class="more-card">
+                        <div class="more-icon">🚀</div><h3 data-i18n="home.cardProject">Projects</h3><p data-i18n="home.cardProjectDesc">Our collection of creative projects</p><span class="more-badge" data-i18n="nav.enter">Enter</span>
+                    </a>
+                    <a href="./SpecialPages/Search/index.html" class="more-card">
+                        <div class="more-icon">🔍</div><h3 data-i18n="home.cardSearch">Search</h3><p data-i18n="home.cardSearchDesc">Find content by title, tag, or keyword</p><span class="more-badge" data-i18n="nav.enter">Enter</span>
+                    </a>
+                    <!-- more-nav-anchor：新增分类的入口卡片由后台插到这一行之前，请勿删除 -->
+
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+
+<div id="footer-placeholder"></div>
+<div class="month-badge" id="monthBadge">🌿 1月</div>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "title": "Electron Linux 圖示踩坑記：從打包到工作列圖示的完整指南",
+  "excerpt": "打包後啟動器圖示正常，工作列卻是空白？問題出在桌面環境透過 WM_CLASS 關聯視窗和 .desktop 檔案。",
+  "tags": [
+    "技術筆記",
+    "Electron",
+    "Linux"
+  ]
+}

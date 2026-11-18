@@ -1,0 +1,10 @@
+{
+  "title": "アンインストーラーの安全設計：Linux で絶対に誤削除しない三重の防御",
+  "excerpt": "ファイルを消せる道具が、二度と消し間違えないとどう保証するか。VinePalmaUninstaller の答えは、計画＝許可リスト、パスの拒否リスト、保護スイッチの三重防御に、pkexec 昇格時の出力パースという秘技を添えたもの。",
+  "tags": [
+    "Rust",
+    "Linux",
+    "安全設計",
+    "VinePalmaUninstaller"
+  ]
+}

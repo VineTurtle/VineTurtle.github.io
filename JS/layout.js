@@ -54,21 +54,26 @@
     window.VTS = window.VTS || {};
     window.VTS.root = pathPrefix;
 
-    // ---------- 导航模板 ----------
+    // i18n 快捷方式：i18n.js 先于本脚本加载，t() 始终可用（缺 key 回退简中）
+    const t = function (key, vars) {
+        return window.VTS && window.VTS.t ? window.VTS.t(key, vars) : key;
+    };
+
+    // ---------- 导航模板（data-i18n 标记供语言切换就地刷新） ----------
     const homeNav = `
-        <a href="#page-home" class="nav-link" data-page="home">🏠 首页</a>
-        <a href="#page-about" class="nav-link" data-page="about">📖 关于</a>
-        <a href="#page-works" class="nav-link" data-page="works">🎨 作品</a>
-        <a href="#page-more" class="nav-link" data-page="more">🌿 更多</a>
-        <a href="${pathPrefix}SpecialPages/Search/index.html" class="nav-link">🔍 搜索</a>
+        <a href="#page-home" class="nav-link" data-page="home" data-i18n="nav.home">${t('nav.home')}</a>
+        <a href="#page-about" class="nav-link" data-page="about" data-i18n="nav.about">${t('nav.about')}</a>
+        <a href="#page-works" class="nav-link" data-page="works" data-i18n="nav.works">${t('nav.works')}</a>
+        <a href="#page-more" class="nav-link" data-page="more" data-i18n="nav.more">${t('nav.more')}</a>
+        <a href="${pathPrefix}SpecialPages/Search/index.html" class="nav-link" data-i18n="nav.search">${t('nav.search')}</a>
     `;
 
     const specialNav = `
-        <a href="${indexUrl}" class="nav-link">🏠 主页</a>
-        <a href="${pathPrefix}SpecialPages/Blog/index.html" class="nav-link${currentSection === 'blog' ? ' active' : ''}"${currentSection === 'blog' ? ' aria-current="page"' : ''}>📝 博客</a>
-        <a href="${pathPrefix}SpecialPages/Project/index.html" class="nav-link${currentSection === 'project' ? ' active' : ''}"${currentSection === 'project' ? ' aria-current="page"' : ''}>🚀 项目</a>
-        <a href="${pathPrefix}SpecialPages/Gallery/index.html" class="nav-link${currentSection === 'gallery' ? ' active' : ''}"${currentSection === 'gallery' ? ' aria-current="page"' : ''}>🖼️ 画廊</a>
-        <a href="${pathPrefix}SpecialPages/Search/index.html" class="nav-link${currentSection === 'search' ? ' active' : ''}"${currentSection === 'search' ? ' aria-current="page"' : ''}>🔍 搜索</a>
+        <a href="${indexUrl}" class="nav-link" data-i18n="nav.main">${t('nav.main')}</a>
+        <a href="${pathPrefix}SpecialPages/Blog/index.html" class="nav-link${currentSection === 'blog' ? ' active' : ''}"${currentSection === 'blog' ? ' aria-current="page"' : ''} data-i18n="nav.blog">${t('nav.blog')}</a>
+        <a href="${pathPrefix}SpecialPages/Project/index.html" class="nav-link${currentSection === 'project' ? ' active' : ''}"${currentSection === 'project' ? ' aria-current="page"' : ''} data-i18n="nav.project">${t('nav.project')}</a>
+        <a href="${pathPrefix}SpecialPages/Gallery/index.html" class="nav-link${currentSection === 'gallery' ? ' active' : ''}"${currentSection === 'gallery' ? ' aria-current="page"' : ''} data-i18n="nav.gallery">${t('nav.gallery')}</a>
+        <a href="${pathPrefix}SpecialPages/Search/index.html" class="nav-link${currentSection === 'search' ? ' active' : ''}"${currentSection === 'search' ? ' aria-current="page"' : ''} data-i18n="nav.search">${t('nav.search')}</a>
     `;
 
     const logoHref = isSpecialPage ? indexUrl : '#page-home';
@@ -79,22 +84,23 @@
             <div class="header-container">
                 <div class="logo-area">
                     <a href="${logoHref}" id="logoLink">
-                        <img src="${logoPath}" alt="藤栖龟舍" class="header-logo">
-                        <span class="header-title">藤栖龟舍</span>
+                        <img src="${logoPath}" alt="${t('site.name')}" class="header-logo" data-i18n-attrs="alt:site.name">
+                        <span class="header-title" data-i18n="site.name">${t('site.name')}</span>
                     </a>
                 </div>
                 <div class="header-right">
-                    <nav class="main-nav" id="mainNav" aria-label="主导航">
+                    <nav class="main-nav" id="mainNav" aria-label="${t('nav.mainNav')}" data-i18n-attrs="aria-label:nav.mainNav">
                         ${isSpecialPage ? specialNav : homeNav}
                     </nav>
-                    <button class="palette-trigger" id="paletteTrigger" type="button" aria-label="打开站内搜索（Ctrl+K）" aria-haspopup="dialog" aria-expanded="false" title="站内搜索（Ctrl+K）">
+                    <button class="palette-trigger" id="paletteTrigger" type="button" aria-label="${t('a11y.openSearch')}" aria-haspopup="dialog" aria-expanded="false" title="${t('a11y.searchShortcut')}" data-i18n-attrs="aria-label:a11y.openSearch,title:a11y.searchShortcut">
                         <span class="palette-trigger-icon" aria-hidden="true">🔍</span>
                         <kbd class="palette-trigger-kbd">Ctrl K</kbd>
                     </button>
-                    <button class="theme-toggle" id="themeToggle" type="button" aria-label="切换到深色模式" title="切换深色 / 浅色" aria-pressed="false">
+                    <button class="theme-toggle" id="themeToggle" type="button" aria-label="${t('a11y.themeDark')}" title="${t('a11y.themeToggle')}" aria-pressed="false" data-i18n-attrs="title:a11y.themeToggle">
                         <span class="theme-icon" aria-hidden="true">🌙</span>
                     </button>
-                    <button class="nav-toggle" id="navToggle" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="mainNav">☰</button>
+                    <button class="nav-toggle" id="navToggle" type="button" aria-label="${t('a11y.menuOpen')}" aria-expanded="false" aria-controls="mainNav">☰</button>
+                    <div class="lang-switcher" id="langSwitcher"></div>
                 </div>
             </div>
         </header>
@@ -103,13 +109,13 @@
     // ---------- 公共底部 ----------
     const footerHTML = `
     <footer class="footer">
-        <p>© <span id="footerYear">2026</span> 藤栖龟舍 VineTurtle Studio. 林间岁月，温柔相守。</p>
+        <p>© <span id="footerYear">2026</span> <span data-i18n="footer.copyright">${t('footer.copyright')}</span></p>
         <p class="privacy-row">
-            <a href="${pathPrefix}SpecialPages/Search/index.html" class="privacy-link">搜索</a>
+            <a href="${pathPrefix}SpecialPages/Search/index.html" class="privacy-link" data-i18n="footer.search">${t('footer.search')}</a>
             <span aria-hidden="true"> · </span>
-            <a href="${pathPrefix}feed.xml" class="privacy-link">RSS</a>
+            <a href="${pathPrefix}feed.xml" class="privacy-link" data-i18n="footer.rss">${t('footer.rss')}</a>
             <span aria-hidden="true"> · </span>
-            <a href="${pathPrefix}privacy/privacy.html" class="privacy-link">隐私策略</a>
+            <a href="${pathPrefix}privacy/privacy.html" class="privacy-link" data-i18n="footer.privacy">${t('footer.privacy')}</a>
         </p>
     </footer>
 `;
@@ -127,12 +133,22 @@
             const skip = document.createElement('a');
             skip.className = 'skip-link';
             skip.href = '#' + main.id;
-            skip.textContent = '跳到主要内容';
+            skip.textContent = t('common.skipToContent');
+            skip.setAttribute('data-i18n', 'common.skipToContent');
             document.body.insertBefore(skip, document.body.firstChild);
         }
 
         if (headerPlaceholder) headerPlaceholder.innerHTML = headerHTML;
         if (footerPlaceholder) footerPlaceholder.innerHTML = footerHTML;
+
+        // header 注入后才存在 #langSwitcher，此时挂载切换器
+        if (window.VTS && VTS.i18n && VTS.i18n.mountSwitcher) VTS.i18n.mountSwitcher();
+
+        // header/footer 是动态注入的，注入后刷一次静态文案（含 aria/title/alt）
+        if (window.VTS && VTS.i18n && VTS.i18n.applyStatic) {
+            VTS.i18n.applyStatic(document.getElementById('siteHeader'));
+            VTS.i18n.applyStatic(document.querySelector('.footer'));
+        }
 
         const yearEl = document.getElementById('footerYear');
         if (yearEl) yearEl.textContent = String(new Date().getFullYear());
@@ -144,6 +160,39 @@
         initImageZoom();
 
         if (!isSpecialPage) initSPA();
+    });
+
+    // 语言切换：刷新主题/菜单按钮的动态 aria、月份徽标，并重置切换器选中态
+    window.addEventListener('vts:langchange', function () {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const themeBtn = document.getElementById('themeToggle');
+        if (themeBtn) themeBtn.setAttribute('aria-label', t(isDark ? 'a11y.themeLight' : 'a11y.themeDark'));
+        const navToggle = document.getElementById('navToggle');
+        const mainNav = document.getElementById('mainNav');
+        if (navToggle && mainNav) {
+            const open = mainNav.classList.contains('open');
+            navToggle.setAttribute('aria-label', t(open ? 'a11y.menuClose' : 'a11y.menuOpen'));
+        }
+        const backTop = document.getElementById('backToTop');
+        if (backTop) backTop.setAttribute('aria-label', t('a11y.backToTop'));
+
+        // 搜索弹层：刷新静态文案、计数，并按当前查询重渲染结果
+        const palette = document.getElementById('cmdPalette');
+        if (palette) {
+            VTS.i18n.applyStatic(palette);
+            const count = document.getElementById('cmdCount');
+            if (count) count.textContent = t('palette.count', { count: (paletteState.entries || []).length });
+            const input = document.getElementById('cmdInput');
+            if (input && !palette.hidden) renderPalette(input.value);
+        }
+        if (window.updateMonthColors) window.updateMonthColors();
+        // 重设当前页文档标题
+        if (!isSpecialPage) {
+            const hash = window.location.hash;
+            const page = hash && hash.indexOf('#page-') === 0 ? hash.slice(6) : 'home';
+            const map = { home: 'title.home', about: 'title.about', works: 'title.works', more: 'title.more' };
+            document.title = t(map[page] || 'title.home');
+        }
     });
 
     // ---------- 主题：深色 / 浅色 ----------
@@ -167,7 +216,7 @@
         if (btn) {
             const icon = btn.querySelector('.theme-icon');
             if (icon) icon.textContent = isDark ? '☀️' : '🌙';
-            btn.setAttribute('aria-label', isDark ? '切换到浅色模式' : '切换到深色模式');
+            btn.setAttribute('aria-label', t(isDark ? 'a11y.themeLight' : 'a11y.themeDark'));
             btn.setAttribute('aria-pressed', String(isDark));
         }
     }
@@ -217,7 +266,7 @@
                 paletteState.entries = Array.isArray(data) ? data : [];
                 paletteState.loading = null;
                 const count = document.getElementById('cmdCount');
-                if (count) count.textContent = String(paletteState.entries.length);
+                if (count) count.textContent = t('palette.count', { count: paletteState.entries.length });
                 return paletteState.entries;
             })
             .catch(function (err) {
@@ -289,17 +338,18 @@
         const results = document.getElementById('cmdResults');
         if (!results) return;
         if (!paletteState.entries && paletteState.loading) {
-            results.innerHTML = '<div class="cmd-empty"><span class="cmd-empty-icon">⏳</span><p>正在加载搜索索引…</p></div>';
+            results.innerHTML = '<div class="cmd-empty"><span class="cmd-empty-icon">⏳</span><p data-i18n="palette.loading">' + t('palette.loading') + '</p></div>';
             return;
         }
         const list = paletteSearch(query);
         paletteState.filtered = list;
         paletteState.active = list.length ? 0 : -1;
         if (!list.length) {
-            const emptyText = String(query || '').trim()
-                ? '没有找到匹配内容，换个关键词试试。'
-                : '搜索索引为空。';
-            results.innerHTML = '<div class="cmd-empty"><span class="cmd-empty-icon">🌱</span><p>' + escapeHtml(emptyText) + '</p></div>';
+            const hasQuery = !!String(query || '').trim();
+            const emptyKey = hasQuery ? 'palette.emptyQuery' : 'palette.emptyIndex';
+            const emptyText = t(emptyKey);
+            const emptyHtml = '<div class="cmd-empty"><span class="cmd-empty-icon">🌱</span><p data-i18n="' + emptyKey + '">' + escapeHtml(emptyText) + '</p></div>';
+            results.innerHTML = emptyHtml;
             return;
         }
         results.innerHTML = list.map(paletteItemHtml).join('');
@@ -324,11 +374,11 @@
             renderPalette('');
             return;
         }
-        if (results) results.innerHTML = '<div class="cmd-empty"><span class="cmd-empty-icon">⏳</span><p>正在加载搜索索引…</p></div>';
+        if (results) results.innerHTML = '<div class="cmd-empty"><span class="cmd-empty-icon">⏳</span><p data-i18n="palette.loading">' + t('palette.loading') + '</p></div>';
         loadPaletteIndex().then(function () {
             renderPalette(input.value);
         }).catch(function () {
-            if (results) results.innerHTML = '<div class="cmd-empty"><span class="cmd-empty-icon">⚠️</span><p>搜索索引加载失败，请稍后重试。</p></div>';
+            if (results) results.innerHTML = '<div class="cmd-empty"><span class="cmd-empty-icon">⚠️</span><p data-i18n="palette.loadFail">' + t('palette.loadFail') + '</p></div>';
         });
     }
 
@@ -352,19 +402,19 @@
         overlay.id = 'cmdPalette';
         overlay.hidden = true;
         overlay.innerHTML = `
-            <div class="cmd-dialog" role="dialog" aria-modal="true" aria-label="站内搜索">
+            <div class="cmd-dialog" role="dialog" aria-modal="true" aria-label="${t('palette.label')}" data-i18n-attrs="aria-label:palette.label">
                 <div class="cmd-input-row">
                     <span class="cmd-search-icon" aria-hidden="true">🔍</span>
-                    <label class="visually-hidden" for="cmdInput">搜索站内内容</label>
-                    <input id="cmdInput" type="text" placeholder="搜索文章、项目或标签…" autocomplete="off" spellcheck="false" aria-controls="cmdResults" aria-autocomplete="list" />
+                    <label class="visually-hidden" for="cmdInput" data-i18n="a11y.searchSite">${t('a11y.searchSite')}</label>
+                    <input id="cmdInput" type="text" placeholder="${t('palette.placeholder')}" data-i18n-attrs="placeholder:palette.placeholder" autocomplete="off" spellcheck="false" aria-controls="cmdResults" aria-autocomplete="list" />
                     <kbd class="cmd-esc">Esc</kbd>
                 </div>
-                <div class="cmd-results" id="cmdResults" role="listbox" aria-label="搜索结果"></div>
+                <div class="cmd-results" id="cmdResults" role="listbox" aria-label="${t('a11y.searchResults')}" data-i18n-attrs="aria-label:a11y.searchResults"></div>
                 <div class="cmd-footer">
-                    <span><kbd>↑</kbd><kbd>↓</kbd> 选择</span>
-                    <span><kbd>Enter</kbd> 打开</span>
-                    <span><kbd>Esc</kbd> 关闭</span>
-                    <span class="cmd-footer-note">共 <span id="cmdCount">0</span> 条内容</span>
+                    <span><kbd>↑</kbd><kbd>↓</kbd> <span data-i18n="palette.select">${t('palette.select')}</span></span>
+                    <span><kbd>Enter</kbd> <span data-i18n="palette.open">${t('palette.open')}</span></span>
+                    <span><kbd>Esc</kbd> <span data-i18n="palette.close">${t('palette.close')}</span></span>
+                    <span class="cmd-footer-note"><span id="cmdCount">${t('palette.count', { count: 0 })}</span></span>
                 </div>
             </div>
         `;
@@ -459,14 +509,15 @@
         overlay.hidden = true;
         overlay.setAttribute('role', 'dialog');
         overlay.setAttribute('aria-modal', 'true');
-        overlay.setAttribute('aria-label', '查看大图');
+        overlay.setAttribute('aria-label', t('a11y.viewImage'));
+        overlay.setAttribute('data-i18n-attrs', 'aria-label:a11y.viewImage');
         overlay.innerHTML = `
-            <button class="image-zoom-close" type="button" aria-label="关闭大图">×</button>
+            <button class="image-zoom-close" type="button" aria-label="${t('a11y.closeImage')}" data-i18n-attrs="aria-label:a11y.closeImage">×</button>
             <figure class="image-zoom-figure">
                 <img id="imageZoomImg" alt="">
                 <figcaption class="image-zoom-caption" id="imageZoomCaption"></figcaption>
             </figure>
-            <a class="image-zoom-open" id="imageZoomOpen" href="#" target="_blank" rel="noopener">在新标签页打开 ↗</a>
+            <a class="image-zoom-open" id="imageZoomOpen" href="#" target="_blank" rel="noopener" data-i18n="a11y.openNewTab">${t('a11y.openNewTab')}</a>
         `;
         document.body.appendChild(overlay);
 
@@ -506,7 +557,9 @@
                 img.classList.add('zoomable-image');
                 img.tabIndex = 0;
                 img.setAttribute('role', 'button');
-                img.setAttribute('aria-label', '查看大图：' + (img.alt || '图片'));
+                img.setAttribute('aria-label', img.alt
+                    ? t('a11y.viewImageAlt', { alt: img.alt })
+                    : t('a11y.viewImage'));
                 img.addEventListener('click', function () { open(img); });
                 img.addEventListener('keydown', function (e) {
                     if (e.key === 'Enter' || e.key === ' ') {
@@ -555,7 +608,7 @@
         function setNavOpen(open) {
             nav.classList.toggle('open', open);
             toggle.setAttribute('aria-expanded', String(open));
-            toggle.setAttribute('aria-label', open ? '关闭菜单' : '打开菜单');
+            toggle.setAttribute('aria-label', t(open ? 'a11y.menuClose' : 'a11y.menuOpen'));
             toggle.textContent = open ? '✕' : '☰';
             if (open) header.classList.remove('is-hidden');
         }
@@ -635,7 +688,8 @@
         btn.id = 'backToTop';
         btn.className = 'back-to-top';
         btn.type = 'button';
-        btn.setAttribute('aria-label', '回到顶部');
+        btn.setAttribute('aria-label', t('a11y.backToTop'));
+        btn.setAttribute('data-i18n-attrs', 'aria-label:a11y.backToTop');
         btn.textContent = '↑';
         btn.addEventListener('click', function () {
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -646,10 +700,10 @@
     // ---------- SPA 切换（仅 hashchange 驱动） ----------
     function initSPA() {
         const titles = {
-            home: '藤栖龟舍 - VineTurtle Studio',
-            about: '关于 · 藤栖龟舍',
-            works: '作品 · 藤栖龟舍',
-            more: '更多 · 藤栖龟舍'
+            home: 'title.home',
+            about: 'title.about',
+            works: 'title.works',
+            more: 'title.more'
         };
 
         function switchPage(pageId) {
@@ -668,7 +722,7 @@
                 if (active) link.setAttribute('aria-current', 'page');
                 else link.removeAttribute('aria-current');
             });
-            if (titles[pageId]) document.title = titles[pageId];
+            if (titles[pageId]) document.title = t(titles[pageId]);
         }
 
         function getPageFromHash() {
@@ -686,7 +740,7 @@
             if (nav && toggle) {
                 nav.classList.remove('open');
                 toggle.setAttribute('aria-expanded', 'false');
-                toggle.setAttribute('aria-label', '打开菜单');
+                toggle.setAttribute('aria-label', t('a11y.menuOpen'));
                 toggle.textContent = '☰';
             }
         });

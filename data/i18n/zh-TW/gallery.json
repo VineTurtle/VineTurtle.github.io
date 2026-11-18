@@ -1,0 +1,48 @@
+{
+  "items": {
+    "sakura-tea": {
+      "title": "春庭櫻茶",
+      "desc": "櫻花樹下的午後茶會，粉瓣落滿石板路"
+    },
+    "sakura-reading": {
+      "title": "櫻庭讀書",
+      "desc": "公園長椅上的閱讀時光，小夢與一本舊書"
+    },
+    "grape-arbor": {
+      "title": "葡萄架下的微笑",
+      "desc": "藤蔓棚架下，葡葉醬與一籃紫葡萄"
+    },
+    "vineyard-picnic": {
+      "title": "葡萄園野餐",
+      "desc": "橙果子與小夢的葡萄園野餐，分享新摘的葡萄"
+    },
+    "orange-teatime": {
+      "title": "柑橘下午茶",
+      "desc": "橙果子與小葡葉的下午茶，滿室橙香"
+    },
+    "apple-orchard": {
+      "title": "蘋果園的豐收",
+      "desc": "提著果籃穿行果園，摘下秋天第一顆紅蘋果"
+    },
+    "grapeleafi-summer": {
+      "title": "葡葉醬 · 夏日葡萄",
+      "desc": "葡園管理者葡葉醬的夏日立繪"
+    },
+    "orchard-outfit": {
+      "title": "果園穿搭 · 橙果子",
+      "desc": "草帽與吊帶短褲，果園勞作裝扮"
+    },
+    "xiaomeng-chibi": {
+      "title": "小夢妹妹 Q版",
+      "desc": "捧著書本與紅茶的小夢，櫻花瓣落在髮梢"
+    },
+    "grapeleafi-chibi": {
+      "title": "葡葉醬 Q版",
+      "desc": "軟萌坐姿，暖棕色開衫配紅絲帶"
+    },
+    "toolbox-cover": {
+      "title": "VinePalmaToolbox 封面",
+      "desc": "工具箱軟體的官方封面視覺"
+    }
+  }
+}

@@ -17,29 +17,31 @@
     <link rel="icon" href="../../Resources/images/VineTurtleStudio.png" type="image/png" />
     <script src="../../JS/theme-init.js"></script>
     <link rel="stylesheet" href="../../CSS/layout.css" />
+    <link rel="stylesheet" href="../../CSS/i18n.css">
     <link rel="stylesheet" href="../../CSS/style.css" />
     <link rel="stylesheet" href="../../CSS/special/search.css" />
+    <script src="../../JS/i18n.js"></script>
     <script src="../../JS/layout.js" defer></script>
     <script src="../../JS/script.js" defer></script>
     <script src="../../JS/search.js" defer></script>
 </head>
 <body>
-<noscript><div class="noscript-warn">本站需要启用 JavaScript 才能正常显示内容。</div></noscript>
+<noscript><div class="noscript-warn" data-i18n="common.noscript">本站需要启用 JavaScript 才能正常显示内容。</div></noscript>
 <div id="header-placeholder"></div>
 <main class="search-main">
     <div class="container">
         <div class="page-header">
-            <h1>🔍 站内搜索</h1>
-            <p>输入标题、标签或关键词，搜索文章与项目</p>
+            <h1 data-i18n="title.searchH1">🔍 站内搜索</h1>
+            <p data-i18n="title.searchDesc">输入标题、标签或关键词，搜索文章与项目</p>
         </div>
 
         <form class="search-form" role="search" id="searchForm">
-            <label class="visually-hidden" for="searchInput">搜索关键词</label>
-            <input id="searchInput" type="search" name="q" placeholder="例如：Electron、TLS、图标、VinePalma…" autocomplete="off" />
-            <button type="submit">搜索</button>
+            <label class="visually-hidden" for="searchInput" data-i18n="a11y.searchKeywords">搜索关键词</label>
+            <input id="searchInput" type="search" name="q" placeholder="例如：Electron、TLS、图标、VinePalma…" data-i18n-attrs="placeholder:search.placeholder" autocomplete="off" />
+            <button type="submit" data-i18n="search.btn">搜索</button>
         </form>
 
-        <p class="search-status" id="searchStatus" role="status">正在加载索引…</p>
+        <p class="search-status" id="searchStatus" role="status" data-i18n="search.loading">正在加载索引…</p>
         <div class="search-results" id="searchResults"></div>
     </div>
 </main>

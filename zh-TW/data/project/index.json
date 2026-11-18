@@ -1,0 +1,93 @@
+[
+  {
+    "id": 7,
+    "slug": "GrapeLeafi-26-08-25",
+    "title": "GrapeLeafi 葡葉醬的溫暖小窩",
+    "date": "2026-08-25",
+    "tags": [
+      "網頁開發",
+      "靜態網站",
+      "社區站點"
+    ],
+    "thumbnail": "../../Resources/images/projects/thumbnails/grapeleafi-site.jpg",
+    "hero": "../../Resources/images/projects/hero/grapeleafi-site.jpg",
+    "status": "🚧 迭代中",
+    "statusClass": "status-progress",
+    "year": "2024",
+    "desc": "为零基础用户维护的纯静态粉丝社区站：倒计时、生日提醒、看板娘一个不少",
+    "excerpt": "為零基礎使用者維護的純靜態粉絲社群站：倒數計時、生日提醒、看板娘一個不少"
+  },
+  {
+    "id": 8,
+    "slug": "VinePalmaFlow-26-08-25",
+    "title": "VinePalmaFlow 本機專案管理",
+    "date": "2026-08-25",
+    "tags": [
+      "Tauri",
+      "Rust",
+      "專案管理",
+      "區域網路同步"
+    ],
+    "thumbnail": "../../Resources/images/projects/thumbnails/vinepalma-flow.jpg",
+    "hero": "../../Resources/images/projects/hero/vinepalma-flow.jpg",
+    "status": "🚧 迭代中",
+    "statusClass": "status-progress",
+    "year": "2026",
+    "desc": "永远不上云的本地优先项目管理工具：Markdown 即数据库，局域网像云一样协作",
+    "excerpt": "永遠不上雲的本機優先專案管理工具：Markdown 即資料庫，區域網路像雲一樣協作"
+  },
+  {
+    "id": 6,
+    "slug": "VinePalmaUninstaller-26-08-10",
+    "title": "VinePalmaUninstaller 軟體開發",
+    "date": "2026-08-10",
+    "tags": [
+      "軟體開發",
+      "Linux",
+      "Tauri"
+    ],
+    "thumbnail": "../../Resources/images/projects/thumbnails/vinepalma-uninstaller.jpg",
+    "hero": "../../Resources/images/projects/hero/vinepalma-uninstaller.jpg",
+    "status": "🚧 迭代中",
+    "statusClass": "status-progress",
+    "year": "2026",
+    "desc": "APT / Flatpak / Snap / Docker / AppImage / APM 六大来源统一的 Linux 卸载器",
+    "excerpt": "APT / Flatpak / Snap / Docker / AppImage / APM 六大來源統一的 Linux 解除安裝器"
+  },
+  {
+    "id": 4,
+    "slug": "VinePalma-Player-26-08-07",
+    "title": "VinePalma Player 本機播放器",
+    "date": "2026-08-07",
+    "tags": [
+      "Linux",
+      "Tauri",
+      "播放器"
+    ],
+    "thumbnail": "../../Resources/images/projects/thumbnails/vinepalma-player.jpg",
+    "hero": "../../Resources/images/projects/hero/vinepalma-player.jpg",
+    "status": "🚧 迭代中",
+    "statusClass": "status-progress",
+    "year": "2026",
+    "desc": "VinePalma Player播放器设置，一个值得选择的本地播放器",
+    "excerpt": "VinePalma Player 播放器設定，一個值得選擇的本機播放器"
+  },
+  {
+    "id": 5,
+    "slug": "VinePalmaToolbox-26-08-05",
+    "title": "VinePalmaToolbox 軟體開發",
+    "date": "2026-08-05",
+    "tags": [
+      "Tauri",
+      "軟體開發",
+      "Linux"
+    ],
+    "thumbnail": "../../Resources/images/projects/thumbnails/vinepalma-toolbox.jpg",
+    "hero": "../../Resources/images/projects/hero/vinepalma-toolbox.jpg",
+    "status": "🚧 迭代中",
+    "statusClass": "status-progress",
+    "year": "2026",
+    "desc": "VinePalmaToolbox，一个值得你选择的工具箱",
+    "excerpt": "VinePalmaToolbox，一個值得你選擇的工具箱"
+  }
+]

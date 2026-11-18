@@ -6,8 +6,8 @@ window.VTS.createListPage({
     filterBarId: 'filterBar',
     filterCountId: 'filterCount',
     paginationId: 'pagination',
-    noun: '个项目',
-    emptyNoun: '标签的项目',
+    nounKey: 'list.countProject',
+    emptyKey: 'list.emptyProject',
     mainSelector: '.project-main',
     tagBadgeSelector: '.project-tag-badge',
     coverClass: 'project-card-cover',
@@ -30,10 +30,10 @@ window.VTS.createListPage({
         }
 
         const footerHtml = isPlaceholder
-            ? '<div class="project-footer"><span class="project-status status-plan">⏳ 规划中</span><span class="project-link">即将揭晓</span></div>'
+            ? '<div class="project-footer"><span class="project-status status-plan">' + h.t('list.planning') + '</span><span class="project-link">' + h.t('list.soon') + '</span></div>'
             : '<div class="project-footer">'
-                + '<span class="project-status ' + h.escapeHtml(proj.statusClass || 'status-plan') + '">' + h.escapeHtml(proj.status || '进行中') + '</span>'
-                + '<a href="' + h.escapeHtml(linkHref) + '" class="project-link">查看详情 →</a>'
+                + '<span class="project-status ' + h.escapeHtml(proj.statusClass || 'status-plan') + '">' + h.escapeHtml(proj.status || h.t('list.ongoing')) + '</span>'
+                + '<a href="' + h.escapeHtml(linkHref) + '" class="project-link">' + h.t('list.viewDetail') + '</a>'
                 + '</div>';
 
         return '<div class="' + cardClass + '">'

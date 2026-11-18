@@ -6,9 +6,21 @@
     "hot": "🔥 热门内容"
   },
   "featured": [
-    { "type": "project", "slug": "VinePalmaFlow-26-08-25", "badge": "本地优先" },
-    { "type": "project", "slug": "GrapeLeafi-26-08-25", "badge": "社区站点" },
-    { "type": "blog", "slug": "2026-08-25-static-site-pitfalls", "badge": "技术笔记" }
+    {
+      "type": "project",
+      "slug": "VinePalmaFlow-26-08-25",
+      "badgeKey": "badge.localFirst"
+    },
+    {
+      "type": "project",
+      "slug": "GrapeLeafi-26-08-25",
+      "badgeKey": "badge.community"
+    },
+    {
+      "type": "blog",
+      "slug": "2026-08-25-static-site-pitfalls",
+      "badgeKey": "badge.techNote"
+    }
   ],
   "hotWeights": {
     "VinePalmaFlow-26-08-25": 1,

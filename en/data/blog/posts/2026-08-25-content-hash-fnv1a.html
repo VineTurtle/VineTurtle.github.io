@@ -1,0 +1,56 @@
+<p>VinePalmaFlow 的局域网同步最初有个诡异现象：<strong>两台设备明明什么都没改，每次同步却总在互相传输全量数据</strong>。日志里显示所有项目的内容指纹（hash）都对不上。排查下来，根因藏在 Rust 标准库的一个「特性」里。</p>
+
+<h2>🔍 根因：DefaultHasher 的随机种子</h2>
+<p>第一版实现直接用了 <code>std::collections::hash_map::DefaultHasher</code> 对项目内容求哈希。但 Rust 的 <code>RandomState</code> <strong>故意为每个进程随机化种子</strong>（防哈希碰撞 DoS 攻击）。这意味着：</p>
+<pre><code>// 进程 A
+let mut h = std::collections::hash_map::DefaultHasher::new();
+"project.md 内容".hash(&amp;mut h);
+// h.finish() = 0x9e37...
+
+// 进程 B（同一份内容！）
+// h.finish() = 0x51f2...  ← 完全不同的值</code></pre>
+<p>增量同步的前提是「相同内容 → 相同指纹」，而跨进程比较恰恰是同步场景的常态。<code>DefaultHasher</code> 从设计上就做不到。</p>
+
+<h2>🛠️ 解法一：手写 FNV-1a</h2>
+<p>我们需要一个<strong>跨进程确定性</strong>的哈希。密码学哈希（SHA-256）当然可以，但对本地可信场景来说太重。FNV-1a 只有几行，雪崩性足够区分文件内容：</p>
+<pre><code>struct Fnv1a(u64);
+
+impl Fnv1a {
+    fn new() -&gt; Self { Fnv1a(0xcbf29ce484222325) }
+    fn update(&amp;mut self, bytes: &amp;[u8]) {
+        for &amp;b in bytes {
+            self.0 ^= b as u64;
+            self.0 = self.0.wrapping_mul(0x100000001b3);
+        }
+    }
+}</code></pre>
+<p>计算范围是 <code>project.md</code> 内容 + <strong>按文件名排序后</strong>的任务文件（文件名 + 内容）逐个喂进去。排序很关键——文件系统返回目录项的顺序不保证稳定，不排序的话同一目录两次枚举就会算出不同指纹。</p>
+
+<h2>🛠️ 解法二：序列化必须幂等</h2>
+<p>光有确定性哈希还不够。指纹的输入是文件内容，而 project.md 的 Front Matter 是我们<strong>自己序列化写出去</strong>的。如果序列化不稳定——比如 <code>serde_yaml</code> 按枚举顺序输出字段、空值时有时无——那么用户只是打开又保存，文件字节就变了，指纹跟着变，又一次假差异。</p>
+<p>所以 VinePalmaFlow 手写了 Front Matter 的序列化：<strong>15 个字段固定输出顺序、null/空串/空数组一律剔除、未识别的自定义字段排在末尾</strong>。同样的元数据，无论在哪台设备、哪个版本上序列化，输出字节级一致。这是「幂等序列化」：serialize(parse(x)) == x。</p>
+
+<h2>🧩 配套机制：基准镜像与字段级合并</h2>
+<p>指纹只解决「发现差异」，解决「合并差异」靠三方合并。每台设备在 <code>.localflow/sync/peers/{peer_id}/{project_id}/</code> 下保存上次同步结果的<strong>基准镜像</strong>（base），合并时三方对比：</p>
+<table>
+    <thead><tr><th>本地 vs base</th><th>对方 vs base</th><th>结果</th></tr></thead>
+    <tbody>
+        <tr><td>未改</td><td>改了</td><td>采纳对方</td></tr>
+        <tr><td>改了</td><td>未改</td><td>保留本地</td></tr>
+        <tr><td>两边改得一样</td><td></td><td>任意采纳</td></tr>
+        <tr><td>两边改得不同</td><td></td><td><strong>冲突，交给用户</strong></td></tr>
+    </tbody>
+</table>
+<p>对 project.md 我们再做一层<b>字段级合并</b>：YAML Front Matter 按 key 逐个三方合并，正文单独做文本三方合并。A 设备改进度、B 设备改正文，整文件对比会误判冲突，字段级合并则能自动融合——只有「同一个字段被双方改成不同值」才算真冲突。</p>
+
+<h2>⚠️ 反直觉的细节：解决冲突后必须更新 base</h2>
+<p>用户在冲突 UI 里选了「采用对方」，如果只写回目标文件，<strong>base 镜像还停留在旧版本</strong>——下次同步，对端视角下你的选择又是一次「新改动」，同一个冲突无限复活。正确做法是把选择结果同时写入该 peer 的 base 目录：</p>
+<pre><code>fn resolve_conflict(...) {
+    std::fs::write(target, content)?;
+    // 更新基准镜像，本次选择成为新的共同基线
+    write_base(&amp;peer_base_dir(ws, peer_id, project_id), &amp;file, content)?;
+}</code></pre>
+<p>这个 bug 上线前被我们自己的测试抓住了——「同一冲突不能复活」现在是一条固定的回归用例。</p>
+
+<h2>📝 小结</h2>
+<p>增量同步的三块基石：<strong>确定性哈希（FNV-1a）+ 幂等序列化（固定字段顺序）+ 三方合并（base 镜像随每次解决而前进）</strong>。三者缺一，都会以「假差异」「冲突复活」这类难以追踪的方式反噬。现在 VinePalmaFlow 两台设备空闲时同步，日志安静得像什么都没发生——这正是我们想要的。</p>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>藤栖ブログ · VineTurtle Studio</title>
+    <link>https://grapeleafi.top/ja/SpecialPages/Blog/index.html</link>
+    <description>森の町のインスピレーションと創作ノート。</description>
+    <language>ja</language>
+    <lastBuildDate>Mon, 24 Aug 2026 16:00:00 GMT</lastBuildDate>
+    <atom:link href="https://grapeleafi.top/ja/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CA のない LAN で相互 TLS を組む</title>
+      <link>https://grapeleafi.top/ja/SpecialPages/Blog/2026-08-25-lan-tls-without-ca.html</link>
+      <guid isPermaLink="true">https://grapeleafi.top/ja/SpecialPages/Blog/2026-08-25-lan-tls-without-ca.html</guid>
+      <pubDate>Mon, 24 Aug 2026 16:00:00 GMT</pubDate>
+      <description>VinePalmaFlow の LAN 同期は、認証局もドメインもなく、システム時計すら狂い得る環境で TLS 1.3 の相互認証を張らなければならない。rustls 0.23 の 3 つの落とし穴と、アプリ層での認証設計を記録する。</description>
+      <category>Rust</category>
+      <category>ネットワークセキュリティ</category>
+      <category>Tauri</category>
+      <category>落とし穴</category>
+    </item>
+    <item>
+      <title>コンテンツ指紋と差分同期：なぜ FNV-1a を自作したのか</title>
+      <link>https://grapeleafi.top/ja/SpecialPages/Blog/2026-08-25-content-hash-fnv1a.html</link>
+      <guid isPermaLink="true">https://grapeleafi.top/ja/SpecialPages/Blog/2026-08-25-content-hash-fnv1a.html</guid>
+      <pubDate>Mon, 24 Aug 2026 16:00:00 GMT</pubDate>
+      <description>std の DefaultHasher でコンテンツ指紋を取ると、同じファイルがプロセスごとに別のハッシュになる。差分同期は毎回全転送に逆戻り。偽の差分の原因と、FNV-1a + 冪等なシリアライズという解決策を語る。</description>
+      <category>Rust</category>
+      <category>アルゴリズム</category>
+      <category>落とし穴</category>
+      <category>同期</category>
+    </item>
+    <item>
+      <title>完全静的サイトの 4 つの定番の落とし穴</title>
+      <link>https://grapeleafi.top/ja/SpecialPages/Blog/2026-08-25-static-site-pitfalls.html</link>
+      <guid isPermaLink="true">https://grapeleafi.top/ja/SpecialPages/Blog/2026-08-25-static-site-pitfalls.html</guid>
+      <pubDate>Mon, 24 Aug 2026 16:00:00 GMT</pubDate>
+      <description>GrapeLeafi ファンサイトを幾年か運営して溜まった、静的サイトの典型バグ 4 つ。決して発火しない「今日」、スマホで効かない hover、GitHub Pages の大文字小文字 404、そして @latest という時限爆弾。</description>
+      <category>JavaScript</category>
+      <category>CSS</category>
+      <category>GitHub Pages</category>
+      <category>落とし穴</category>
+    </item>
+    <item>
+      <title>ブラウザで手書きするバイナリエンコーダー：ICO / CUR / ICNS を組み立てる</title>
+      <link>https://grapeleafi.top/ja/SpecialPages/Blog/2026-08-25-binary-encoder-ico-icns.html</link>
+      <guid isPermaLink="true">https://grapeleafi.top/ja/SpecialPages/Blog/2026-08-25-binary-encoder-ico-icns.html</guid>
+      <pubDate>Mon, 24 Aug 2026 16:00:00 GMT</pubDate>
+      <description>Canvas が書き出せるのは PNG/JPEG/WebP だけ。では ICO・CUR・ICNS はどうする？VinePalmaToolbox の答えは、DataView で仕様どおり 1 バイトずつ組み立てるというもの。</description>
+      <category>フロントエンド</category>
+      <category>バイナリ形式</category>
+      <category>VinePalmaToolbox</category>
+      <category>落とし穴</category>
+    </item>
+    <item>
+      <title>アンインストーラーの安全設計：Linux で絶対に誤削除しない三重の防御</title>
+      <link>https://grapeleafi.top/ja/SpecialPages/Blog/2026-08-25-uninstaller-safety.html</link>
+      <guid isPermaLink="true">https://grapeleafi.top/ja/SpecialPages/Blog/2026-08-25-uninstaller-safety.html</guid>
+      <pubDate>Mon, 24 Aug 2026 16:00:00 GMT</pubDate>
+      <description>ファイルを消せる道具が、二度と消し間違えないとどう保証するか。VinePalmaUninstaller の答えは、計画＝許可リスト、パスの拒否リスト、保護スイッチの三重防御に、pkexec 昇格時の出力パースという秘技を添えたもの。</description>
+      <category>Rust</category>
+      <category>Linux</category>
+      <category>安全設計</category>
+      <category>VinePalmaUninstaller</category>
+    </item>
+    <item>
+      <title>Electron Linux アイコン踏み抜き記：パッケージからタスクバーまでの完全ガイド</title>
+      <link>https://grapeleafi.top/ja/SpecialPages/Blog/2026-07-22-linux-app-icon-fix.html</link>
+      <guid isPermaLink="true">https://grapeleafi.top/ja/SpecialPages/Blog/2026-07-22-linux-app-icon-fix.html</guid>
+      <pubDate>Tue, 21 Jul 2026 16:00:00 GMT</pubDate>
+      <description>パッケージ後のランチャーアイコンは正常なのに、タスクバーだけ真っ白？原因はデスクトップ環境が WM_CLASS でウィンドウと .desktop を紐づける仕組みにあった。</description>
+      <category>技術メモ</category>
+      <category>Electron</category>
+      <category>Linux</category>
+    </item>
+  </channel>
+</rss>

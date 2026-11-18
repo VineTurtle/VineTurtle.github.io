@@ -7,7 +7,13 @@
     <meta name="description" content="Canvas 只能导出 PNG/JPEG/WebP，那 ICO、CUR、ICNS 图标格式怎么办？VinePalmaToolbox 的答案是：用 DataView 按 spec 一个字节一个字节拼。" />
     <title>在浏览器里手写二进制编码器：ICO / CUR / ICNS 拼装实录 · 藤栖龟舍</title>
     <link rel="canonical" href="https://grapeleafi.top/SpecialPages/Blog/2026-08-25-binary-encoder-ico-icns.html" />
+    <link rel="alternate" hreflang="zh-CN" href="https://grapeleafi.top/SpecialPages/Blog/2026-08-25-binary-encoder-ico-icns.html" />
+    <link rel="alternate" hreflang="zh-TW" href="https://grapeleafi.top/zh-TW/SpecialPages/Blog/2026-08-25-binary-encoder-ico-icns.html" />
+    <link rel="alternate" hreflang="en" href="https://grapeleafi.top/en/SpecialPages/Blog/2026-08-25-binary-encoder-ico-icns.html" />
+    <link rel="alternate" hreflang="ja" href="https://grapeleafi.top/ja/SpecialPages/Blog/2026-08-25-binary-encoder-ico-icns.html" />
+    <link rel="alternate" hreflang="x-default" href="https://grapeleafi.top/SpecialPages/Blog/2026-08-25-binary-encoder-ico-icns.html" />
     <meta property="og:type" content="article" />
+    <meta property="og:locale" content="zh_CN" />
     <meta property="og:site_name" content="藤栖龟舍 VineTurtle Studio" />
     <meta property="og:title" content="在浏览器里手写二进制编码器：ICO / CUR / ICNS 拼装实录 · 藤栖龟舍" />
     <meta property="og:description" content="Canvas 只能导出 PNG/JPEG/WebP，那 ICO、CUR、ICNS 图标格式怎么办？VinePalmaToolbox 的答案是：用 DataView 按 spec 一个字节一个字节拼。" />
@@ -19,26 +25,28 @@
     <script src="../../JS/theme-init.js"></script>
     <link rel="alternate" type="application/rss+xml" title="藤栖博客 RSS" href="https://grapeleafi.top/feed.xml">
     <link rel="stylesheet" href="../../CSS/layout.css" />
+    <link rel="stylesheet" href="../../CSS/i18n.css">
     <link rel="stylesheet" href="../../CSS/style.css" />
     <link rel="stylesheet" href="../../CSS/special/blog.css">
     <link rel="stylesheet" href="../../CSS/special/post-detail.css">
     <link rel="stylesheet" href="../../CSS/dynamic.css" />
+    <script src="../../JS/i18n.js"></script>
     <script src="../../JS/layout.js" defer></script>
     <script src="../../JS/script.js" defer></script>
     <script src="../../JS/special-detail.js" defer></script>
     <script src="../../JS/static-detail.js" defer></script>
     <script src="../../JS/dynamic.js" defer></script>
 <script type="application/ld+json">
-[{"@context":"https://schema.org","@type":"BlogPosting","headline":"在浏览器里手写二进制编码器：ICO / CUR / ICNS 拼装实录","name":"在浏览器里手写二进制编码器：ICO / CUR / ICNS 拼装实录","description":"Canvas 只能导出 PNG/JPEG/WebP，那 ICO、CUR、ICNS 图标格式怎么办？VinePalmaToolbox 的答案是：用 DataView 按 spec 一个字节一个字节拼。","url":"https://grapeleafi.top/SpecialPages/Blog/2026-08-25-binary-encoder-ico-icns.html","datePublished":"2026-08-25","dateModified":"2026-08-25","image":"https://grapeleafi.top/Resources/images/blog/hero/toolbox-binary.jpg","author":{"@type":"Organization","name":"藤栖龟舍 VineTurtle Studio","url":"https://grapeleafi.top/"},"publisher":{"@type":"Organization","name":"藤栖龟舍 VineTurtle Studio","url":"https://grapeleafi.top/"},"keywords":"前端, 二进制, VinePalmaToolbox, 踩坑"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://grapeleafi.top/"},{"@type":"ListItem","position":2,"name":"博客文章","item":"https://grapeleafi.top/SpecialPages/Blog/index.html"},{"@type":"ListItem","position":3,"name":"在浏览器里手写二进制编码器：ICO / CUR / ICNS 拼装实录","item":"https://grapeleafi.top/SpecialPages/Blog/2026-08-25-binary-encoder-ico-icns.html"}]}]
+[{"@context":"https://schema.org","@type":"BlogPosting","headline":"在浏览器里手写二进制编码器：ICO / CUR / ICNS 拼装实录","name":"在浏览器里手写二进制编码器：ICO / CUR / ICNS 拼装实录","description":"Canvas 只能导出 PNG/JPEG/WebP，那 ICO、CUR、ICNS 图标格式怎么办？VinePalmaToolbox 的答案是：用 DataView 按 spec 一个字节一个字节拼。","url":"https://grapeleafi.top/SpecialPages/Blog/2026-08-25-binary-encoder-ico-icns.html","datePublished":"2026-08-25","dateModified":"2026-08-25","image":"https://grapeleafi.top/Resources/images/blog/hero/toolbox-binary.jpg","inLanguage":"zh-CN","author":{"@type":"Organization","name":"藤栖龟舍 VineTurtle Studio","url":"https://grapeleafi.top/"},"publisher":{"@type":"Organization","name":"藤栖龟舍 VineTurtle Studio","url":"https://grapeleafi.top/"},"keywords":"前端, 二进制, VinePalmaToolbox, 踩坑"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://grapeleafi.top/"},{"@type":"ListItem","position":2,"name":"博客文章","item":"https://grapeleafi.top/SpecialPages/Blog/index.html"},{"@type":"ListItem","position":3,"name":"在浏览器里手写二进制编码器：ICO / CUR / ICNS 拼装实录","item":"https://grapeleafi.top/SpecialPages/Blog/2026-08-25-binary-encoder-ico-icns.html"}]}]
 </script>
 </head>
 <body data-content-kind="blog" data-content-slug="2026-08-25-binary-encoder-ico-icns" data-content-key="blog:2026-08-25-binary-encoder-ico-icns">
-<noscript><div class="noscript-warn">本站需要启用 JavaScript 才能正常显示内容。</div></noscript>
+<noscript><div class="noscript-warn" data-i18n="common.noscript">本站需要启用 JavaScript 才能正常显示内容。</div></noscript>
 <div id="header-placeholder"></div>
 <main class="blog-main">
     <div class="container post-container">
         <nav class="breadcrumb" aria-label="面包屑"><a href="../../index.html">首页</a><span class="crumb-sep" aria-hidden="true">/</span><a href="index.html">博客文章</a><span class="crumb-sep" aria-hidden="true">/</span><span aria-current="page">在浏览器里手写二进制编码器：ICO / CUR / ICNS 拼装实录</span></nav>
-        <a href="index.html" class="back-link" id="backLink">← 返回博客列表</a>
+        <a href="index.html" class="back-link" id="backLink" data-i18n="list.backBlog">← 返回博客列表</a>
         <article class="post-article">
             <div class="hero-img-wrap"><img src="../../Resources/images/blog/hero/toolbox-binary.jpg" alt="在浏览器里手写二进制编码器：ICO / CUR / ICNS 拼装实录" class="post-hero-img" data-fallback="🛠️"><div class="fallback-hero">🛠️</div></div>
             <header class="post-header">
@@ -48,7 +56,7 @@
                 <div class="content-actions" data-content-actions></div>
             </header>
             <nav class="post-toc" data-toc hidden aria-label="文章目录"></nav>
-            <div class="post-body">
+            <div class="post-body" lang="zh-CN" data-content-lang="zh-CN">
 <p>给 <strong>VinePalmaToolbox</strong> 做「图片格式转换」工具时遇到了一个尴尬：浏览器 Canvas 的 <code>toBlob()</code> 只支持 PNG / JPEG / WebP，而用户偏偏最常要求「把这张图转成 ICO 图标」。找遍 npm，好用的 ICO 编码库寥寥无几，ICNS（macOS 图标）更是没有维护良好的纯前端实现。最后我们决定：照着格式规范，用 <code>DataView</code> 一个字节一个字节自己拼。</p>
 
 <h2>🧱 ICO：最「简单」的容器格式</h2>

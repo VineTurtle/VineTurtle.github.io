@@ -1,0 +1,10 @@
+{
+  "title": "VinePalmaFlow: local-first project management",
+  "excerpt": "A local-first project tool that never goes to the cloud: Markdown is the database, and the LAN collaborates like a cloud.",
+  "tags": [
+    "Tauri",
+    "Rust",
+    "Project management",
+    "LAN sync"
+  ]
+}

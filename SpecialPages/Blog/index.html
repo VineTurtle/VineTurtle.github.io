@@ -18,26 +18,28 @@
     <link rel="alternate" type="application/rss+xml" title="藤栖博客 RSS" href="../../feed.xml" />
     <script src="../../JS/theme-init.js"></script>
     <link rel="stylesheet" href="../../CSS/layout.css" />
+    <link rel="stylesheet" href="../../CSS/i18n.css">
     <link rel="stylesheet" href="../../CSS/style.css" />
     <link rel="stylesheet" href="../../CSS/special/blog.css" />
     <link rel="stylesheet" href="../../CSS/special/list.css" />
+    <script src="../../JS/i18n.js"></script>
     <script src="../../JS/layout.js" defer></script>
     <script src="../../JS/script.js" defer></script>
     <script src="../../JS/special-list.js" defer></script>
     <script src="blog.js" defer></script>
 </head>
 <body>
-<noscript><div class="noscript-warn">本站需要启用 JavaScript 才能正常显示内容。</div></noscript>
+<noscript><div class="noscript-warn" data-i18n="common.noscript">本站需要启用 JavaScript 才能正常显示内容。</div></noscript>
 <div id="header-placeholder"></div>
 <main class="blog-main">
     <div class="container">
         <div class="page-header">
-            <h1>📝 藤栖博客</h1>
-            <p>记录森林小镇的灵感碎片与创作手记</p>
+            <h1 data-i18n="title.blogListH1">📝 藤栖博客</h1>
+            <p data-i18n="title.blogListDesc">记录森林小镇的灵感碎片与创作手记</p>
         </div>
         <!-- 标签筛选栏 -->
         <div class="filter-bar" id="filterBar">
-            <span class="filter-label">🏷️ 筛选：</span>
+            <span class="filter-label" data-i18n="list.filter">🏷️ 筛选：</span>
             <span class="filter-count" id="filterCount"></span>
         </div>
         <!-- 卡片网格 -->
