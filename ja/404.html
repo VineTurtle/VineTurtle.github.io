@@ -55,6 +55,11 @@
         .links a.primary:hover { background: var(--accent); }
         footer { margin-top: 18px; font-size: 0.78rem; opacity: 0.5; }
 
+        /* 无障碍 landmark 包装：不改变 flex 居中布局 */
+        main { display: contents; }
+        .standalone-header { display: contents; }
+        .standalone-header .lang-switcher { display: inline-flex; }
+
         html[data-theme="dark"] {
             --primary: #a6d8ad;
             --accent: #8fc79b;
@@ -82,21 +87,25 @@
     <link rel="alternate" hreflang="x-default" href="https://grapeleafi.top/404.html" />
 </head>
 <body>
-    <div class="lang-switcher standalone" id="langSwitcher"></div>
-    <div class="card">
-        <img class="logo" src="/Resources/images/VineTurtleStudio.png" alt="藤棲亀舎" data-i18n-attrs="alt:site.name">
-        <div class="code" data-i18n="notfound.code">🌿 404</div>
-        <h1 data-i18n="notfound.title">この小道は森の外へ続いています</h1>
-        <p data-i18n="notfound.p1">お探しのページは存在しないか、移動された可能性があります。</p>
-        <p data-i18n="notfound.p2">こちらからもう一度始めてみませんか：</p>
-        <div class="links">
-            <a class="primary" href="/" data-i18n="notfound.home">ホームへ戻る</a>
-            <a href="/SpecialPages/Project/index.html" data-i18n="nav.project">🚀 プロジェクト</a>
-            <a href="/SpecialPages/Blog/index.html" data-i18n="nav.blog">📝 ブログ</a>
-            <a href="/SpecialPages/Gallery/index.html" data-i18n="nav.gallery">🖼️ ギャラリー</a>
-            <a href="/SpecialPages/Search/index.html" data-i18n="nav.search">🔍 検索</a>
+    <header class="standalone-header">
+        <div class="lang-switcher standalone" id="langSwitcher"></div>
+    </header>
+    <main>
+        <div class="card">
+            <img class="logo" src="/Resources/images/VineTurtleStudio.png" alt="藤棲亀舎" data-i18n-attrs="alt:site.name">
+            <div class="code" data-i18n="notfound.code">🌿 404</div>
+            <h1 data-i18n="notfound.title">この小道は森の外へ続いています</h1>
+            <p data-i18n="notfound.p1">お探しのページは存在しないか、移動された可能性があります。</p>
+            <p data-i18n="notfound.p2">こちらからもう一度始めてみませんか：</p>
+            <div class="links">
+                <a class="primary" href="/" data-i18n="notfound.home">ホームへ戻る</a>
+                <a href="/SpecialPages/Project/index.html" data-i18n="nav.project">🚀 プロジェクト</a>
+                <a href="/SpecialPages/Blog/index.html" data-i18n="nav.blog">📝 ブログ</a>
+                <a href="/SpecialPages/Gallery/index.html" data-i18n="nav.gallery">🖼️ ギャラリー</a>
+                <a href="/SpecialPages/Search/index.html" data-i18n="nav.search">🔍 検索</a>
+            </div>
+            <footer data-i18n="notfound.footer">© 2026 藤棲亀舎 VineTurtle Studio</footer>
         </div>
-        <footer data-i18n="notfound.footer">© 2026 藤棲亀舎 VineTurtle Studio</footer>
-    </div>
+    </main>
 </body>
 </html>

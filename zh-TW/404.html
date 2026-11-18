@@ -55,6 +55,11 @@
         .links a.primary:hover { background: var(--accent); }
         footer { margin-top: 18px; font-size: 0.78rem; opacity: 0.5; }
 
+        /* 无障碍 landmark 包装：不改变 flex 居中布局 */
+        main { display: contents; }
+        .standalone-header { display: contents; }
+        .standalone-header .lang-switcher { display: inline-flex; }
+
         html[data-theme="dark"] {
             --primary: #a6d8ad;
             --accent: #8fc79b;
@@ -82,21 +87,25 @@
     <link rel="alternate" hreflang="x-default" href="https://grapeleafi.top/404.html" />
 </head>
 <body>
-    <div class="lang-switcher standalone" id="langSwitcher"></div>
-    <div class="card">
-        <img class="logo" src="/Resources/images/VineTurtleStudio.png" alt="藤棲龜舍" data-i18n-attrs="alt:site.name">
-        <div class="code" data-i18n="notfound.code">🌿 404</div>
-        <h1 data-i18n="notfound.title">這條小路通往林外了</h1>
-        <p data-i18n="notfound.p1">你要找的頁面不存在，或者已經被移走。</p>
-        <p data-i18n="notfound.p2">不妨從這裡重新出發：</p>
-        <div class="links">
-            <a class="primary" href="/" data-i18n="notfound.home">回到首頁</a>
-            <a href="/SpecialPages/Project/index.html" data-i18n="nav.project">🚀 專案</a>
-            <a href="/SpecialPages/Blog/index.html" data-i18n="nav.blog">📝 部落格</a>
-            <a href="/SpecialPages/Gallery/index.html" data-i18n="nav.gallery">🖼️ 畫廊</a>
-            <a href="/SpecialPages/Search/index.html" data-i18n="nav.search">🔍 搜尋</a>
+    <header class="standalone-header">
+        <div class="lang-switcher standalone" id="langSwitcher"></div>
+    </header>
+    <main>
+        <div class="card">
+            <img class="logo" src="/Resources/images/VineTurtleStudio.png" alt="藤棲龜舍" data-i18n-attrs="alt:site.name">
+            <div class="code" data-i18n="notfound.code">🌿 404</div>
+            <h1 data-i18n="notfound.title">這條小路通往林外了</h1>
+            <p data-i18n="notfound.p1">你要找的頁面不存在，或者已經被移走。</p>
+            <p data-i18n="notfound.p2">不妨從這裡重新出發：</p>
+            <div class="links">
+                <a class="primary" href="/" data-i18n="notfound.home">回到首頁</a>
+                <a href="/SpecialPages/Project/index.html" data-i18n="nav.project">🚀 專案</a>
+                <a href="/SpecialPages/Blog/index.html" data-i18n="nav.blog">📝 部落格</a>
+                <a href="/SpecialPages/Gallery/index.html" data-i18n="nav.gallery">🖼️ 畫廊</a>
+                <a href="/SpecialPages/Search/index.html" data-i18n="nav.search">🔍 搜尋</a>
+            </div>
+            <footer data-i18n="notfound.footer">© 2026 藤棲龜舍 VineTurtle Studio</footer>
         </div>
-        <footer data-i18n="notfound.footer">© 2026 藤棲龜舍 VineTurtle Studio</footer>
-    </div>
+    </main>
 </body>
 </html>

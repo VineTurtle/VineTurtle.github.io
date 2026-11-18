@@ -97,3 +97,12 @@ html[lang="ja"] .post-body,
 html[lang="ja"] .detail-body {
     line-break: strict;
 }
+
+/* 英/日正文段落：长 URL、长标识符允许词内断行，防止撑破行宽（R25 收尾）；
+   正文用 break-word 而非 anywhere，避免正常单词被过度拆断 */
+html[lang="en"] .post-body,
+html[lang="en"] .detail-body,
+html[lang="ja"] .post-body,
+html[lang="ja"] .detail-body {
+    overflow-wrap: break-word;
+}

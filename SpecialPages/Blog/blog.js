@@ -44,7 +44,7 @@ window.VTS.createListPage({
             + coverHtml
             + '<div class="blog-card-body">'
             + metaHtml
-            + '<h3>' + h.escapeHtml(post.title) + '</h3>'
+            + '<h2>' + h.escapeHtml(post.title) + '</h2>'
             + tagsHtml
             + '<p class="blog-excerpt">' + h.escapeHtml(post.excerpt || '') + '</p>'
             + readmoreHtml

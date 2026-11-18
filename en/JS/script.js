@@ -35,3 +35,62 @@
     // 页面加载时执行
     document.addEventListener('DOMContentLoaded', updateMonthColors);
 })();
+
+// ---------- 站内链接预取（A2） ----------
+// hover/focus/触摸时预取目标页 HTML，依赖 HTTP 缓存（GitHub Pages max-age=600）加速整页导航。
+// 预取不执行 JS，不影响点赞/阅读量等动态逻辑（R34）；失败静默，点击后照常导航。
+(function () {
+    'use strict';
+
+    // 本地 file:// 预览与低流量模式不预取（R33）
+    if (location.protocol !== 'http:' && location.protocol !== 'https:') return;
+    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (conn && (conn.saveData || /^(slow-)?2g$/.test(conn.effectiveType || ''))) return;
+
+    const seen = Object.create(null);
+    const timers = new WeakMap();
+
+    function prefetchable(url) {
+        if (url.origin !== location.origin) return false; // 外链/协议异常（mailto: 等）不预取
+        if (url.search || url.hash) return false;         // 动态兼容路径（?slug=）与锚点不预取
+        if (url.pathname.startsWith('/admin')) return false;
+        if (!url.pathname.endsWith('.html') && !url.pathname.endsWith('/')) return false; // 仅页面
+        if (url.href === location.origin + location.pathname) return false; // 当前页本身
+        return true;
+    }
+
+    function prefetch(href) {
+        let url;
+        try { url = new URL(href, location.href); } catch (e) { return; }
+        if (!prefetchable(url) || seen[url.href]) return;
+        seen[url.href] = true;
+        fetch(url.href).catch(function () { /* 预取失败无副作用 */ });
+    }
+
+    function linkFromEvent(e) {
+        return e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    }
+
+    document.addEventListener('mouseover', function (e) {
+        const link = linkFromEvent(e);
+        if (!link || seen[link.href] || timers.get(link)) return;
+        timers.set(link, setTimeout(function () {
+            timers.delete(link);
+            prefetch(link.href);
+        }, 80));
+    });
+    document.addEventListener('mouseout', function (e) {
+        const link = linkFromEvent(e);
+        const timer = link && timers.get(link);
+        if (timer) { clearTimeout(timer); timers.delete(link); }
+    });
+    // 键盘聚焦与触屏是无意图探测的点击前奏，立即预取
+    document.addEventListener('focusin', function (e) {
+        const link = linkFromEvent(e);
+        if (link) prefetch(link.href);
+    });
+    document.addEventListener('touchstart', function (e) {
+        const link = linkFromEvent(e);
+        if (link) prefetch(link.href);
+    }, { passive: true });
+})();

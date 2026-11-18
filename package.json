@@ -13,6 +13,7 @@
     "i18n:verify": "node scripts/translate/verify.js",
     "i18n:audit": "node scripts/translate/audit-mirrors.js",
     "i18n:status": "node scripts/translate/status.js",
+    "check:links": "node scripts/check-links.js",
     "dev": "python3 -m http.server 8000",
     "serve": "python3 -m http.server 8000"
   },

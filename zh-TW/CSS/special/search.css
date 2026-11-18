@@ -145,6 +145,17 @@
     opacity: 0.55;
 }
 
+/* 关键词高亮（B5） */
+.search-hl {
+    background: rgba(42, 92, 58, 0.16);
+    color: inherit;
+    border-radius: 3px;
+    padding: 0 2px;
+}
+html[data-theme="dark"] .search-hl {
+    background: rgba(166, 216, 173, 0.22);
+}
+
 .search-empty {
     padding: 40px 20px;
     text-align: center;

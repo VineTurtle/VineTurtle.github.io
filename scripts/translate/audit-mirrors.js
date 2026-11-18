@@ -1,5 +1,5 @@
 // scripts/translate/audit-mirrors.js —— 构建后镜像语言审计
-// 检查 en/ja/zh-TW 镜像的可见文本（剔除 script/style/pre/code/注释）：
+// 检查 en/ja/zh-TW 镜像的可见文本（剔除 script/style/pre/code/注释与缺译回落正文块）：
 //   · en：不得残留任何汉字（代码块中的简体注释属预期，逐字节保留）
 //   · ja/zh-TW：不得残留简体特有字形（日文新字体/繁体共享字形已豁免）
 // HTML 注释（开发者向）不计入。全绿退出码 0，否则 1。
@@ -22,6 +22,25 @@ function stripInvisible(t) {
         .replace(/<code\b[^>]*>[\s\S]*?<\/code>/gi, '');
 }
 
+// 缺译回落页豁免（R31）：正文块带 data-content-lang="zh-CN" 时，简中正文属预期回退，
+// 整块剔除后只审计页头页脚等 UI 文本。用平衡 div 扫描取整块，避免正则嵌套误截。
+function stripFallbackContent(html) {
+    const opening = /<div\b[^>]*\bdata-content-lang="zh-CN"[^>]*>/i;
+    let m;
+    while ((m = opening.exec(html))) {
+        const token = /<div\b[^>]*>|<\/div>/gi;
+        token.lastIndex = m.index + m[0].length;
+        let depth = 1;
+        let t;
+        while (depth > 0 && (t = token.exec(html))) {
+            depth += t[0][1] === '/' ? -1 : 1;
+        }
+        const end = t ? t.index + t[0].length : html.length;
+        html = html.slice(0, m.index) + html.slice(end);
+    }
+    return html;
+}
+
 function main() {
     let totalBad = 0;
     for (const lang of ['en', 'ja', 'zh-TW']) {
@@ -35,7 +54,7 @@ function main() {
                     continue;
                 }
                 if (!name.endsWith('.html')) continue;
-                const prose = stripInvisible(fs.readFileSync(p, 'utf-8'));
+                const prose = stripInvisible(stripFallbackContent(fs.readFileSync(p, 'utf-8')));
                 const bad = new Set();
                 if (lang === 'en') {
                     for (const ch of prose) if (CJK.test(ch)) bad.add(ch);

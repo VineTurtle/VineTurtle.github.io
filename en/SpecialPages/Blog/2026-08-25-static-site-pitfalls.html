@@ -48,7 +48,7 @@
         <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../../index.html">Home</a><span class="crumb-sep" aria-hidden="true">/</span><a href="index.html">Blog article</a><span class="crumb-sep" aria-hidden="true">/</span><span aria-current="page">Four classic pitfalls of a purely static site</span></nav>
         <a href="index.html" class="back-link" id="backLink" data-i18n="list.backBlog">← Back to blog</a>
         <article class="post-article">
-            <div class="hero-img-wrap"><img src="../../Resources/images/blog/hero/static-site-pitfalls.jpg" alt="Four classic pitfalls of a purely static site" class="post-hero-img" data-fallback="⚠️"><div class="fallback-hero">⚠️</div></div>
+            <div class="hero-img-wrap"><img src="../../Resources/images/blog/hero/static-site-pitfalls.jpg" alt="Four classic pitfalls of a purely static site" class="post-hero-img" data-fallback="⚠️" fetchpriority="high" decoding="async"><div class="fallback-hero">⚠️</div></div>
             <header class="post-header">
                 <h1>Four classic pitfalls of a purely static site</h1>
                 <div class="post-meta"><span>📅 Aug 25, 2026</span><span>⏱ ~10 min read</span><div class="dynamic-stats" data-dynamic-stats></div></div>
@@ -60,36 +60,36 @@
 <p><a href="../Project/detail.html?slug=GrapeLeafi-26-08-25">Grapeleaf's cozy little corner</a> (GrapeLeafi) is the project we've maintained the longest: a pure-static fan site with no framework, no build, no backend. Precisely because "anyone can edit it", a pile of classic static-site bugs accumulated over the years. Each of these four pitfalls is so simple it hardly deserves mention — and each one genuinely survived in production for a long time.</p>
 
 <h2>Pitfall one: the "birthday today" branch that never fired</h2>
-<h4>The site has a character-birthday reminder feature, and the code clearly contains a celebration branch:</h4>
+<h3>The site has a character-birthday reminder feature, and the code clearly contains a celebration branch:</h3>
 <pre><code>if (diffDays === 0) {
     // 🎉 今天生日！撒花
 }</code></pre>
-<h4>But this branch <strong>never executed</strong>. The root cause is in the upstream date comparison:</h4>
+<h3>But this branch <strong>never executed</strong>. The root cause is in the upstream date comparison:</h3>
 <pre><code>birthdayDate.setFullYear(today.getFullYear());
 if (birthdayDate &lt; today) {      // ← 问题在这
     birthdayDate.setFullYear(today.getFullYear() + 1);
 }
 const diffDays = Math.ceil((birthdayDate - today) / 86400000);</code></pre>
-<h4><code>today</code> is <code>new Date()</code> — <strong>carrying the current time</strong> (say 14:30), while <code>birthdayDate</code> is set to the birthday's <strong>midnight</strong>. On the birthday itself, midnight is necessarily earlier than 14:30, so the date gets pushed to next year, <code>diffDays</code> becomes 364 — "today" forever displays as "364 days to go". A classic confusion of comparing a "moment" with a "date". The fix: zero both sides to that day's midnight, then check whether they are the same day:</h4>
+<h3><code>today</code> is <code>new Date()</code> — <strong>carrying the current time</strong> (say 14:30), while <code>birthdayDate</code> is set to the birthday's <strong>midnight</strong>. On the birthday itself, midnight is necessarily earlier than 14:30, so the date gets pushed to next year, <code>diffDays</code> becomes 364 — "today" forever displays as "364 days to go". A classic confusion of comparing a "moment" with a "date". The fix: zero both sides to that day's midnight, then check whether they are the same day:</h3>
 <pre><code>const startOfToday = new Date();
 startOfToday.setHours(0, 0, 0, 0);
 const isToday = birthdayDate.getTime() === startOfToday.getTime();</code></pre>
 
 <h2>Pitfall two: the QR code that never pops up on phones</h2>
-<h4>The QQ group QR code used a pure-CSS approach:</h4>
+<h3>The QQ group QR code used a pure-CSS approach:</h3>
 <pre><code>.qrLinkContainer:hover #qrCodeContainer { display: block; }</code></pre>
-<h4>On desktop the experience is flawless, but touch devices have no hover — phone users tap the button and nothing happens; the join-group entrance simply vanishes. A natural blind spot of pure-CSS interaction. The fix: add a click/touch class-toggle fallback, or use the native <code>&lt;details&gt;</code> element for "click to reveal" — it works on touch screens with zero JS.</h4>
+<h3>On desktop the experience is flawless, but touch devices have no hover — phone users tap the button and nothing happens; the join-group entrance simply vanishes. A natural blind spot of pure-CSS interaction. The fix: add a click/touch class-toggle fallback, or use the native <code>&lt;details&gt;</code> element for "click to reveal" — it works on touch screens with zero JS.</h3>
 
 <h2>Pitfall three: GitHub Pages, case sensitivity &amp; special-character 404s</h2>
-<h4>The asset directory carried legacy naming: <code>tuan-zi/团子 (1).ico</code> — Chinese, spaces and parentheses, the full trio; the favicon reference had to be written as <code>团子%20(1).ico</code>. Local preview on Windows is all fine (NTFS is case-insensitive); push to GitHub Pages (Linux servers, <strong>case-sensitive</strong>) and any casual "let me just change the case of that path" batch-404s. The lesson: static-site asset filenames are lowercase ASCII with hyphens, period; Chinese asset names get renamed at import. And leftovers of historical renames — like <code>tuan-zi/</code> and <code>tuanzi/</code> coexisting — deserve an early cleanup too.</h4>
+<h3>The asset directory carried legacy naming: <code>tuan-zi/团子 (1).ico</code> — Chinese, spaces and parentheses, the full trio; the favicon reference had to be written as <code>团子%20(1).ico</code>. Local preview on Windows is all fine (NTFS is case-insensitive); push to GitHub Pages (Linux servers, <strong>case-sensitive</strong>) and any casual "let me just change the case of that path" batch-404s. The lesson: static-site asset filenames are lowercase ASCII with hyphens, period; Chinese asset names get renamed at import. And leftovers of historical renames — like <code>tuan-zi/</code> and <code>tuanzi/</code> coexisting — deserve an early cleanup too.</h3>
 
 <h2>Pitfall four: a CDN @latest is a time bomb</h2>
-<h4>The Live2D mascot was included like this:</h4>
+<h3>The Live2D mascot was included like this:</h3>
 <pre><code>&lt;script src="https://fastly.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js" defer&gt;&lt;/script&gt;</code></pre>
-<h4><code>@latest</code> means that with every upstream commit, your site is drawing a lottery: if upstream changes the interface, the site-wide mascot vanishes on the spot — and you may never know. Third-party CDN assets on a static site must <strong>pin a version number, even a commit hash</strong>. By the way, the site's countdown used <code>setInterval(update, 86400000)</code> to refresh once a day — leave the page open across midnight and it shows stale data; refreshing every minute, or listening for <code>visibilitychange</code> (update when the page becomes visible again), is steadier.</h4>
+<h3><code>@latest</code> means that with every upstream commit, your site is drawing a lottery: if upstream changes the interface, the site-wide mascot vanishes on the spot — and you may never know. Third-party CDN assets on a static site must <strong>pin a version number, even a commit hash</strong>. By the way, the site's countdown used <code>setInterval(update, 86400000)</code> to refresh once a day — leave the page open across midnight and it shows stale data; refreshing every minute, or listening for <code>visibilitychange</code> (update when the page becomes visible again), is steadier.</h3>
 
 <h2>📝 Closing notes</h2>
-<h4>What the four pitfalls share: <strong>they can never be reproduced on the developer's own machine</strong>. The birthday bug only appears on the birthday itself; the hover issue only on touch screens; the case-404 only on Linux servers; @latest only explodes when upstream updates. A static site may be small, but its test matrix spans time, devices and operating systems. The right way to maintain an aging site is to record these "rookie" pitfalls one by one — they are the cheapest teachers you'll ever get.</h4>
+<h3>What the four pitfalls share: <strong>they can never be reproduced on the developer's own machine</strong>. The birthday bug only appears on the birthday itself; the hover issue only on touch screens; the case-404 only on Linux servers; @latest only explodes when upstream updates. A static site may be small, but its test matrix spans time, devices and operating systems. The right way to maintain an aging site is to record these "rookie" pitfalls one by one — they are the cheapest teachers you'll ever get.</h3>
 
             </div>
         </article>
@@ -99,6 +99,6 @@ const isToday = birthdayDate.getTime() === startOfToday.getTime();</code></pre>
     </div>
 </main>
 <div id="footer-placeholder"></div>
-<div class="month-badge" id="monthBadge">🌿 1</div>
+<div class="month-badge" id="monthBadge" aria-hidden="true">🌿 1</div>
 </body>
 </html>

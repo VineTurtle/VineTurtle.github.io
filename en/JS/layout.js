@@ -84,7 +84,7 @@
             <div class="header-container">
                 <div class="logo-area">
                     <a href="${logoHref}" id="logoLink">
-                        <img src="${logoPath}" alt="${t('site.name')}" class="header-logo" data-i18n-attrs="alt:site.name">
+                        <img src="${logoPath}" alt="" class="header-logo">
                         <span class="header-title" data-i18n="site.name">${t('site.name')}</span>
                     </a>
                 </div>

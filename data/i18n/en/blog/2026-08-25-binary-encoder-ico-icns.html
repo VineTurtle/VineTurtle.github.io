@@ -1,7 +1,7 @@
 <p>While building the "image format conversion" tool for <strong>VinePalmaToolbox</strong>, we hit an awkward spot: the browser Canvas's <code>toBlob()</code> only supports PNG / JPEG / WebP, yet what users ask for most often is "turn this image into an ICO icon". A search across npm finds precious few usable ICO encoders, and ICNS (the macOS icon format) has no well-maintained pure-frontend implementation at all. In the end we decided: follow the format specs and assemble the bytes one by one ourselves with <code>DataView</code>.</p>
 
 <h2>🧱 ICO: the "simplest" container format</h2>
-<h4>ICO is essentially a "PNG packager": header + directory + image data. Since Vista, embedding PNG data directly is allowed, which greatly simplifies the implementation — scale the source image to each size with Canvas, export the PNGs, and assemble:</h4>
+<h3>ICO is essentially a "PNG packager": header + directory + image data. Since Vista, embedding PNG data directly is allowed, which greatly simplifies the implementation — scale the source image to each size with Canvas, export the PNGs, and assemble:</h3>
 <pre><code>// 文件头：6 字节，小端
 writeU16(0);        // 保留字段，必须为 0
 writeU16(1);        // 1 = ICO，2 = CUR
@@ -16,10 +16,10 @@ writeU16(1);         // 色彩平面（ICO）
 writeU16(32);        // 色深
 writeU32(png.length);// 数据长度
 writeU32(offset);    // 数据偏移</code></pre>
-<h4>Three details that easily flip the table: <strong>① 256px width/height must be written as 0, not 256</strong> (one byte can't hold it; the spec agrees that 0 means 256); ② offsets must be accumulated — the first data block after the directory sits at 6 + 16×count; ③ besides the type field, CUR also rewrites the "color planes / bit depth" fields into hotspot coordinates (hotspot x/y) — the mouse cursor's click position lives exactly in these two fields.</h4>
+<h3>Three details that easily flip the table: <strong>① 256px width/height must be written as 0, not 256</strong> (one byte can't hold it; the spec agrees that 0 means 256); ② offsets must be accumulated — the first data block after the directory sits at 6 + 16×count; ③ besides the type field, CUR also rewrites the "color planes / bit depth" fields into hotspot coordinates (hotspot x/y) — the mouse cursor's click position lives exactly in these two fields.</h3>
 
 <h2>🍎 ICNS: a whole other world of big-endian</h2>
-<h4>ICNS is macOS's icon format; the biggest difference from ICO is the <strong>big-endian</strong> byte order, and 4-byte ASCII type codes identifying the sizes:</h4>
+<h3>ICNS is macOS's icon format; the biggest difference from ICO is the <strong>big-endian</strong> byte order, and 4-byte ASCII type codes identifying the sizes:</h3>
 <pre><code>writeU32(0x69636e73);  // 'icns' 魔数（大端）
 writeU32(totalLength); // 整个文件长度
 // 每个尺寸一个块：
@@ -27,10 +27,10 @@ writeU32(totalLength); // 整个文件长度
 writeType('icp4');   // 16x16
 writeType('ic07');   // 128x128
 writeType('ic10');   // 512x512（或 1024@2x）</code></pre>
-<h4>The most time-consuming debugging was the "file length" field: it must equal the sum of all block lengths plus the 8-byte header; one byte off and macOS refuses to load the file — silently.</h4>
+<h3>The most time-consuming debugging was the "file length" field: it must equal the sum of all block lengths plus the 8-byte header; one byte off and macOS refuses to load the file — silently.</h3>
 
 <h2>🔍 A general lesson: accept with a hex editor</h2>
-<h4>Binary code's correctness can't be seen via console.log. Our acceptance flow: generate the file → <code>xxd</code> the first sixteen bytes → check field by field against the spec → cross-verify with system tools (<code>file</code>, macOS Preview, Windows Explorer). The moment <code>file x.ico</code> prints "MS Windows icon resource - 5 images" feels more reassuring than any unit test.</h4>
+<h3>Binary code's correctness can't be seen via console.log. Our acceptance flow: generate the file → <code>xxd</code> the first sixteen bytes → check field by field against the spec → cross-verify with system tools (<code>file</code>, macOS Preview, Windows Explorer). The moment <code>file x.ico</code> prints "MS Windows icon resource - 5 images" feels more reassuring than any unit test.</h3>
 
 <h2>📝 Takeaways</h2>
-<h4>What hand-rolling taught us this round: binary formats are less mystical than imagined — ICO is "arrays + offsets", ICNS is "a TLV list", and the real workload lies in the <strong>boundary conventions</strong> (256 written as 0, whether the length includes the header, big vs little endian). Those conventions often occupy half a sentence in the spec, yet they are where all the pitfalls live. VinePalmaToolbox's image conversion tool now supports PNG/JPEG/WebP/BMP/ICO/CUR/ICNS/DDS interchange, with all core encoding logic under 400 lines of TypeScript.</h4>
+<h3>What hand-rolling taught us this round: binary formats are less mystical than imagined — ICO is "arrays + offsets", ICNS is "a TLV list", and the real workload lies in the <strong>boundary conventions</strong> (256 written as 0, whether the length includes the header, big vs little endian). Those conventions often occupy half a sentence in the spec, yet they are where all the pitfalls live. VinePalmaToolbox's image conversion tool now supports PNG/JPEG/WebP/BMP/ICO/CUR/ICNS/DDS interchange, with all core encoding logic under 400 lines of TypeScript.</h3>

@@ -178,9 +178,15 @@ function buildBreadcrumb(lang, item, cfg, key) {
 function renderHero(item, style) {
     const icon = escapeHtml(item.fallbackIcon || '📄');
     if (!item.hero) return '<div class="fallback-hero">' + icon + '</div>';
+    // hero 是 LCP 元素：高优先级加载，不做 lazy（旧浏览器不识别 fetchpriority 时忽略即可，R37）
     return '<div class="hero-img-wrap">'
-        + '<img src="' + escapeHtml(item.hero) + '" alt="' + escapeHtml(item.title) + '" class="' + style.heroClass + '" data-fallback="' + icon + '">'
+        + '<img src="' + escapeHtml(item.hero) + '" alt="' + escapeHtml(item.title) + '" class="' + style.heroClass + '" data-fallback="' + icon + '" fetchpriority="high" decoding="async">'
         + '<div class="fallback-hero">' + icon + '</div></div>';
+}
+
+// 正文图片统一懒加载（R35）：仅前缀注入属性，已有 loading= 的跳过；正文图片不会出现在 pre/code 内。
+function enrichBodyImages(html) {
+    return html.replace(/<img\b(?![^>]*\sloading=)/gi, '<img loading="lazy" decoding="async"');
 }
 
 function renderTags(item, style) {
@@ -296,7 +302,7 @@ ${tags}
             </header>
             <nav class="post-toc" data-toc hidden aria-label="${escapeHtml(lang === I18N.DEFAULT_LANG ? '文章目录' : I18N.t(lang, 'a11y.toc'))}"></nav>
             <div class="${style.bodyClass}" lang="${contentLang || lang}" data-content-lang="${contentLang || lang}">
-${content || ('<p>' + escapeHtml(I18N.t(lang, 'detail.growing')) + '</p>')}
+${enrichBodyImages(content) || ('<p>' + escapeHtml(I18N.t(lang, 'detail.growing')) + '</p>')}
             </div>
         </article>
         ${additions.pager || ''}
@@ -305,7 +311,7 @@ ${content || ('<p>' + escapeHtml(I18N.t(lang, 'detail.growing')) + '</p>')}
     </div>
 </main>
 <div id="footer-placeholder"></div>
-<div class="month-badge" id="monthBadge">${escapeHtml(I18N.t(lang, 'common.monthBadge', { icon: '🌿', month: 1 }))}</div>
+<div class="month-badge" id="monthBadge" aria-hidden="true">${escapeHtml(I18N.t(lang, 'common.monthBadge', { icon: '🌿', month: 1 }))}</div>
 </body>
 </html>
 `;
@@ -322,6 +328,7 @@ const STATIC_SEO = {
     'SpecialPages/Project/index.html': { title: 'title.project', desc: 'title.projectListDesc' },
     'SpecialPages/Gallery/index.html': { title: 'title.gallery', desc: 'gallery.desc' },
     'SpecialPages/Search/index.html': { title: 'title.search', desc: 'title.searchDesc' },
+    'SpecialPages/Blog/archive.html': { title: 'title.archive', desc: 'archive.desc' },
     'SpecialPages/Blog/post.html': { title: 'title.blogPost', desc: 'site.tagline' },
     'SpecialPages/Project/detail.html': { title: 'title.projectDetail', desc: 'site.tagline' }
 };

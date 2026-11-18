@@ -47,7 +47,7 @@
         <nav class="breadcrumb" aria-label="麵包屑"><a href="../../index.html">首頁</a><span class="crumb-sep" aria-hidden="true">/</span><a href="index.html">專案</a><span class="crumb-sep" aria-hidden="true">/</span><span aria-current="page">VinePalmaToolbox 軟體開發</span></nav>
         <a href="index.html" class="back-link" id="backLink" data-i18n="list.backProject">← 返回專案列表</a>
         <article class="project-detail">
-            <div class="hero-img-wrap"><img src="../../Resources/images/projects/hero/vinepalma-toolbox.jpg" alt="VinePalmaToolbox 軟體開發" class="detail-hero-img" data-fallback="📄"><div class="fallback-hero">📄</div></div>
+            <div class="hero-img-wrap"><img src="../../Resources/images/projects/hero/vinepalma-toolbox.jpg" alt="VinePalmaToolbox 軟體開發" class="detail-hero-img" data-fallback="📄" fetchpriority="high" decoding="async"><div class="fallback-hero">📄</div></div>
             <header class="detail-header">
                 <h1>VinePalmaToolbox 軟體開發</h1>
                 <div class="detail-meta"><span class="project-status status-progress">🚧 迭代中</span><span class="detail-year">📅 2026</span><div class="dynamic-stats" data-dynamic-stats></div></div>
@@ -56,53 +56,53 @@
             </header>
             <nav class="post-toc" data-toc hidden aria-label="目錄"></nav>
             <div class="detail-body" lang="zh-TW" data-content-lang="zh-TW">
-<h4>在一個嶄新的 Linux 系統上，我們常常會遇到這樣的窘境：想轉一張圖片，要開啟網頁線上工具，不僅廣告彈窗不斷，還得擔心檔案上傳到第三方伺服器的隱私風險；想計算一段文本的雜湊，系統自帶的終端命令對普通使用者又不夠友好。零零散散的需求，往往需要安裝十幾款互不相干的軟體，記憶體佔用失控，體驗支離破碎。</h4>
+<h2>在一個嶄新的 Linux 系統上，我們常常會遇到這樣的窘境：想轉一張圖片，要開啟網頁線上工具，不僅廣告彈窗不斷，還得擔心檔案上傳到第三方伺服器的隱私風險；想計算一段文本的雜湊，系統自帶的終端命令對普通使用者又不夠友好。零零散散的需求，往往需要安裝十幾款互不相干的軟體，記憶體佔用失控，體驗支離破碎。</h2>
 
-<h4>因此，我們 VineTurtleStudio 開發組設計並開發了這款多功能桌面工具箱，使用 Tauri + React 進行開發，在極低的資源佔用下，把日常開發與辦公中高頻使用的小工具統一收納在一起。</h4>
+<h2>因此，我們 VineTurtleStudio 開發組設計並開發了這款多功能桌面工具箱，使用 Tauri + React 進行開發，在極低的資源佔用下，把日常開發與辦公中高頻使用的小工具統一收納在一起。</h2>
 
 <h2>專案背景與目標</h2>
 
-<h4>傳統桌面工具集大多基於 Electron 之類的重型框架，動輒佔用數百 MB 記憶體；而線上網頁工具又存在「需要聯網、隱私堪憂、功能零散」的硬傷。我們希望打造一款輕量、美觀、開箱即用的本地工具箱：基於 Tauri 2 + Rust 構建原生後端，前端使用 Web 技術，記憶體佔用遠低於同類產品；所有資料在本地處理，不上傳任何檔案，真正做到隱私安全。</h4>
+<h3>傳統桌面工具集大多基於 Electron 之類的重型框架，動輒佔用數百 MB 記憶體；而線上網頁工具又存在「需要聯網、隱私堪憂、功能零散」的硬傷。我們希望打造一款輕量、美觀、開箱即用的本地工具箱：基於 Tauri 2 + Rust 構建原生後端，前端使用 Web 技術，記憶體佔用遠低於同類產品；所有資料在本地處理，不上傳任何檔案，真正做到隱私安全。</h3>
 
 <h2>技術架構</h2>
 
-<h4>VinePalma Toolbox 採用 Tauri 2 作為應用框架，前端使用 React 19 + TypeScript + Vite，後端使用 Rust 提供原生能力。純前端的便捷工具（圖片處理、編碼轉換、文本處理等）直接在 WebView 內完成；涉及大檔案、系統檔案的場景（雜湊計算、批次重新命名、重複檔案查詢、音影片處理）則通過 Rust 命令實現，兼顧效能與安全。</h4>
+<h3>VinePalma Toolbox 採用 Tauri 2 作為應用框架，前端使用 React 19 + TypeScript + Vite，後端使用 Rust 提供原生能力。純前端的便捷工具（圖片處理、編碼轉換、文本處理等）直接在 WebView 內完成；涉及大檔案、系統檔案的場景（雜湊計算、批次重新命名、重複檔案查詢、音影片處理）則通過 Rust 命令實現，兼顧效能與安全。</h3>
 
-<h4>音影片能力由隨應用打包的 FFmpeg 提供：為了讓安裝包儘量小，構建指令碼會從原始碼編譯一套僅包含所需編解碼器的最小化靜態版本（約 7MB/個），並命名為 vp-ffmpeg / vp-ffprobe 作為 Tauri 外接二進位制隨包分發。執行時優先呼叫內建二進位制，絕不汙染系統自帶的 /usr/bin，真正做到裝完即用、無需手動配置 ffmpeg。</h4>
+<h3>音影片能力由隨應用打包的 FFmpeg 提供：為了讓安裝包儘量小，構建指令碼會從原始碼編譯一套僅包含所需編解碼器的最小化靜態版本（約 7MB/個），並命名為 vp-ffmpeg / vp-ffprobe 作為 Tauri 外接二進位制隨包分發。執行時優先呼叫內建二進位制，絕不汙染系統自帶的 /usr/bin，真正做到裝完即用、無需手動配置 ffmpeg。</h3>
 
 <h2>功能特性</h2>
 
-<h4>圖片工具：PNG / JPEG / WebP / BMP / TIFF / ICO / GIF / SVG 等十餘種格式互轉，支援批次轉換與縮放；圖片壓縮支援按目標大小、品質、邊長三種模式控制體積；圖片可一鍵轉為 Base64 或 Data URL；還能從圖片中取色、按豎向/橫向/網格/智慧佈局拼接圖片、將多張圖片合成為 PDF。</h4>
+<h3>圖片工具：PNG / JPEG / WebP / BMP / TIFF / ICO / GIF / SVG 等十餘種格式互轉，支援批次轉換與縮放；圖片壓縮支援按目標大小、品質、邊長三種模式控制體積；圖片可一鍵轉為 Base64 或 Data URL；還能從圖片中取色、按豎向/橫向/網格/智慧佈局拼接圖片、將多張圖片合成為 PDF。</h3>
 
-<h4>文本工具：文本去重支援排序與忽略大小寫；字數統計細分到字元、漢字、單詞、行數、段落與位元組；JSON 格式化 / 壓縮 / 校驗，並可一鍵轉換為 YAML、TOML 或 CSV；大小寫轉換覆蓋駝峰、下劃線、短橫線、常量等 12 種命名風格；文本對比能高亮差異並統計新增與刪除。</h4>
+<h3>文本工具：文本去重支援排序與忽略大小寫；字數統計細分到字元、漢字、單詞、行數、段落與位元組；JSON 格式化 / 壓縮 / 校驗，並可一鍵轉換為 YAML、TOML 或 CSV；大小寫轉換覆蓋駝峰、下劃線、短橫線、常量等 12 種命名風格；文本對比能高亮差異並統計新增與刪除。</h3>
 
-<h4>編碼轉換：Base64 編解碼支援中文、URL 安全模式與整個檔案編碼；URL、HTML 實體、Unicode、JS/CSS 字串的轉義與反轉義一應俱全；進位制轉換支援二/八/十/十六/32/36 進位制與補碼；二維碼生成支援自定義顏色、容錯率與白邊，可匯出 PNG/SVG，也能從圖片中反向識別二維碼內容。</h4>
+<h3>編碼轉換：Base64 編解碼支援中文、URL 安全模式與整個檔案編碼；URL、HTML 實體、Unicode、JS/CSS 字串的轉義與反轉義一應俱全；進位制轉換支援二/八/十/十六/32/36 進位制與補碼；二維碼生成支援自定義顏色、容錯率與白邊，可匯出 PNG/SVG，也能從圖片中反向識別二維碼內容。</h3>
 
-<h4>開發者工具：UUID 生成器支援 v1 / v4 / v7 三種版本與批次生成；時間戳轉換支援秒/毫秒、ISO、UTC 與相對時間；隨機密碼生成附帶密碼強度檢測；顏色轉換覆蓋 HEX / RGB / HSL / CMYK 並帶色板與對比度檢測；雜湊計算支援 MD5 / SHA-1 / SHA-224 / SHA-256 / SHA-384 / SHA-512，文本與檔案皆可；正則測試器即時高亮匹配並預覽替換結果；另有表示式計算器與 JWT 解碼（含 HS256/384/512 驗籤）。</h4>
+<h3>開發者工具：UUID 生成器支援 v1 / v4 / v7 三種版本與批次生成；時間戳轉換支援秒/毫秒、ISO、UTC 與相對時間；隨機密碼生成附帶密碼強度檢測；顏色轉換覆蓋 HEX / RGB / HSL / CMYK 並帶色板與對比度檢測；雜湊計算支援 MD5 / SHA-1 / SHA-224 / SHA-256 / SHA-384 / SHA-512，文本與檔案皆可；正則測試器即時高亮匹配並預覽替換結果；另有表示式計算器與 JWT 解碼（含 HS256/384/512 驗籤）。</h3>
 
-<h4>檔案工具：批次重新命名支援字首、字尾、序號、查詢替換與大小寫規則；重複檔案查詢先按大小分組、再對同大小檔案流式計算 MD5 確認，遍歷大目錄也不會卡死。</h4>
+<h3>檔案工具：批次重新命名支援字首、字尾、序號、查詢替換與大小寫規則；重複檔案查詢先按大小分組、再對同大小檔案流式計算 MD5 確認，遍歷大目錄也不會卡死。</h3>
 
-<h4>音影片工具：影片轉音訊、音訊格式互轉（MP3 / WAV / FLAC / M4A / OGG 等）、影片按時間點截幀或轉動態 GIF、音訊剪輯（支援淡入淡出）與多音訊合併，全部由內建 ffmpeg 驅動，並帶有即時進度、可隨時取消的完整任務機制。</h4>
+<h3>音影片工具：影片轉音訊、音訊格式互轉（MP3 / WAV / FLAC / M4A / OGG 等）、影片按時間點截幀或轉動態 GIF、音訊剪輯（支援淡入淡出）與多音訊合併，全部由內建 ffmpeg 驅動，並帶有即時進度、可隨時取消的完整任務機制。</h3>
 
-<h4>其他工具：單位換算、日期計算與隨機數生成，以及數字轉中文大寫等常用小功能。</h4>
+<h3>其他工具：單位換算、日期計算與隨機數生成，以及數字轉中文大寫等常用小功能。</h3>
 
-<h4>體驗細節：首頁卡片按七大類分組展示，支援關鍵詞全域性搜尋、收藏與最近使用；每個工具獨立記錄滾動位置，切換頁籤不丟失；所有結果一鍵複製，操作均有 Toast 反饋。</h4>
+<h3>體驗細節：首頁卡片按七大類分組展示，支援關鍵詞全域性搜尋、收藏與最近使用；每個工具獨立記錄滾動位置，切換頁籤不丟失；所有結果一鍵複製，操作均有 Toast 反饋。</h3>
 
 <h2>主題系統</h2>
 
-<h4>內建 12 套跟隨月份的配色主題，預設按當前月份自動切換（1 月冬青、4 月櫻粉、8 月秋金……），也可以手動指定某個月份的主題，或在設定面板用取色器自定義一套五色主題（背景色、主色調、強調色、文字色、輔助色），由 5 個基礎色自動推匯出整套 CSS 變數並即時應用到全域性，還內建了經典淺色 / 經典深色兩套外觀。</h4>
+<h3>內建 12 套跟隨月份的配色主題，預設按當前月份自動切換（1 月冬青、4 月櫻粉、8 月秋金……），也可以手動指定某個月份的主題，或在設定面板用取色器自定義一套五色主題（背景色、主色調、強調色、文字色、輔助色），由 5 個基礎色自動推匯出整套 CSS 變數並即時應用到全域性，還內建了經典淺色 / 經典深色兩套外觀。</h3>
 
 <h2>踩過的坑</h2>
 
-<h4>開發過程中解決了不少 Tauri 與 WebKitGTK 的疑難雜症：個別編解碼庫在 Web 環境下行為不一致，需要在 Rust 側做引數適配；WebKitGTK 對部分 PNG/GIF 的渲染存在取色差異，圖片轉換結果需要逐一對比驗證；嵌入式 ffmpeg 的最小化編譯需要反覆裁剪依賴，才能兼顧功能完整與安裝包體積。為此我們沉澱了一套可複用的「檔案對話方塊 + 內建二進位制 + 任務進度」基礎設施，後續新工具只需註冊一行配置即可接入。</h4>
+<h3>開發過程中解決了不少 Tauri 與 WebKitGTK 的疑難雜症：個別編解碼庫在 Web 環境下行為不一致，需要在 Rust 側做引數適配；WebKitGTK 對部分 PNG/GIF 的渲染存在取色差異，圖片轉換結果需要逐一對比驗證；嵌入式 ffmpeg 的最小化編譯需要反覆裁剪依賴，才能兼顧功能完整與安裝包體積。為此我們沉澱了一套可複用的「檔案對話方塊 + 內建二進位制 + 任務進度」基礎設施，後續新工具只需註冊一行配置即可接入。</h3>
 
 <h2>跨平臺與打包</h2>
 
-<h4>專案通過 GitHub Actions 構建 Linux（deb / rpm / AppImage）、Windows（NSIS，可交叉編譯）與 macOS 多種平臺的安裝包。前端使用 Vite 構建，Rust 後端編譯為各平臺原生二進位制，整個應用體積小、啟動快，作為 VineTurtleStudio 的開源專案在 Linux 與 Windows 上都完成了驗證。</h4>
+<h3>專案通過 GitHub Actions 構建 Linux（deb / rpm / AppImage）、Windows（NSIS，可交叉編譯）與 macOS 多種平臺的安裝包。前端使用 Vite 構建，Rust 後端編譯為各平臺原生二進位制，整個應用體積小、啟動快，作為 VineTurtleStudio 的開源專案在 Linux 與 Windows 上都完成了驗證。</h3>
 
 <h2>結語</h2>
 
-<h4>VinePalma Toolbox 目前處於 0.2.0 版本，共收錄 40 餘款工具，全部本地處理、無網路依賴。我們希望通過它證明「桌面工具箱也可以既輕量又全面」：一個 Tauri 應用，替代一堆零散的網頁工具與笨重的單功能軟體。後續計劃繼續豐富工具種類、細化高分屏適配，歡迎大家在 GitHub 上提出建議，一起把它做得更好。</h4>
+<h3>VinePalma Toolbox 目前處於 0.2.0 版本，共收錄 40 餘款工具，全部本地處理、無網路依賴。我們希望通過它證明「桌面工具箱也可以既輕量又全面」：一個 Tauri 應用，替代一堆零散的網頁工具與笨重的單功能軟體。後續計劃繼續豐富工具種類、細化高分屏適配，歡迎大家在 GitHub 上提出建議，一起把它做得更好。</h3>
 
             </div>
         </article>
@@ -112,6 +112,6 @@
     </div>
 </main>
 <div id="footer-placeholder"></div>
-<div class="month-badge" id="monthBadge">🌿 1月</div>
+<div class="month-badge" id="monthBadge" aria-hidden="true">🌿 1月</div>
 </body>
 </html>

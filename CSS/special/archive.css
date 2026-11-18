@@ -1,0 +1,76 @@
+/* CSS/special/archive.css —— 文章归档时间线（配合 blog.css 的 page-header / back-link 使用） */
+.archive-count {
+    margin: 8px 0 20px;
+    font-size: 0.9rem;
+    opacity: 0.65;
+}
+
+.archive-year {
+    margin-bottom: 34px;
+}
+.archive-year:last-child {
+    margin-bottom: 16px;
+}
+
+.archive-year-title {
+    color: var(--primary, #2a5c3a);
+    font-size: 1.4rem;
+    margin: 0 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid rgba(42, 92, 58, 0.18);
+}
+
+.archive-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.archive-item a {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+.archive-item a:hover {
+    background: rgba(42, 92, 58, 0.08);
+}
+.archive-item a:focus-visible {
+    outline: 2px solid var(--primary, #2a5c3a);
+    outline-offset: 2px;
+}
+
+.archive-date {
+    flex-shrink: 0;
+    min-width: 7.5em;
+    font-size: 0.85rem;
+    opacity: 0.65;
+    font-variant-numeric: tabular-nums;
+}
+
+.archive-title {
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+/* 窄屏：日期换行到标题上方，避免挤压 */
+@media (max-width: 560px) {
+    .archive-item a {
+        flex-direction: column;
+        gap: 2px;
+    }
+    .archive-date {
+        min-width: 0;
+        font-size: 0.8rem;
+    }
+}
+
+html[data-theme="dark"] .archive-year-title {
+    border-bottom-color: rgba(190, 225, 200, 0.16);
+}
+html[data-theme="dark"] .archive-item a:hover {
+    background: rgba(190, 225, 200, 0.08);
+}

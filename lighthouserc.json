@@ -1,0 +1,23 @@
+{
+  "_说明": "C3 Lighthouse CI。阈值按 2026-11-19 本地校准设定（本机 Chrome 实测：perf 0.83-0.93 / a11y 1.0 / bp 0.82 / seo 1.0），CI 首跑后再收紧。",
+  "_bp扣分原因": "best-practices 扣分项为 i18n.js 的同步 XHR（有意设计：保证 t() 立即可用，避免首屏语言闪烁），暂不重构。",
+  "ci": {
+    "collect": {
+      "staticDistDir": ".",
+      "numberOfRuns": 1,
+      "url": [
+        "/",
+        "/SpecialPages/Blog/2026-08-25-static-site-pitfalls.html",
+        "/en/"
+      ]
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["error", { "minScore": 0.75 }],
+        "categories:accessibility": ["error", { "minScore": 0.95 }],
+        "categories:best-practices": ["error", { "minScore": 0.8 }],
+        "categories:seo": ["error", { "minScore": 0.95 }]
+      }
+    }
+  }
+}

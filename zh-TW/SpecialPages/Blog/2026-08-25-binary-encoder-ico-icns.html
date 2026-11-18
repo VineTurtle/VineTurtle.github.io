@@ -48,7 +48,7 @@
         <nav class="breadcrumb" aria-label="麵包屑"><a href="../../index.html">首頁</a><span class="crumb-sep" aria-hidden="true">/</span><a href="index.html">部落格文章</a><span class="crumb-sep" aria-hidden="true">/</span><span aria-current="page">在瀏覽器裡手寫二進位編碼器：ICO / CUR / ICNS 組裝實錄</span></nav>
         <a href="index.html" class="back-link" id="backLink" data-i18n="list.backBlog">← 返回部落格列表</a>
         <article class="post-article">
-            <div class="hero-img-wrap"><img src="../../Resources/images/blog/hero/toolbox-binary.jpg" alt="在瀏覽器裡手寫二進位編碼器：ICO / CUR / ICNS 組裝實錄" class="post-hero-img" data-fallback="🛠️"><div class="fallback-hero">🛠️</div></div>
+            <div class="hero-img-wrap"><img src="../../Resources/images/blog/hero/toolbox-binary.jpg" alt="在瀏覽器裡手寫二進位編碼器：ICO / CUR / ICNS 組裝實錄" class="post-hero-img" data-fallback="🛠️" fetchpriority="high" decoding="async"><div class="fallback-hero">🛠️</div></div>
             <header class="post-header">
                 <h1>在瀏覽器裡手寫二進位編碼器：ICO / CUR / ICNS 組裝實錄</h1>
                 <div class="post-meta"><span>📅 2026年8月25日</span><span>⏱ 約 4 分鐘</span><div class="dynamic-stats" data-dynamic-stats></div></div>
@@ -61,7 +61,7 @@
 
 <h2>🧱 ICO：最「簡單」的容器格式</h2>
 
-<h4>ICO 本質是一個「PNG 打包器」：檔案頭 + 目錄 + 圖片資料。Vista 之後允許直接內嵌 PNG 資料，這大大簡化了實現——用 Canvas 把原圖縮放到各尺寸匯出 PNG，再拼裝即可：</h4>
+<h3>ICO 本質是一個「PNG 打包器」：檔案頭 + 目錄 + 圖片資料。Vista 之後允許直接內嵌 PNG 資料，這大大簡化了實現——用 Canvas 把原圖縮放到各尺寸匯出 PNG，再拼裝即可：</h3>
 
 <pre><code>// 文件头：6 字节，小端
 writeU16(0);        // 保留字段，必须为 0
@@ -78,11 +78,11 @@ writeU16(32);        // 色深
 writeU32(png.length);// 数据长度
 writeU32(offset);    // 数据偏移</code></pre>
 
-<h4>三個容易翻車的細節：<strong>① 256px 的寬高要寫 0 而不是 256</strong>（一個位元組裝不下，規範約定 0 表示 256）；② 偏移量必須累加計算，目錄區之後第一個資料塊的偏移是 6 + 16×count；③ ICO 與 CUR 的區別除了型別欄位，CUR 還要把「色彩平面/色深」欄位改寫為熱點座標（hotspot x/y）——滑鼠指標的點選位置就存在這兩個欄位裡。</h4>
+<h3>三個容易翻車的細節：<strong>① 256px 的寬高要寫 0 而不是 256</strong>（一個位元組裝不下，規範約定 0 表示 256）；② 偏移量必須累加計算，目錄區之後第一個資料塊的偏移是 6 + 16×count；③ ICO 與 CUR 的區別除了型別欄位，CUR 還要把「色彩平面/色深」欄位改寫為熱點座標（hotspot x/y）——滑鼠指標的點選位置就存在這兩個欄位裡。</h3>
 
 <h2>🍎 ICNS：大端序的另一套世界</h2>
 
-<h4>ICNS 是 macOS 的圖示格式，與 ICO 最大的不同是<strong>大端序</strong>，以及用 4 位元組 ASCII 型別碼標識尺寸：</h4>
+<h3>ICNS 是 macOS 的圖示格式，與 ICO 最大的不同是<strong>大端序</strong>，以及用 4 位元組 ASCII 型別碼標識尺寸：</h3>
 
 <pre><code>writeU32(0x69636e73);  // 'icns' 魔数（大端）
 writeU32(totalLength); // 整个文件长度
@@ -92,15 +92,15 @@ writeType('icp4');   // 16x16
 writeType('ic07');   // 128x128
 writeType('ic10');   // 512x512（或 1024@2x）</code></pre>
 
-<h4>除錯時最費時間的是「檔案長度」欄位：必須等於所有塊長之和加 8 位元組頭，寫錯一個位元組 macOS 直接拒絕載入，而且不報錯。</h4>
+<h3>除錯時最費時間的是「檔案長度」欄位：必須等於所有塊長之和加 8 位元組頭，寫錯一個位元組 macOS 直接拒絕載入，而且不報錯。</h3>
 
 <h2>🔍 通用經驗：用十六進位制編輯器驗收</h2>
 
-<h4>二進位制程式碼的正確性沒法 console.log 出來看。我們的驗收流程是：生成檔案 → <code>xxd</code> 檢視頭十六個位元組 → 對照 spec 逐欄位核對 → 再用系統工具（<code>file</code> 命令、macOS 預覽、Windows 資源管理器）交叉驗證。<code>file x.ico</code> 輸出 "MS Windows icon resource - 5 images" 的那一刻，比任何單元測試都踏實。</h4>
+<h3>二進位制程式碼的正確性沒法 console.log 出來看。我們的驗收流程是：生成檔案 → <code>xxd</code> 檢視頭十六個位元組 → 對照 spec 逐欄位核對 → 再用系統工具（<code>file</code> 命令、macOS 預覽、Windows 資源管理器）交叉驗證。<code>file x.ico</code> 輸出 "MS Windows icon resource - 5 images" 的那一刻，比任何單元測試都踏實。</h3>
 
 <h2>📝 小結</h2>
 
-<h4>這輪手搓的收穫：二進位制格式沒有想像中神秘——ICO 是「陣列 + 偏移」，ICNS 是「TLV 列表」，真正的工作量在於<strong>邊界約定</strong>（256 寫 0、長度含頭不含頭、大端小端）。這些約定在 spec 裡往往只有半句話，卻是全部的坑所在。VinePalmaToolbox 的圖片轉換工具現在支援 PNG/JPEG/WebP/BMP/ICO/CUR/ICNS/DDS 互轉，全部核心編碼邏輯不超過 400 行 TypeScript。</h4>
+<h3>這輪手搓的收穫：二進位制格式沒有想像中神秘——ICO 是「陣列 + 偏移」，ICNS 是「TLV 列表」，真正的工作量在於<strong>邊界約定</strong>（256 寫 0、長度含頭不含頭、大端小端）。這些約定在 spec 裡往往只有半句話，卻是全部的坑所在。VinePalmaToolbox 的圖片轉換工具現在支援 PNG/JPEG/WebP/BMP/ICO/CUR/ICNS/DDS 互轉，全部核心編碼邏輯不超過 400 行 TypeScript。</h3>
 
             </div>
         </article>
@@ -110,6 +110,6 @@ writeType('ic10');   // 512x512（或 1024@2x）</code></pre>
     </div>
 </main>
 <div id="footer-placeholder"></div>
-<div class="month-badge" id="monthBadge">🌿 1月</div>
+<div class="month-badge" id="monthBadge" aria-hidden="true">🌿 1月</div>
 </body>
 </html>

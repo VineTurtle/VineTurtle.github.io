@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="../../CSS/i18n.css">
     <link rel="stylesheet" href="../../CSS/style.css" />
     <link rel="stylesheet" href="../../CSS/special/search.css" />
+    <link rel="stylesheet" href="../../CSS/special/list.css" />
     <script src="../../JS/i18n.js"></script>
     <script src="../../JS/layout.js" defer></script>
     <script src="../../JS/script.js" defer></script>
@@ -49,9 +50,10 @@
 
         <p class="search-status" id="searchStatus" role="status" data-i18n="search.loading">Loading index…</p>
         <div class="search-results" id="searchResults"></div>
+        <div class="pagination" id="searchPagination"></div>
     </div>
 </main>
 <div id="footer-placeholder"></div>
-<div class="month-badge" id="monthBadge">🌿</div>
+<div class="month-badge" id="monthBadge" aria-hidden="true">🌿</div>
 </body>
 </html>

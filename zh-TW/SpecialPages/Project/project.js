@@ -39,7 +39,7 @@ window.VTS.createListPage({
         return '<div class="' + cardClass + '">'
             + coverHtml
             + '<div class="project-card-body">'
-            + '<h3>' + h.escapeHtml(proj.title) + '</h3>'
+            + '<h2>' + h.escapeHtml(proj.title) + '</h2>'
             + tagsHtml
             + '<p class="project-desc">' + h.escapeHtml(proj.desc || '') + '</p>'
             + footerHtml

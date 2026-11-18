@@ -48,7 +48,7 @@
         <nav class="breadcrumb" aria-label="麵包屑"><a href="../../index.html">首頁</a><span class="crumb-sep" aria-hidden="true">/</span><a href="index.html">部落格文章</a><span class="crumb-sep" aria-hidden="true">/</span><span aria-current="page">解除安裝器的安全設計：Linux 上絕不誤刪的三重防線</span></nav>
         <a href="index.html" class="back-link" id="backLink" data-i18n="list.backBlog">← 返回部落格列表</a>
         <article class="post-article">
-            <div class="hero-img-wrap"><img src="../../Resources/images/blog/hero/uninstaller-safety.jpg" alt="解除安裝器的安全設計：Linux 上絕不誤刪的三重防線" class="post-hero-img" data-fallback="🛡️"><div class="fallback-hero">🛡️</div></div>
+            <div class="hero-img-wrap"><img src="../../Resources/images/blog/hero/uninstaller-safety.jpg" alt="解除安裝器的安全設計：Linux 上絕不誤刪的三重防線" class="post-hero-img" data-fallback="🛡️" fetchpriority="high" decoding="async"><div class="fallback-hero">🛡️</div></div>
             <header class="post-header">
                 <h1>解除安裝器的安全設計：Linux 上絕不誤刪的三重防線</h1>
                 <div class="post-meta"><span>📅 2026年8月25日</span><span>⏱ 約 5 分鐘</span><div class="dynamic-stats" data-dynamic-stats></div></div>
@@ -61,9 +61,9 @@
 
 <h2>防線一：計劃即白名單</h2>
 
-<h4>點選「解除安裝」並不是直接執行命令。後端先生成一份<strong>完整的解除安裝計劃</strong>：對 APT 包先以模擬模式執行 <code>apt-get -s purge</code>，解析出將被移除的包列表；對殘留檔案，逐條列出將刪除的路徑。前端展示這份計劃，使用者勾選後提交。</h4>
+<h3>點選「解除安裝」並不是直接執行命令。後端先生成一份<strong>完整的解除安裝計劃</strong>：對 APT 包先以模擬模式執行 <code>apt-get -s purge</code>，解析出將被移除的包列表；對殘留檔案，逐條列出將刪除的路徑。前端展示這份計劃，使用者勾選後提交。</h3>
 
-<h4>關鍵在於：前端提交的勾選結果<strong>不被信任</strong>。執行時後端會重新生成一遍計劃，把提交的路徑與重新生成的計劃<strong>求交集</strong>——交集之外的一個位元組都不會動。就算有人繞過介面偽造請求提交 <code>/etc/passwd</code>，它也不在服務端生成的計劃裡，直接被丟棄：</h4>
+<h3>關鍵在於：前端提交的勾選結果<strong>不被信任</strong>。執行時後端會重新生成一遍計劃，把提交的路徑與重新生成的計劃<strong>求交集</strong>——交集之外的一個位元組都不會動。就算有人繞過介面偽造請求提交 <code>/etc/passwd</code>，它也不在服務端生成的計劃裡，直接被丟棄：</h3>
 
 <pre><code>// 执行时：以服务端重新生成的计划为准
 let plan = build_plan(pkg)?;               // 重新生成
@@ -75,15 +75,15 @@ for path in user_selected {
 
 <h2>防線二：路徑黑名單與危險元件攔截</h2>
 
-<h4>即便路徑出現在計劃裡，還有一層靜態黑名單兜底：<code>/</code>、<code>/home</code>、<code>/etc</code>、<code>/usr</code>、<code>/var</code> 等 14 個系統關鍵目錄及其直系子目錄一律拒絕；使用者家目錄下的 <code>.config</code>、<code>.cache</code>、<code>.local</code> 等「配置根目錄本身」也拒絕刪除（裡面的具體軟體目錄可以刪）；含 <code>..</code> 元件的路徑直接判非法——正常路徑不需要它，需要它的必然不懷好意。</h4>
+<h3>即便路徑出現在計劃裡，還有一層靜態黑名單兜底：<code>/</code>、<code>/home</code>、<code>/etc</code>、<code>/usr</code>、<code>/var</code> 等 14 個系統關鍵目錄及其直系子目錄一律拒絕；使用者家目錄下的 <code>.config</code>、<code>.cache</code>、<code>.local</code> 等「配置根目錄本身」也拒絕刪除（裡面的具體軟體目錄可以刪）；含 <code>..</code> 元件的路徑直接判非法——正常路徑不需要它，需要它的必然不懷好意。</h3>
 
 <h2>防線三：保護開關與保守的預設勾選</h2>
 
-<h4>殘留掃描通過「包名變體匹配」識別軟體自己的目錄（大小寫不敏感、連字元/下劃線等價），但匹配分兩檔：<strong>精確命中預設勾選</strong>，僅「包含」關係的模糊命中<strong>預設不勾選</strong>——寧可漏刪，不可誤刪。介面上還有「保留使用者配置」「保留系統配置」兩個開關，勾選的路徑若落在系統目錄會被即時過濾。三道防線各司其職：白名單管「來源可信」，黑名單管「路徑合法」，開關管「使用者意圖」。</h4>
+<h3>殘留掃描通過「包名變體匹配」識別軟體自己的目錄（大小寫不敏感、連字元/下劃線等價），但匹配分兩檔：<strong>精確命中預設勾選</strong>，僅「包含」關係的模糊命中<strong>預設不勾選</strong>——寧可漏刪，不可誤刪。介面上還有「保留使用者配置」「保留系統配置」兩個開關，勾選的路徑若落在系統目錄會被即時過濾。三道防線各司其職：白名單管「來源可信」，黑名單管「路徑合法」，開關管「使用者意圖」。</h3>
 
 <h2>🧪 提權的玄學：pkexec 與 LC_ALL=C</h2>
 
-<h4>系統級解除安裝需要 root，我們用 <code>pkexec</code> 動態提權（彈出圖形化密碼框，比 sudo 友好）。這裡有個隱蔽的坑：apt 的輸出文案依賴 locale，中文環境下「正在移除」這樣的字首沒法解析。解法是給所有外部命令強制 <code>LC_ALL=C</code>，然後同時相容三種英文字首：</h4>
+<h3>系統級解除安裝需要 root，我們用 <code>pkexec</code> 動態提權（彈出圖形化密碼框，比 sudo 友好）。這裡有個隱蔽的坑：apt 的輸出文案依賴 locale，中文環境下「正在移除」這樣的字首沒法解析。解法是給所有外部命令強制 <code>LC_ALL=C</code>，然後同時相容三種英文字首：</h3>
 
 <pre><code>export LC_ALL=C
 apt-get purge -y pkg
@@ -96,15 +96,15 @@ fn extract_removed(line: &amp;str) -&gt; Option&lt;String&gt; {
     None
 }</code></pre>
 
-<h4>另一個細節：判斷自身是否 root 不能調 <code>getuid()</code>——Tauri 行程的環境變數可能干擾 libc 結果，直接解析 <code>/proc/self/status</code> 的 <code>Uid:</code> 行更可靠。所有外部命令都套 tokio <code>timeout</code>，個別卡死的 dpkg 前端不能拖死整個介面。</h4>
+<h3>另一個細節：判斷自身是否 root 不能調 <code>getuid()</code>——Tauri 行程的環境變數可能干擾 libc 結果，直接解析 <code>/proc/self/status</code> 的 <code>Uid:</code> 行更可靠。所有外部命令都套 tokio <code>timeout</code>，個別卡死的 dpkg 前端不能拖死整個介面。</h3>
 
 <h2>📊 附贈：手撕 dpkg 資料庫算風險</h2>
 
-<h4>風險等級（critical/high/medium/low）不靠猜包名，而是直接解析 <code>/var/lib/dpkg/status</code>：按空行分段、空格縮排續行，只認 <code>install ok installed</code> 狀態，統計每個包被多少已安裝包反向依賴，結合 <code>Essential</code> 與 <code>Priority: required</code> 欄位判定核心元件——Essential 包直接標 critical，被 8 個以上包依賴標 high。真實資料勝過一切啟發式規則。</h4>
+<h3>風險等級（critical/high/medium/low）不靠猜包名，而是直接解析 <code>/var/lib/dpkg/status</code>：按空行分段、空格縮排續行，只認 <code>install ok installed</code> 狀態，統計每個包被多少已安裝包反向依賴，結合 <code>Essential</code> 與 <code>Priority: required</code> 欄位判定核心元件——Essential 包直接標 critical，被 8 個以上包依賴標 high。真實資料勝過一切啟發式規則。</h3>
 
 <h2>📝 小結</h2>
 
-<h4>刪除類工具的安全設計可以總結為一句話：<strong>前端不可信、計劃即白名單、黑名單兜底、預設保守</strong>。使用者把系統交給你，你遞回去的每一把刀都必須有鞘。</h4>
+<h3>刪除類工具的安全設計可以總結為一句話：<strong>前端不可信、計劃即白名單、黑名單兜底、預設保守</strong>。使用者把系統交給你，你遞回去的每一把刀都必須有鞘。</h3>
 
             </div>
         </article>
@@ -114,6 +114,6 @@ fn extract_removed(line: &amp;str) -&gt; Option&lt;String&gt; {
     </div>
 </main>
 <div id="footer-placeholder"></div>
-<div class="month-badge" id="monthBadge">🌿 1月</div>
+<div class="month-badge" id="monthBadge" aria-hidden="true">🌿 1月</div>
 </body>
 </html>

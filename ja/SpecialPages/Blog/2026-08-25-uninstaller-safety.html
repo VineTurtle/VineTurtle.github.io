@@ -48,7 +48,7 @@
         <nav class="breadcrumb" aria-label="パンくずリスト"><a href="../../index.html">ホーム</a><span class="crumb-sep" aria-hidden="true">/</span><a href="index.html">ブログ記事</a><span class="crumb-sep" aria-hidden="true">/</span><span aria-current="page">アンインストーラーの安全設計：Linux で絶対に誤削除しない三重の防御</span></nav>
         <a href="index.html" class="back-link" id="backLink" data-i18n="list.backBlog">← ブログ一覧へ戻る</a>
         <article class="post-article">
-            <div class="hero-img-wrap"><img src="../../Resources/images/blog/hero/uninstaller-safety.jpg" alt="アンインストーラーの安全設計：Linux で絶対に誤削除しない三重の防御" class="post-hero-img" data-fallback="🛡️"><div class="fallback-hero">🛡️</div></div>
+            <div class="hero-img-wrap"><img src="../../Resources/images/blog/hero/uninstaller-safety.jpg" alt="アンインストーラーの安全設計：Linux で絶対に誤削除しない三重の防御" class="post-hero-img" data-fallback="🛡️" fetchpriority="high" decoding="async"><div class="fallback-hero">🛡️</div></div>
             <header class="post-header">
                 <h1>アンインストーラーの安全設計：Linux で絶対に誤削除しない三重の防御</h1>
                 <div class="post-meta"><span>📅 2026年8月25日</span><span>🕐 約 6 分</span><div class="dynamic-stats" data-dynamic-stats></div></div>
@@ -60,8 +60,8 @@
 <p><strong>VinePalmaUninstaller</strong>（私たちの Linux グラフィカルアンインストーラー）を開発していて最もよく聞かれる質問は、「何をアンインストールできるか」ではなく「<strong>間違って削除しないか</strong>」です。削除を中核能力とするツールにとって、安全性は特性ではなく最低ライン。このノートは三重防御の設計と、pkexec 権限昇格の道で踏んだ出力解析の落とし穴を解きほぐします。</p>
 
 <h2>防御線 1：計画イコールホワイトリスト</h2>
-<h4>「アンインストール」をクリックしても、コマンドが直接実行されるわけではありません。バックエンドがまず<strong>完全なアンインストール計画</strong>を生成します：APT パッケージは <code>apt-get -s purge</code> をシミュレーションモードで実行して削除対象のパッケージリストを解析し、残留ファイルは削除予定のパスを一件ずつ列挙します。フロントはこの計画を表示し、ユーザーがチェックして送信します。</h4>
-<h4>肝心なのは：フロントが送信したチェック結果は<strong>信用されない</strong>ことです。実行時、バックエンドは計画を再度生成し、送信されたパスと再生成した計画の<strong>積集合</strong>を取ります——積集合の外は 1 バイトも触れません。誰かが UI を迂回して <code>/etc/passwd</code> を送り込む偽装リクエストを組んでも、それはサーバー生成の計画に存在しないため、その場で棄てられます：</h4>
+<h3>「アンインストール」をクリックしても、コマンドが直接実行されるわけではありません。バックエンドがまず<strong>完全なアンインストール計画</strong>を生成します：APT パッケージは <code>apt-get -s purge</code> をシミュレーションモードで実行して削除対象のパッケージリストを解析し、残留ファイルは削除予定のパスを一件ずつ列挙します。フロントはこの計画を表示し、ユーザーがチェックして送信します。</h3>
+<h3>肝心なのは：フロントが送信したチェック結果は<strong>信用されない</strong>ことです。実行時、バックエンドは計画を再度生成し、送信されたパスと再生成した計画の<strong>積集合</strong>を取ります——積集合の外は 1 バイトも触れません。誰かが UI を迂回して <code>/etc/passwd</code> を送り込む偽装リクエストを組んでも、それはサーバー生成の計画に存在しないため、その場で棄てられます：</h3>
 <pre><code>// 执行时：以服务端重新生成的计划为准
 let plan = build_plan(pkg)?;               // 重新生成
 let allowed: HashSet&lt;_&gt; = plan.files.iter().collect();
@@ -71,13 +71,13 @@ for path in user_selected {
 }</code></pre>
 
 <h2>防御線 2：パスブラックリストと危険コンポーネントの阻止</h2>
-<h4>パスが計画に現れていても、静的ブラックリストがもう一枚構えます：<code>/</code>・<code>/home</code>・<code>/etc</code>・<code>/usr</code>・<code>/var</code> など 14 のシステム要諦ディレクトリと直系の子ディレクトリは一律拒否；ユーザーホーム配下の <code>.config</code>・<code>.cache</code>・<code>.local</code> など「設定ルートそのもの」の削除も拒否（中にある具体的なソフトのディレクトリは削除可）；<code>..</code> コンポーネントを含むパスは即座に違法判定——正常なパスはそれを必要とせず、必要とするものは必ず悪意があります。</h4>
+<h3>パスが計画に現れていても、静的ブラックリストがもう一枚構えます：<code>/</code>・<code>/home</code>・<code>/etc</code>・<code>/usr</code>・<code>/var</code> など 14 のシステム要諦ディレクトリと直系の子ディレクトリは一律拒否；ユーザーホーム配下の <code>.config</code>・<code>.cache</code>・<code>.local</code> など「設定ルートそのもの」の削除も拒否（中にある具体的なソフトのディレクトリは削除可）；<code>..</code> コンポーネントを含むパスは即座に違法判定——正常なパスはそれを必要とせず、必要とするものは必ず悪意があります。</h3>
 
 <h2>防御線 3：保護スイッチと保守的な既定チェック</h2>
-<h4>残留走査は「パッケージ名バリアントマッチ」（大小文字を区別せず、ハイフン/アンダースコア等価）でソフト自身のディレクトリを特定しますが、マッチは 2 段階：<strong>完全一致は既定でチェック</strong>、「含む」関係だけのあいまい一致は<strong>既定で未チェック</strong>——削除し忘れるのはよくても、誤削除は許されません。UI には「ユーザー設定を保持」「システム設定を保持」の 2 つのスイッチもあり、チェックされたパスがシステムディレクトリに落ちていれば即座に除外します。3 本の防御線はそれぞれの持ち場を守る：ホワイトリストは「出所の信頼」、ブラックリストは「パスの合法性」、スイッチは「ユーザー意図」を管轄します。</h4>
+<h3>残留走査は「パッケージ名バリアントマッチ」（大小文字を区別せず、ハイフン/アンダースコア等価）でソフト自身のディレクトリを特定しますが、マッチは 2 段階：<strong>完全一致は既定でチェック</strong>、「含む」関係だけのあいまい一致は<strong>既定で未チェック</strong>——削除し忘れるのはよくても、誤削除は許されません。UI には「ユーザー設定を保持」「システム設定を保持」の 2 つのスイッチもあり、チェックされたパスがシステムディレクトリに落ちていれば即座に除外します。3 本の防御線はそれぞれの持ち場を守る：ホワイトリストは「出所の信頼」、ブラックリストは「パスの合法性」、スイッチは「ユーザー意図」を管轄します。</h3>
 
 <h2>🧪 権限昇格の勘所：pkexec と LC_ALL=C</h2>
-<h4>システムレベルのアンインストールには root が要り、<code>pkexec</code> で動的に権限昇格します（グラフィカルなパスワードダイアログが出て sudo より親切）。ここには隠れた落とし穴があります：apt の出力文言はロケールに依存し、中国語環境では現地語の接頭辞が解析できません。解法は、すべての外部コマンドに <code>LC_ALL=C</code> を強制し、その上で 3 種の英語接頭辞に同時互換を持たせること：</h4>
+<h3>システムレベルのアンインストールには root が要り、<code>pkexec</code> で動的に権限昇格します（グラフィカルなパスワードダイアログが出て sudo より親切）。ここには隠れた落とし穴があります：apt の出力文言はロケールに依存し、中国語環境では現地語の接頭辞が解析できません。解法は、すべての外部コマンドに <code>LC_ALL=C</code> を強制し、その上で 3 種の英語接頭辞に同時互換を持たせること：</h3>
 <pre><code>export LC_ALL=C
 apt-get purge -y pkg
 # 不同版本输出可能是：
@@ -88,13 +88,13 @@ fn extract_removed(line: &amp;str) -&gt; Option&lt;String&gt; {
     for prefix in ["Removing", "Purg", "Purging"] { /* ... */ }
     None
 }</code></pre>
-<h4>もう一つの細部：自分が root かどうかの判定に <code>getuid()</code> を呼ぶのは避けましょう——Tauri プロセスの環境変数が libc の結果に干渉することがあり、<code>/proc/self/status</code> の <code>Uid:</code> 行を直接解析する方が確実です。すべての外部コマンドは tokio の <code>timeout</code> で包み、固まった dpkg フロントエンド 1 個に UI 全体を引きずり殺されないようにします。</h4>
+<h3>もう一つの細部：自分が root かどうかの判定に <code>getuid()</code> を呼ぶのは避けましょう——Tauri プロセスの環境変数が libc の結果に干渉することがあり、<code>/proc/self/status</code> の <code>Uid:</code> 行を直接解析する方が確実です。すべての外部コマンドは tokio の <code>timeout</code> で包み、固まった dpkg フロントエンド 1 個に UI 全体を引きずり殺されないようにします。</h3>
 
 <h2>📊 おまけ：dpkg データベースを手解析してリスク算出</h2>
-<h4>リスク等級（critical/high/medium/low）はパッケージ名の推測ではなく、<code>/var/lib/dpkg/status</code> を直接解析します：空行で段落分割、スペースインデントの継続行、<code>install ok installed</code> 状態だけを認め、各パッケージがインストール済みパッケージから逆依存されている数を集計し、<code>Essential</code> と <code>Priority: required</code> フィールドと合わせてコアコンポーネントを判定——Essential パッケージは即 critical、8 個以上のパッケージから依存されるものは high。実データはあらゆるヒューリスティックに勝ります。</h4>
+<h3>リスク等級（critical/high/medium/low）はパッケージ名の推測ではなく、<code>/var/lib/dpkg/status</code> を直接解析します：空行で段落分割、スペースインデントの継続行、<code>install ok installed</code> 状態だけを認め、各パッケージがインストール済みパッケージから逆依存されている数を集計し、<code>Essential</code> と <code>Priority: required</code> フィールドと合わせてコアコンポーネントを判定——Essential パッケージは即 critical、8 個以上のパッケージから依存されるものは high。実データはあらゆるヒューリスティックに勝ります。</h3>
 
 <h2>📝 まとめ</h2>
-<h4>削除系ツールの安全設計は一言にまとめられます：<strong>フロントは信用しない、計画はホワイトリスト、ブラックリストが最後の防壁、既定値は保守的</strong>。ユーザーはシステムをあなたに預けます。あなたが返すナイフの一本一本に、鞘がなければなりません。</h4>
+<h3>削除系ツールの安全設計は一言にまとめられます：<strong>フロントは信用しない、計画はホワイトリスト、ブラックリストが最後の防壁、既定値は保守的</strong>。ユーザーはシステムをあなたに預けます。あなたが返すナイフの一本一本に、鞘がなければなりません。</h3>
 
             </div>
         </article>
@@ -104,6 +104,6 @@ fn extract_removed(line: &amp;str) -&gt; Option&lt;String&gt; {
     </div>
 </main>
 <div id="footer-placeholder"></div>
-<div class="month-badge" id="monthBadge">🌿 1月</div>
+<div class="month-badge" id="monthBadge" aria-hidden="true">🌿 1月</div>
 </body>
 </html>

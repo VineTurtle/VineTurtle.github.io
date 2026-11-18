@@ -23,8 +23,31 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: i18n verify
+        run: npm run i18n:verify
+
       - name: Build generated files
         run: npm run build
 
+      - name: i18n mirror audit
+        run: npm run i18n:audit
+
+      - name: Check internal links
+        run: npm run check:links
+
       - name: Check generated files are committed
         run: git diff --ignore-space-at-eol --exit-code
+
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run Lighthouse CI
+        run: npx --yes @lhci/cli autorun --config=lighthouserc.json

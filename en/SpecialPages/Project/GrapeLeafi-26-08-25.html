@@ -47,7 +47,7 @@
         <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../../index.html">Home</a><span class="crumb-sep" aria-hidden="true">/</span><a href="index.html">Project</a><span class="crumb-sep" aria-hidden="true">/</span><span aria-current="page">GrapeLeafi: Grapeleaf&#39;s cozy little corner</span></nav>
         <a href="index.html" class="back-link" id="backLink" data-i18n="list.backProject">← Back to projects</a>
         <article class="project-detail">
-            <div class="hero-img-wrap"><img src="../../Resources/images/projects/hero/grapeleafi-site.jpg" alt="GrapeLeafi: Grapeleaf&#39;s cozy little corner" class="detail-hero-img" data-fallback="📄"><div class="fallback-hero">📄</div></div>
+            <div class="hero-img-wrap"><img src="../../Resources/images/projects/hero/grapeleafi-site.jpg" alt="GrapeLeafi: Grapeleaf&#39;s cozy little corner" class="detail-hero-img" data-fallback="📄" fetchpriority="high" decoding="async"><div class="fallback-hero">📄</div></div>
             <header class="detail-header">
                 <h1>GrapeLeafi: Grapeleaf&#39;s cozy little corner</h1>
                 <div class="detail-meta"><span class="project-status status-progress">🚧 In progress</span><span class="detail-year">📅 2024</span><div class="dynamic-stats" data-dynamic-stats></div></div>
@@ -56,33 +56,33 @@
             </header>
             <nav class="post-toc" data-toc hidden aria-label="Table of contents"></nav>
             <div class="detail-body" lang="en" data-content-lang="en">
-<h4>GrapeLeafi is the longest-running project under VineTurtle Studio — a pure-static fan site for the Key visual-novel community: "Grapeleaf's cozy little corner". It has no framework, no build step and no backend; the entire codebase is a handful of HTML, CSS and JS files deployed straight on GitHub Pages. Because "anyone can tweak it", the site went through many hand-made iterations over the years and quietly accumulated a textbook of classic static-site lessons.</h4>
+<h2>GrapeLeafi is the longest-running project under VineTurtle Studio — a pure-static fan site for the Key visual-novel community: "Grapeleaf's cozy little corner". It has no framework, no build step and no backend; the entire codebase is a handful of HTML, CSS and JS files deployed straight on GitHub Pages. Because "anyone can tweak it", the site went through many hand-made iterations over the years and quietly accumulated a textbook of classic static-site lessons.</h2>
 
 <h2>Site overview</h2>
-<h4>The site is built around the virtual character GrapeLeafi and the wider "Grape family" character group. The palette leans on warm orange and creamy yellow; the whole site uses a custom Summer Pockets-themed mouse cursor, and a Live2D mascot stands permanently in the bottom-left corner. The page structure is deliberately restrained: an orange fixed header, rounded card-style content area and a pale-orange footer, with mobile collapsing into a hamburger drawer at the top right. Four pages (Home / The Grape Family / About Us / Contact Us) share one stylesheet, and each page carries a different "dango" favicon — a little treat left over from the early days of copy-pasting pages.</h4>
-<img src="../../Resources/images/gallery/vineyard-picnic.jpg" alt="Grape-family characters at a vineyard picnic" style="max-width:100%;border-radius:16px;margin:16px 0;box-shadow:0 6px 24px rgba(42,92,58,.12)">
+<h3>The site is built around the virtual character GrapeLeafi and the wider "Grape family" character group. The palette leans on warm orange and creamy yellow; the whole site uses a custom Summer Pockets-themed mouse cursor, and a Live2D mascot stands permanently in the bottom-left corner. The page structure is deliberately restrained: an orange fixed header, rounded card-style content area and a pale-orange footer, with mobile collapsing into a hamburger drawer at the top right. Four pages (Home / The Grape Family / About Us / Contact Us) share one stylesheet, and each page carries a different "dango" favicon — a little treat left over from the early days of copy-pasting pages.</h3>
+<img loading="lazy" decoding="async" src="../../Resources/images/gallery/vineyard-picnic.jpg" alt="Grape-family characters at a vineyard picnic" style="max-width:100%;border-radius:16px;margin:16px 0;box-shadow:0 6px 24px rgba(42,92,58,.12)">
 
 <h2>Core features</h2>
-<h4>Anniversary countdown: JS/Countdown.js is just 29 lines, anchored to December 6 each year — if this year's date has already passed, the year rolls over to the next one automatically, so the "3rd anniversary" banner quietly renews itself every year and never expires.</h4>
-<h4>Character birthday reminders: JS/birthday.js ships with about 140 Key-character birthdays (month-day format). On every load it computes a "next 30 days" window, sorts the entries by days remaining and renders them as a card list; when nobody has a birthday within 30 days, it shows a single line: "Time to relax ~".</h4>
-<h4>QQ group QR popup: a pure-CSS :hover trick — hovering the "Join QQ group" pill button pops up a white rounded card below it showing the group QR code, with zero JavaScript involved.</h4>
-<h4>Live2D mascot: the stevenjoezhang/live2d-widget from jsDelivr is referenced directly; one script tag and it just works.</h4>
+<h3>Anniversary countdown: JS/Countdown.js is just 29 lines, anchored to December 6 each year — if this year's date has already passed, the year rolls over to the next one automatically, so the "3rd anniversary" banner quietly renews itself every year and never expires.</h3>
+<h3>Character birthday reminders: JS/birthday.js ships with about 140 Key-character birthdays (month-day format). On every load it computes a "next 30 days" window, sorts the entries by days remaining and renders them as a card list; when nobody has a birthday within 30 days, it shows a single line: "Time to relax ~".</h3>
+<h3>QQ group QR popup: a pure-CSS :hover trick — hovering the "Join QQ group" pill button pops up a white rounded card below it showing the group QR code, with zero JavaScript involved.</h3>
+<h3>Live2D mascot: the stevenjoezhang/live2d-widget from jsDelivr is referenced directly; one script tag and it just works.</h3>
 
 <h2>Why we stubbornly stay pure-static</h2>
-<h4>Visitors of a community site don't need logins or posting — dynamic features — and the maintainer (that's us) would rather keep the site editable "with nothing but Notepad". Pure-static means: no server bills, no database backups, no security patches to chase; a push to GitHub Pages is a release. The price is that every bit of "dynamic feel" must be simulated on the front end — the countdown, the birthday reminders and the QR popup are all products of local browser computation.</h4>
+<h3>Visitors of a community site don't need logins or posting — dynamic features — and the maintainer (that's us) would rather keep the site editable "with nothing but Notepad". Pure-static means: no server bills, no database backups, no security patches to chase; a push to GitHub Pages is a release. The price is that every bit of "dynamic feel" must be simulated on the front end — the countdown, the birthday reminders and the QR popup are all products of local browser computation.</h3>
 
 <h2>Pitfalls met along the way</h2>
-<h4>This project is nearly a textbook of static-site pitfalls: the "birthday today" branch of the reminder never fired once because of how dates were compared (later written up in our blog post "Four classic pitfalls of pure-static websites"); the QQ group QR code could never pop up on phones for lack of hover; asset filenames mixed Chinese, spaces and parentheses, and GitHub Pages runs case-sensitive Linux servers — one rename batch-404'd a pile of images; and the Live2D widget referenced @latest, so every upstream update turned the site mascot into a lottery. Full post-mortems live in the blog posts; enough said here.</h4>
+<h3>This project is nearly a textbook of static-site pitfalls: the "birthday today" branch of the reminder never fired once because of how dates were compared (later written up in our blog post "Four classic pitfalls of pure-static websites"); the QQ group QR code could never pop up on phones for lack of hover; asset filenames mixed Chinese, spaces and parentheses, and GitHub Pages runs case-sensitive Linux servers — one rename batch-404'd a pile of images; and the Live2D widget referenced @latest, so every upstream update turned the site mascot into a lottery. Full post-mortems live in the blog posts; enough said here.</h3>
 
 <h2>Relation to the main site</h2>
-<h4>The GrapeLeafi header carries a link to the "Snappy Turtle HQ" — the very Vine Turtle Nest site you're reading now. It works as the studio's "front parlor": plainer tech, a chattier tone, its job being to hold the community vibe together; the main site carries the formal projects and the blog. The two sites share the same cast of characters and artwork, and many pieces in the gallery were originally drawn for the Grape family.</h4>
+<h3>The GrapeLeafi header carries a link to the "Snappy Turtle HQ" — the very Vine Turtle Nest site you're reading now. It works as the studio's "front parlor": plainer tech, a chattier tone, its job being to hold the community vibe together; the main site carries the formal projects and the blog. The two sites share the same cast of characters and artwork, and many pieces in the gallery were originally drawn for the Grape family.</h3>
 
 <h2>November 2026: moving to a subdomain, full refurbish</h2>
-<h4>This version was a thorough tidy-up: the little corner moved to its own subdomain, <a href="https://leafi.grapeleafi.top/">leafi.grapeleafi.top</a>, deployed independently from the main site; page structure and styles were rewritten from scratch, the header became a single-row nav plus mobile drawer, images were compressed into smaller JPEGs, and the first screen got much lighter.</h4>
-<h4>The old pitfalls got filled in along the way: birthday data moved out of JS into <code>data/birthdays.json</code>; the anniversary countdown is now driven by <code>data/countdown.json</code> and computes "which anniversary" on its own; the QQ group QR code now expands on click, so it works with keyboards and phones; Live2D is pinned to <code>0.9.2</code> and only loads when the desktop is idle — no more upstream lottery. Sitemap, robots, 404 and share cards were added at the same time.</h4>
+<h3>This version was a thorough tidy-up: the little corner moved to its own subdomain, <a href="https://leafi.grapeleafi.top/">leafi.grapeleafi.top</a>, deployed independently from the main site; page structure and styles were rewritten from scratch, the header became a single-row nav plus mobile drawer, images were compressed into smaller JPEGs, and the first screen got much lighter.</h3>
+<h3>The old pitfalls got filled in along the way: birthday data moved out of JS into <code>data/birthdays.json</code>; the anniversary countdown is now driven by <code>data/countdown.json</code> and computes "which anniversary" on its own; the QQ group QR code now expands on click, so it works with keyboards and phones; Live2D is pinned to <code>0.9.2</code> and only loads when the desktop is idle — no more upstream lottery. Sitemap, robots, 404 and share cards were added at the same time.</h3>
 
 <h2>Closing words</h2>
-<h4>If you'd like a fan site of your own, GrapeLeafi's repo layout may be the friendliest starting point there is: no dependencies, no build — clone it, double-click index.html and it runs. The rest is planting content a little at a time and letting it grow.</h4>
+<h3>If you'd like a fan site of your own, GrapeLeafi's repo layout may be the friendliest starting point there is: no dependencies, no build — clone it, double-click index.html and it runs. The rest is planting content a little at a time and letting it grow.</h3>
 
             </div>
         </article>
@@ -92,6 +92,6 @@
     </div>
 </main>
 <div id="footer-placeholder"></div>
-<div class="month-badge" id="monthBadge">🌿 1</div>
+<div class="month-badge" id="monthBadge" aria-hidden="true">🌿 1</div>
 </body>
 </html>
